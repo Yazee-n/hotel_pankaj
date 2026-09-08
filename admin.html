@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#b5121b"
+    >
+
+    <title>Hotel Pankaj | Admin Panel</title>
+
+    <link
+        rel="stylesheet"
+        href="admin.css"
+    >
+
+</head>
+
+<body>
+
+<header class="admin-header">
+
+    <div class="brand">
+
+        <div class="brand-logo">
+            HP
+        </div>
+
+        <div>
+
+            <h1>
+                Hotel Pankaj
+            </h1>
+
+            <p>
+                Admin Panel
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="header-actions">
+
+        <button
+            class="logout-btn"
+            onclick="logoutAdmin()"
+        >
+            Logout
+        </button>
+
+        <a
+            href="index.html"
+            class="back-btn"
+        >
+            ← Order App
+        </a>
+
+    </div>
+
+</header>
+
+
+<main class="admin-container">
+
+    <section class="dashboard-header">
+
+        <div>
+
+            <span class="eyebrow">
+                MENU MANAGEMENT
+            </span>
+
+            <h2>
+                Manage Menu
+            </h2>
+
+            <p>
+                Add, edit or remove food items and prices.
+            </p>
+
+        </div>
+
+        <button
+            class="add-main-btn"
+            onclick="showAddForm()"
+        >
+            + Add Item
+        </button>
+
+    </section>
+
+
+    <section class="stats">
+
+        <div class="stat-card">
+
+            <span>
+                Menu Items
+            </span>
+
+            <strong id="totalItems">
+                0
+            </strong>
+
+        </div>
+
+        <div class="stat-card">
+
+            <span>
+                Categories
+            </span>
+
+            <strong id="totalCategories">
+                0
+            </strong>
+
+        </div>
+
+        <div class="stat-card">
+
+            <span>
+                Orders
+            </span>
+
+            <strong id="totalOrders">
+                0
+            </strong>
+
+        </div>
+
+        <div class="stat-card">
+
+            <span>
+                Party Orders
+            </span>
+
+            <strong id="totalPartyOrders">
+                0
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <section
+        id="addItemSection"
+        class="admin-card hidden"
+    >
+
+        <div class="card-title">
+
+            <div>
+
+                <span class="eyebrow">
+                    NEW ITEM
+                </span>
+
+                <h3>
+                    Add Menu Item
+                </h3>
+
+            </div>
+
+            <button
+                class="close-form-btn"
+                onclick="hideAddForm()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <form
+            onsubmit="addNewItem(event)"
+            class="item-form"
+        >
+
+            <div class="form-group">
+
+                <label>
+                    Item Name
+                </label>
+
+                <input
+                    id="itemName"
+                    type="text"
+                    placeholder="Chicken Biriyani"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Category
+                </label>
+
+                <select
+                    id="itemCategory"
+                    onchange="handleCategoryChange('add')"
+                    required
+                >
+
+                    <option value="">
+                        Select Category
+                    </option>
+
+                </select>
+
+                <input
+                    id="newCategory"
+                    type="text"
+                    placeholder="Enter new category"
+                    style="display:none;"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Price
+                </label>
+
+                <input
+                    id="itemPrice"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="160"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    onclick="hideAddForm()"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="save-btn"
+                >
+                    Add Item
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <section class="admin-card">
+
+        <div class="card-title">
+
+            <div>
+
+                <span class="eyebrow">
+                    CURRENT MENU
+                </span>
+
+                <h3>
+                    Menu Items
+                </h3>
+
+            </div>
+
+            <input
+                id="searchInput"
+                class="search-input"
+                type="search"
+                placeholder="Search items..."
+                oninput="renderAdminMenu()"
+            >
+
+        </div>
+
+
+        <div
+            id="menuList"
+            class="menu-list"
+        >
+        </div>
+
+    </section>
+
+
+    <section class="admin-card">
+
+        <div class="card-title">
+
+            <div>
+
+                <span class="eyebrow">
+                    DATA
+                </span>
+
+                <h3>
+                    System Data
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="data-actions">
+
+            <button
+                class="secondary-btn"
+                onclick="exportData()"
+            >
+                Export Data
+            </button>
+
+            <button
+                class="danger-btn"
+                onclick="resetData()"
+            >
+                Reset All Data
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<div
+    id="editModal"
+    class="modal"
+>
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    EDIT ITEM
+                </span>
+
+                <h2>
+                    Update Menu Item
+                </h2>
+
+            </div>
+
+            <button
+                class="modal-close"
+                onclick="closeEditModal()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Item Name
+            </label>
+
+            <input
+                id="editName"
+                type="text"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Category
+            </label>
+
+            <select
+                id="editCategory"
+                onchange="handleCategoryChange('edit')"
+            >
+
+                <option value="">
+                    Select Category
+                </option>
+
+            </select>
+
+            <input
+                id="editNewCategory"
+                type="text"
+                placeholder="Enter new category"
+                style="display:none;"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Price
+            </label>
+
+            <input
+                id="editPrice"
+                type="number"
+                min="0"
+                step="0.01"
+            >
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button
+                class="cancel-btn"
+                onclick="closeEditModal()"
+            >
+                Cancel
+            </button>
+
+            <button
+                class="save-btn"
+                onclick="saveEditedItem()"
+            >
+                Save Changes
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="admin.js"></script>
+
+</body>
+
+</html>
