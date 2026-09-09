@@ -1,6 +1,6 @@
 /* =========================================
    PANKAJ RESTAURANT
-   MENU + CART + ORDER SYSTEM
+   MENU + CART + ORDER HISTORY SYSTEM
 ========================================= */
 
 
@@ -12,24 +12,16 @@ const searchInput =
     document.getElementById("searchInput");
 
 const categoryButtons =
-    document.querySelectorAll(
-        ".category-btn"
-    );
+    document.querySelectorAll(".category-btn");
 
 const menuCards =
-    document.querySelectorAll(
-        ".menu-card"
-    );
+    document.querySelectorAll(".menu-card");
 
 const itemCount =
-    document.getElementById(
-        "itemCount"
-    );
+    document.getElementById("itemCount");
 
 const emptyState =
-    document.getElementById(
-        "emptyState"
-    );
+    document.getElementById("emptyState");
 
 
 /* =========================================
@@ -37,49 +29,31 @@ const emptyState =
 ========================================= */
 
 const cartButton =
-    document.getElementById(
-        "cartButton"
-    );
+    document.getElementById("cartButton");
 
 const cartCount =
-    document.getElementById(
-        "cartCount"
-    );
+    document.getElementById("cartCount");
 
 const cartDrawer =
-    document.getElementById(
-        "cartDrawer"
-    );
+    document.getElementById("cartDrawer");
 
 const cartOverlay =
-    document.getElementById(
-        "cartOverlay"
-    );
+    document.getElementById("cartOverlay");
 
 const cartClose =
-    document.getElementById(
-        "cartClose"
-    );
+    document.getElementById("cartClose");
 
 const cartItems =
-    document.getElementById(
-        "cartItems"
-    );
+    document.getElementById("cartItems");
 
 const cartEmpty =
-    document.getElementById(
-        "cartEmpty"
-    );
+    document.getElementById("cartEmpty");
 
 const cartTotal =
-    document.getElementById(
-        "cartTotal"
-    );
+    document.getElementById("cartTotal");
 
 const placeOrder =
-    document.getElementById(
-        "placeOrder"
-    );
+    document.getElementById("placeOrder");
 
 
 /* =========================================
@@ -87,24 +61,33 @@ const placeOrder =
 ========================================= */
 
 const orderModal =
-    document.getElementById(
-        "orderModal"
-    );
+    document.getElementById("orderModal");
 
 const confirmedOrder =
-    document.getElementById(
-        "confirmedOrder"
-    );
+    document.getElementById("confirmedOrder");
 
 const confirmedTotal =
-    document.getElementById(
-        "confirmedTotal"
-    );
+    document.getElementById("confirmedTotal");
 
 const newOrder =
-    document.getElementById(
-        "newOrder"
-    );
+    document.getElementById("newOrder");
+
+
+/* =========================================
+   HISTORY ELEMENTS
+========================================= */
+
+const historyTab =
+    document.getElementById("historyTab");
+
+const historySection =
+    document.getElementById("historySection");
+
+const historyList =
+    document.getElementById("historyList");
+
+const historyEmpty =
+    document.getElementById("historyEmpty");
 
 
 /* =========================================
@@ -114,6 +97,15 @@ const newOrder =
 let activeCategory = "all";
 
 let cart = [];
+
+let orders =
+    JSON.parse(
+        localStorage.getItem(
+            "pankaj_orders"
+        )
+    ) || [];
+
+let editingOrderId = null;
 
 
 /* =========================================
@@ -127,48 +119,39 @@ function filterMenu() {
             .trim()
             .toLowerCase();
 
-
     let visibleItems = 0;
-
 
     menuCards.forEach(card => {
 
         const category =
             card.dataset.category || "";
 
-
         const name =
             card.dataset.name || "";
-
 
         const categoryMatches =
             activeCategory === "all" ||
             category === activeCategory;
 
-
         const searchMatches =
             name.includes(searchTerm);
-
 
         if (
             categoryMatches &&
             searchMatches
         ) {
 
-            card.style.display =
-                "flex";
+            card.style.display = "flex";
 
             visibleItems++;
 
         } else {
 
-            card.style.display =
-                "none";
+            card.style.display = "none";
 
         }
 
     });
-
 
     itemCount.textContent =
         `${visibleItems} ${
@@ -177,12 +160,10 @@ function filterMenu() {
                 : "items"
         }`;
 
-
     emptyState.style.display =
         visibleItems === 0
             ? "block"
             : "none";
-
 }
 
 
@@ -190,40 +171,33 @@ function filterMenu() {
    CATEGORY BUTTONS
 ========================================= */
 
-categoryButtons.forEach(
-    button => {
+categoryButtons.forEach(button => {
 
-        button.addEventListener(
-            "click",
-            () => {
+    button.addEventListener(
+        "click",
+        () => {
 
-                categoryButtons.forEach(
-                    btn => {
+            categoryButtons.forEach(btn => {
 
-                        btn.classList.remove(
-                            "active"
-                        );
-
-                    }
-                );
-
-
-                button.classList.add(
+                btn.classList.remove(
                     "active"
                 );
 
+            });
 
-                activeCategory =
-                    button.dataset.category;
+            button.classList.add(
+                "active"
+            );
 
+            activeCategory =
+                button.dataset.category;
 
-                filterMenu();
+            filterMenu();
 
-            }
-        );
+        }
+    );
 
-    }
-);
+});
 
 
 /* =========================================
@@ -246,77 +220,57 @@ const addButtons =
     );
 
 
-addButtons.forEach(
-    button => {
+addButtons.forEach(button => {
 
-        button.addEventListener(
-            "click",
-            () => {
+    button.addEventListener(
+        "click",
+        () => {
 
-                const name =
-                    button.dataset.name;
+            const name =
+                button.dataset.name;
 
-
-                const price =
-                    Number(
-                        button.dataset.price
-                    );
-
-
-                addToCart(
-                    name,
-                    price
+            const price =
+                Number(
+                    button.dataset.price
                 );
 
+            addToCart(
+                name,
+                price
+            );
 
-                /*
-                 * Visual feedback
-                 */
+            button.classList.add(
+                "added"
+            );
 
-                button.classList.add(
+            button.textContent =
+                "✓ Added";
+
+            setTimeout(() => {
+
+                button.classList.remove(
                     "added"
                 );
 
                 button.textContent =
-                    "✓ Added";
+                    "+ Add";
 
+            }, 700);
 
-                setTimeout(
-                    () => {
+            cartButton.classList.remove(
+                "pulse"
+            );
 
-                        button.classList.remove(
-                            "added"
-                        );
+            void cartButton.offsetWidth;
 
-                        button.textContent =
-                            "+ Add";
+            cartButton.classList.add(
+                "pulse"
+            );
 
-                    },
-                    700
-                );
+        }
+    );
 
-
-                /*
-                 * Cart animation
-                 */
-
-                cartButton.classList.remove(
-                    "pulse"
-                );
-
-
-                void cartButton.offsetWidth;
-
-
-                cartButton.classList.add(
-                    "pulse"
-                );
-
-            }
-        );
-
-    }
-);
+});
 
 
 /* =========================================
@@ -333,7 +287,6 @@ function addToCart(
             item =>
                 item.name === name
         );
-
 
     if (existingItem) {
 
@@ -353,9 +306,7 @@ function addToCart(
 
     }
 
-
     updateCart();
-
 }
 
 
@@ -382,7 +333,6 @@ function renderCart() {
 
     cartItems.innerHTML = "";
 
-
     if (cart.length === 0) {
 
         cartItems.style.display =
@@ -395,17 +345,13 @@ function renderCart() {
             true;
 
         return;
-
     }
-
 
     cartItems.style.display =
         "block";
 
-
     cartEmpty.style.display =
         "none";
-
 
     placeOrder.disabled =
         false;
@@ -419,10 +365,8 @@ function renderCart() {
                     "div"
                 );
 
-
             itemElement.className =
                 "cart-item";
-
 
             itemElement.innerHTML = `
 
@@ -438,7 +382,6 @@ function renderCart() {
 
                 </div>
 
-
                 <div class="cart-item-controls">
 
                     <button
@@ -446,42 +389,34 @@ function renderCart() {
                         class="quantity-btn"
                         data-action="decrease"
                         data-index="${index}"
-                        aria-label="Decrease quantity"
                     >
                         −
                     </button>
 
-
                     <span class="quantity">
                         ${item.quantity}
                     </span>
-
 
                     <button
                         type="button"
                         class="quantity-btn"
                         data-action="increase"
                         data-index="${index}"
-                        aria-label="Increase quantity"
                     >
                         +
                     </button>
-
 
                     <button
                         type="button"
                         class="remove-item"
                         data-action="remove"
                         data-index="${index}"
-                        aria-label="Remove item"
                     >
                         ×
                     </button>
 
                 </div>
-
             `;
-
 
             cartItems.appendChild(
                 itemElement
@@ -506,49 +441,38 @@ cartItems.addEventListener(
                 "button"
             );
 
-
         if (!button) {
             return;
         }
 
-
         const action =
             button.dataset.action;
-
 
         const index =
             Number(
                 button.dataset.index
             );
 
-
         if (
             Number.isNaN(index) ||
             !cart[index]
         ) {
-
             return;
-
         }
 
-
         if (
-            action ===
-            "increase"
+            action === "increase"
         ) {
 
             cart[index].quantity++;
 
         }
 
-
         if (
-            action ===
-            "decrease"
+            action === "decrease"
         ) {
 
             cart[index].quantity--;
-
 
             if (
                 cart[index].quantity <= 0
@@ -563,10 +487,8 @@ cartItems.addEventListener(
 
         }
 
-
         if (
-            action ===
-            "remove"
+            action === "remove"
         ) {
 
             cart.splice(
@@ -575,7 +497,6 @@ cartItems.addEventListener(
             );
 
         }
-
 
         updateCart();
 
@@ -591,10 +512,7 @@ function updateCartCount() {
 
     const count =
         cart.reduce(
-            (
-                total,
-                item
-            ) => {
+            (total, item) => {
 
                 return (
                     total +
@@ -604,7 +522,6 @@ function updateCartCount() {
             },
             0
         );
-
 
     cartCount.textContent =
         count;
@@ -616,13 +533,12 @@ function updateCartCount() {
    TOTAL
 ========================================= */
 
-function calculateTotal() {
+function calculateTotal(
+    items = cart
+) {
 
-    return cart.reduce(
-        (
-            total,
-            item
-        ) => {
+    return items.reduce(
+        (total, item) => {
 
             return (
                 total +
@@ -683,7 +599,6 @@ cartClose.addEventListener(
     closeCart
 );
 
-
 cartOverlay.addEventListener(
     "click",
     closeCart
@@ -719,17 +634,24 @@ placeOrder.addEventListener(
             return;
         }
 
+        const order =
+            createNewOrder();
 
-        createOrderSummary();
+        orders.unshift(order);
 
+        saveOrders();
+
+        createOrderSummary(
+            order
+        );
+
+        renderHistory();
 
         closeCart();
-
 
         orderModal.classList.add(
             "active"
         );
-
 
         document.body.classList.add(
             "no-scroll"
@@ -740,16 +662,88 @@ placeOrder.addEventListener(
 
 
 /* =========================================
+   CREATE NEW ORDER
+========================================= */
+
+function createNewOrder() {
+
+    return {
+
+        id: generateOrderId(),
+
+        items:
+            JSON.parse(
+                JSON.stringify(cart)
+            ),
+
+        total:
+            calculateTotal(),
+
+        status:
+            "confirmed",
+
+        createdAt:
+            new Date().toISOString()
+
+    };
+
+}
+
+
+/* =========================================
+   ORDER ID
+========================================= */
+
+function generateOrderId() {
+
+    const number =
+        orders.length > 0
+            ? Math.max(
+                ...orders.map(
+                    order =>
+                        Number(
+                            String(
+                                order.id
+                            ).replace(
+                                "PNK-",
+                                ""
+                            )
+                        ) || 0
+                )
+            ) + 1
+            : 1001;
+
+    return `PNK-${number}`;
+
+}
+
+
+/* =========================================
+   SAVE ORDERS
+========================================= */
+
+function saveOrders() {
+
+    localStorage.setItem(
+        "pankaj_orders",
+        JSON.stringify(orders)
+    );
+
+}
+
+
+/* =========================================
    ORDER SUMMARY
 ========================================= */
 
-function createOrderSummary() {
+function createOrderSummary(
+    order
+) {
 
     confirmedOrder.innerHTML =
         "";
 
-
-    cart.forEach(
+    order.items.forEach(
         item => {
 
             const row =
@@ -757,15 +751,12 @@ function createOrderSummary() {
                     "div"
                 );
 
-
             row.className =
                 "confirmed-item";
-
 
             const itemTotal =
                 item.price *
                 item.quantity;
-
 
             row.innerHTML = `
 
@@ -780,7 +771,6 @@ function createOrderSummary() {
 
             `;
 
-
             confirmedOrder.appendChild(
                 row
             );
@@ -788,9 +778,8 @@ function createOrderSummary() {
         }
     );
 
-
     confirmedTotal.textContent =
-        `₹${calculateTotal()}`;
+        `₹${order.total}`;
 
 }
 
@@ -804,6 +793,8 @@ newOrder.addEventListener(
     () => {
 
         cart = [];
+
+        editingOrderId = null;
 
         updateCart();
 
@@ -831,6 +822,466 @@ function closeOrderModal() {
 
 
 /* =========================================
+   HISTORY TAB
+========================================= */
+
+if (historyTab) {
+
+    historyTab.addEventListener(
+        "click",
+        () => {
+
+            showHistory();
+
+        }
+    );
+
+}
+
+
+function showHistory() {
+
+    document
+        .querySelectorAll(
+            ".page-section"
+        )
+        .forEach(section => {
+
+            section.classList.remove(
+                "active"
+            );
+
+        });
+
+    const menuSection =
+        document.getElementById(
+            "menuSection"
+        );
+
+    if (menuSection) {
+
+        menuSection.classList.remove(
+            "active"
+        );
+
+    }
+
+    if (historySection) {
+
+        historySection.classList.add(
+            "active"
+        );
+
+    }
+
+    renderHistory();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================
+   HISTORY RENDER
+========================================= */
+
+function renderHistory() {
+
+    if (!historyList) {
+        return;
+    }
+
+    historyList.innerHTML =
+        "";
+
+    if (orders.length === 0) {
+
+        historyList.style.display =
+            "none";
+
+        if (historyEmpty) {
+
+            historyEmpty.style.display =
+                "flex";
+
+        }
+
+        return;
+    }
+
+    historyList.style.display =
+        "block";
+
+    if (historyEmpty) {
+
+        historyEmpty.style.display =
+            "none";
+
+    }
+
+
+    orders.forEach(order => {
+
+        const card =
+            document.createElement(
+                "article"
+            );
+
+        card.className =
+            "history-card";
+
+        const date =
+            new Date(
+                order.createdAt
+            );
+
+        const dateText =
+            date.toLocaleDateString(
+                "en-IN",
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                }
+            );
+
+        const timeText =
+            date.toLocaleTimeString(
+                "en-IN",
+                {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                }
+            );
+
+
+        const itemsHTML =
+            order.items.map(
+                item => `
+
+                    <div class="history-item">
+
+                        <span>
+                            ${escapeHTML(item.name)}
+                            × ${item.quantity}
+                        </span>
+
+                        <strong>
+                            ₹${item.price * item.quantity}
+                        </strong>
+
+                    </div>
+
+                `
+            ).join("");
+
+
+        card.innerHTML = `
+
+            <div class="history-card-header">
+
+                <div>
+
+                    <span class="history-order-label">
+                        ORDER
+                    </span>
+
+                    <h4>
+                        ${escapeHTML(order.id)}
+                    </h4>
+
+                </div>
+
+                <span class="history-status">
+                    CONFIRMED
+                </span>
+
+            </div>
+
+
+            <div class="history-meta">
+
+                <span>
+                    ${dateText}
+                </span>
+
+                <span>
+                    ${timeText}
+                </span>
+
+            </div>
+
+
+            <div class="history-items">
+
+                ${itemsHTML}
+
+            </div>
+
+
+            <div class="history-card-footer">
+
+                <div>
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong>
+                        ₹${order.total}
+                    </strong>
+
+                </div>
+
+
+                <div class="history-actions">
+
+                    <button
+                        type="button"
+                        class="history-edit-btn"
+                        data-order-id="${escapeHTML(order.id)}"
+                    >
+                        Edit
+                    </button>
+
+                    <button
+                        type="button"
+                        class="history-delete-btn"
+                        data-order-id="${escapeHTML(order.id)}"
+                    >
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+        historyList.appendChild(
+            card
+        );
+
+    });
+
+}
+
+
+/* =========================================
+   HISTORY ACTIONS
+========================================= */
+
+if (historyList) {
+
+    historyList.addEventListener(
+        "click",
+        event => {
+
+            const editButton =
+                event.target.closest(
+                    ".history-edit-btn"
+                );
+
+            const deleteButton =
+                event.target.closest(
+                    ".history-delete-btn"
+                );
+
+
+            if (editButton) {
+
+                editOrder(
+                    editButton.dataset.orderId
+                );
+
+            }
+
+
+            if (deleteButton) {
+
+                deleteOrder(
+                    deleteButton.dataset.orderId
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   EDIT ORDER
+========================================= */
+
+function editOrder(
+    orderId
+) {
+
+    const order =
+        orders.find(
+            item =>
+                item.id === orderId
+        );
+
+    if (!order) {
+        return;
+    }
+
+
+    cart =
+        JSON.parse(
+            JSON.stringify(
+                order.items
+            )
+        );
+
+
+    editingOrderId =
+        orderId;
+
+
+    updateCart();
+
+    openCart();
+
+    placeOrder.textContent =
+        "Save Changes";
+
+    placeOrder.disabled =
+        cart.length === 0;
+
+}
+
+
+/* =========================================
+   SAVE EDITED ORDER
+========================================= */
+
+placeOrder.addEventListener(
+    "click",
+    () => {
+
+        if (!editingOrderId) {
+            return;
+        }
+
+        if (cart.length === 0) {
+            return;
+        }
+
+
+        const orderIndex =
+            orders.findIndex(
+                order =>
+                    order.id ===
+                    editingOrderId
+            );
+
+
+        if (orderIndex === -1) {
+            return;
+        }
+
+
+        orders[orderIndex].items =
+            JSON.parse(
+                JSON.stringify(
+                    cart
+                )
+            );
+
+
+        orders[orderIndex].total =
+            calculateTotal();
+
+
+        orders[orderIndex].updatedAt =
+            new Date().toISOString();
+
+
+        saveOrders();
+
+        renderHistory();
+
+
+        createOrderSummary(
+            orders[orderIndex]
+        );
+
+
+        editingOrderId =
+            null;
+
+
+        placeOrder.textContent =
+            "Place Order";
+
+
+        closeCart();
+
+
+        orderModal.classList.add(
+            "active"
+        );
+
+        document.body.classList.add(
+            "no-scroll"
+        );
+
+    }
+);
+
+
+/* =========================================
+   DELETE ORDER
+========================================= */
+
+function deleteOrder(
+    orderId
+) {
+
+    const order =
+        orders.find(
+            item =>
+                item.id === orderId
+        );
+
+    if (!order) {
+        return;
+    }
+
+
+    const confirmed =
+        window.confirm(
+            `Delete ${order.id} from order history?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    orders =
+        orders.filter(
+            item =>
+                item.id !== orderId
+        );
+
+
+    saveOrders();
+
+    renderHistory();
+
+}
+
+
+/* =========================================
    ESCAPE KEY
 ========================================= */
 
@@ -839,8 +1290,7 @@ document.addEventListener(
     event => {
 
         if (
-            event.key ===
-            "Escape"
+            event.key === "Escape"
         ) {
 
             closeCart();
@@ -896,3 +1346,5 @@ function escapeHTML(value) {
 filterMenu();
 
 updateCart();
+
+renderHistory();
