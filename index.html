@@ -11,61 +11,7 @@
 
 <body>
 
-    <!-- LOGIN -->
-
-    <section id="loginScreen" class="login-screen">
-
-        <div class="login-card">
-
-            <div class="logo">
-                PK
-            </div>
-
-            <h1>PANKAJ</h1>
-
-            <p>Waiter Ordering System</p>
-
-            <form id="loginForm">
-
-                <div class="form-group">
-
-                    <label for="password">
-                        Password
-                    </label>
-
-                    <input
-                        type="password"
-                        id="password"
-                        placeholder="Enter password"
-                        required
-                    >
-
-                </div>
-
-                <p
-                    id="loginError"
-                    class="login-error"
-                ></p>
-
-                <button
-                    type="submit"
-                    class="login-button"
-                >
-                    Login
-                </button>
-
-            </form>
-
-        </div>
-
-    </section>
-
-
-    <!-- WAITER APP -->
-
     <section id="app" class="app">
-
-        <!-- HEADER -->
 
         <header class="header">
 
@@ -89,24 +35,13 @@
                     Waiter
                 </span>
 
-                <button
-                    id="logoutButton"
-                    type="button"
-                >
-                    Logout
-                </button>
-
             </div>
 
         </header>
 
 
-        <!-- MAIN -->
-
         <main class="main">
 
-
-            <!-- PAGE TITLE -->
 
             <section class="page-header">
 
@@ -125,8 +60,6 @@
             </section>
 
 
-            <!-- MENU -->
-
             <section class="menu-section">
 
                 <div class="section-header">
@@ -138,33 +71,22 @@
                 </div>
 
 
-                <!-- CATEGORIES -->
-
                 <nav
                     id="categories"
                     class="categories"
+                    aria-label="Menu categories"
                 >
-
-                    <!-- Categories will come here -->
-
                 </nav>
 
-
-                <!-- MENU ITEMS -->
 
                 <div
                     id="menuGrid"
                     class="menu-grid"
                 >
-
-                    <!-- Menu items will come here -->
-
                 </div>
 
             </section>
 
-
-            <!-- CURRENT ORDER -->
 
             <section class="order-section">
 
@@ -192,14 +114,10 @@
                 </div>
 
 
-                <!-- CART -->
-
                 <div
                     id="cartItems"
                     class="cart-items"
                 >
-
-                    <!-- Cart items will come here -->
 
                     <div class="empty-cart">
 
@@ -216,8 +134,6 @@
                 </div>
 
 
-                <!-- NOTE -->
-
                 <div class="order-note">
 
                     <label for="orderNote">
@@ -232,8 +148,6 @@
 
                 </div>
 
-
-                <!-- SUMMARY -->
 
                 <div class="order-summary">
 
@@ -276,8 +190,6 @@
             </section>
 
 
-            <!-- ACTIVE ORDERS -->
-
             <section class="active-orders-section">
 
                 <div class="section-header">
@@ -294,9 +206,7 @@
 
                     </div>
 
-                    <span
-                        id="activeOrderCount"
-                    >
+                    <span id="activeOrderCount">
                         0 Active
                     </span>
 
@@ -308,12 +218,8 @@
                     class="orders-list"
                 >
 
-                    <!-- Orders will come here -->
-
                     <div class="empty-orders">
-
                         No active orders
-
                     </div>
 
                 </div>
@@ -322,8 +228,6 @@
 
         </main>
 
-
-        <!-- MOBILE CART -->
 
         <div
             id="mobileCart"
@@ -354,11 +258,11 @@
     </section>
 
 
-    <!-- TOAST -->
-
     <div
         id="toast"
         class="toast"
+        role="status"
+        aria-live="polite"
     ></div>
 
 
