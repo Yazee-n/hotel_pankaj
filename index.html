@@ -4,269 +4,378 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>PANKAJ — Waiter</title>
+    <title>PANKAJ Restaurant</title>
 
-    <script src="app.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <section id="app" class="app">
+    <header class="topbar">
 
-        <header class="header">
+        <div class="brand">
+            <div class="logo">PK</div>
 
-            <div class="header-brand">
+            <div>
+                <h1>PANKAJ</h1>
+                <p>RESTAURANT</p>
+            </div>
+        </div>
 
-                <div class="brand-logo">
-                    PK
-                </div>
+        <div class="waiter-label">
+            WAITER ORDER
+        </div>
 
-                <div>
-                    <h1>PANKAJ</h1>
-                    <span>Restaurant</span>
-                </div>
+    </header>
+
+
+    <main class="container">
+
+        <section class="welcome">
+
+            <p class="small-title">
+                WELCOME TO
+            </p>
+
+            <h2>
+                PANKAJ
+            </h2>
+
+            <p>
+                Select items from the menu to create a new order.
+            </p>
+
+        </section>
+
+
+        <section class="category-section">
+
+            <div class="section-title">
+                <h3>Menu</h3>
+            </div>
+
+            <div class="categories">
+
+                <button class="category active">
+                    All
+                </button>
+
+                <button class="category">
+                    Biriyani
+                </button>
+
+                <button class="category">
+                    Rice
+                </button>
+
+                <button class="category">
+                    Starters
+                </button>
+
+                <button class="category">
+                    Breads
+                </button>
+
+                <button class="category">
+                    Curries
+                </button>
+
+                <button class="category">
+                    Drinks
+                </button>
 
             </div>
 
-
-            <div class="header-actions">
-
-                <span id="waiterName">
-                    Waiter
-                </span>
-
-            </div>
-
-        </header>
+        </section>
 
 
-        <main class="main">
+        <section class="menu-grid">
 
 
-            <section class="page-header">
+            <article class="menu-card">
 
-                <div>
-
-                    <h2>
-                        New Order
-                    </h2>
-
-                    <p>
-                        Select items from the menu
-                    </p>
-
+                <div class="food-image">
+                    🍛
                 </div>
 
-            </section>
+                <div class="food-content">
 
+                    <div class="food-top">
 
-            <section class="menu-section">
+                        <div>
+                            <h4>
+                                Chicken Biriyani
+                            </h4>
 
-                <div class="section-header">
-
-                    <h3>
-                        Menu
-                    </h3>
-
-                </div>
-
-
-                <nav
-                    id="categories"
-                    class="categories"
-                    aria-label="Menu categories"
-                >
-                </nav>
-
-
-                <div
-                    id="menuGrid"
-                    class="menu-grid"
-                >
-                </div>
-
-            </section>
-
-
-            <section class="order-section">
-
-                <div class="section-header">
-
-                    <div>
-
-                        <h3>
-                            Current Order
-                        </h3>
-
-                        <p>
-                            Review items before confirming
-                        </p>
-
-                    </div>
-
-                    <span
-                        id="cartCount"
-                        class="cart-count"
-                    >
-                        0
-                    </span>
-
-                </div>
-
-
-                <div
-                    id="cartItems"
-                    class="cart-items"
-                >
-
-                    <div class="empty-cart">
+                            <p>
+                                Traditional chicken biriyani
+                            </p>
+                        </div>
 
                         <strong>
-                            No items added
-                        </strong>
-
-                        <span>
-                            Select items from the menu
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="order-note">
-
-                    <label for="orderNote">
-                        Special Instructions
-                    </label>
-
-                    <textarea
-                        id="orderNote"
-                        rows="3"
-                        placeholder="Example: Less spicy, no onion..."
-                    ></textarea>
-
-                </div>
-
-
-                <div class="order-summary">
-
-                    <div class="summary-row">
-
-                        <span>
-                            Items
-                        </span>
-
-                        <strong id="summaryItems">
-                            0
+                            ₹160
                         </strong>
 
                     </div>
 
-
-                    <div class="summary-row total">
-
-                        <span>
-                            Total
-                        </span>
-
-                        <strong id="summaryTotal">
-                            ₹0
-                        </strong>
-
-                    </div>
-
-
-                    <button
-                        id="confirmOrderButton"
-                        type="button"
-                        disabled
-                    >
-                        Confirm Order
+                    <button class="add-button">
+                        Add
                     </button>
 
                 </div>
 
-            </section>
+            </article>
 
 
-            <section class="active-orders-section">
+            <article class="menu-card">
 
-                <div class="section-header">
+                <div class="food-image">
+                    🍛
+                </div>
 
-                    <div>
+                <div class="food-content">
 
-                        <h3>
-                            Active Orders
-                        </h3>
+                    <div class="food-top">
 
-                        <p>
-                            Confirmed orders
-                        </p>
+                        <div>
+                            <h4>
+                                Beef Biriyani
+                            </h4>
+
+                            <p>
+                                Malabar style beef biriyani
+                            </p>
+                        </div>
+
+                        <strong>
+                            ₹180
+                        </strong>
 
                     </div>
 
-                    <span id="activeOrderCount">
-                        0 Active
-                    </span>
+                    <button class="add-button">
+                        Add
+                    </button>
 
                 </div>
 
+            </article>
 
-                <div
-                    id="ordersList"
-                    class="orders-list"
-                >
 
-                    <div class="empty-orders">
-                        No active orders
+            <article class="menu-card">
+
+                <div class="food-image">
+                    🍛
+                </div>
+
+                <div class="food-content">
+
+                    <div class="food-top">
+
+                        <div>
+                            <h4>
+                                Mutton Biriyani
+                            </h4>
+
+                            <p>
+                                Tender mutton biriyani
+                            </p>
+                        </div>
+
+                        <strong>
+                            ₹220
+                        </strong>
+
                     </div>
 
+                    <button class="add-button">
+                        Add
+                    </button>
+
                 </div>
 
-            </section>
-
-        </main>
+            </article>
 
 
-        <div
-            id="mobileCart"
-            class="mobile-cart"
-        >
+            <article class="menu-card">
 
-            <div>
+                <div class="food-image">
+                    🍚
+                </div>
 
-                <span>
-                    Current Order
-                </span>
+                <div class="food-content">
 
-                <strong id="mobileCartTotal">
-                    ₹0
-                </strong>
+                    <div class="food-top">
 
-            </div>
+                        <div>
+                            <h4>
+                                Chicken Fried Rice
+                            </h4>
 
-            <button
-                id="mobileCartButton"
-                type="button"
-            >
-                View Order
-            </button>
+                            <p>
+                                Fresh chicken fried rice
+                            </p>
+                        </div>
 
-        </div>
+                        <strong>
+                            ₹140
+                        </strong>
 
-    </section>
+                    </div>
 
+                    <button class="add-button">
+                        Add
+                    </button>
 
-    <div
-        id="toast"
-        class="toast"
-        role="status"
-        aria-live="polite"
-    ></div>
+                </div>
+
+            </article>
 
 
-    <script src="app.js"></script>
+            <article class="menu-card">
+
+                <div class="food-image">
+                    🍜
+                </div>
+
+                <div class="food-content">
+
+                    <div class="food-top">
+
+                        <div>
+                            <h4>
+                                Chicken Noodles
+                            </h4>
+
+                            <p>
+                                Spicy chicken noodles
+                            </p>
+                        </div>
+
+                        <strong>
+                            ₹140
+                        </strong>
+
+                    </div>
+
+                    <button class="add-button">
+                        Add
+                    </button>
+
+                </div>
+
+            </article>
+
+
+            <article class="menu-card">
+
+                <div class="food-image">
+                    🍗
+                </div>
+
+                <div class="food-content">
+
+                    <div class="food-top">
+
+                        <div>
+                            <h4>
+                                Chicken 65
+                            </h4>
+
+                            <p>
+                                Crispy spicy chicken
+                            </p>
+                        </div>
+
+                        <strong>
+                            ₹150
+                        </strong>
+
+                    </div>
+
+                    <button class="add-button">
+                        Add
+                    </button>
+
+                </div>
+
+            </article>
+
+
+            <article class="menu-card">
+
+                <div class="food-image">
+                    🫓
+                </div>
+
+                <div class="food-content">
+
+                    <div class="food-top">
+
+                        <div>
+                            <h4>
+                                Porotta
+                            </h4>
+
+                            <p>
+                                Kerala layered flatbread
+                            </p>
+                        </div>
+
+                        <strong>
+                            ₹15
+                        </strong>
+
+                    </div>
+
+                    <button class="add-button">
+                        Add
+                    </button>
+
+                </div>
+
+            </article>
+
+
+            <article class="menu-card">
+
+                <div class="food-image">
+                    🍗
+                </div>
+
+                <div class="food-content">
+
+                    <div class="food-top">
+
+                        <div>
+                            <h4>
+                                Chicken Curry
+                            </h4>
+
+                            <p>
+                                Kerala style chicken curry
+                            </p>
+                        </div>
+
+                        <strong>
+                            ₹130
+                        </strong>
+
+                    </div>
+
+                    <button class="add-button">
+                        Add
+                    </button>
+
+                </div>
+
+            </article>
+
+
+        </section>
+
+    </main>
+
 
 </body>
 </html>
