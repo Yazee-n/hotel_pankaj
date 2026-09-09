@@ -4,643 +4,56 @@
 <head>
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <meta name="theme-color" content="#a9151c">
+    <meta
+        name="theme-color"
+        content="#a9151c"
+    >
 
-    <meta name="description"
-        content="Pankaj Restaurant - Explore our delicious menu">
+    <meta
+        name="description"
+        content="Pankaj Restaurant Menu"
+    >
 
     <title>Pankaj Restaurant | Menu</title>
 
-    <style>
-        /* =========================
-           RESET
-        ========================== */
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f7f6f3;
-            color: #171717;
-            line-height: 1.5;
-        }
-
-        button,
-        input {
-            font: inherit;
-        }
-
-        button {
-            cursor: pointer;
-        }
-
-
-        /* =========================
-           VARIABLES
-        ========================== */
-
-        :root {
-            --red: #a9151c;
-            --red-dark: #7f0e14;
-            --red-light: #fff1f1;
-
-            --black: #171717;
-            --dark: #222222;
-            --gray: #777777;
-            --light-gray: #eeeeee;
-
-            --white: #ffffff;
-            --cream: #f7f6f3;
-
-            --radius: 16px;
-        }
-
-
-        /* =========================
-           HEADER
-        ========================== */
-
-        header {
-            background: var(--black);
-            color: var(--white);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .nav {
-            max-width: 1200px;
-            margin: auto;
-            height: 72px;
-            padding: 0 24px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .brand-mark {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-
-            display: grid;
-            place-items: center;
-
-            background: var(--red);
-            color: white;
-
-            font-size: 20px;
-            font-weight: 800;
-        }
-
-        .brand-text h1 {
-            font-size: 20px;
-            line-height: 1;
-            letter-spacing: 1px;
-        }
-
-        .brand-text span {
-            display: block;
-            margin-top: 4px;
-
-            color: #aaa;
-            font-size: 10px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
-        .nav-status {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-
-            font-size: 12px;
-            color: #d7d7d7;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #31c65a;
-        }
-
-
-        /* =========================
-           HERO
-        ========================== */
-
-        .hero {
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(0, 0, 0, 0.97),
-                    rgba(35, 8, 9, 0.96)
-                );
-
-            color: white;
-            padding: 70px 24px 75px;
-            text-align: center;
-        }
-
-        .hero-content {
-            max-width: 800px;
-            margin: auto;
-        }
-
-        .hero-label {
-            color: #e94a50;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-        }
-
-        .hero h2 {
-            font-size: clamp(42px, 7vw, 76px);
-            line-height: 0.95;
-            letter-spacing: -3px;
-            margin-bottom: 20px;
-        }
-
-        .hero p {
-            max-width: 540px;
-            margin: auto;
-
-            color: #c9c9c9;
-            font-size: 15px;
-        }
-
-        .hero-line {
-            width: 50px;
-            height: 3px;
-            background: var(--red);
-
-            margin: 28px auto 0;
-        }
-
-
-        /* =========================
-           MAIN
-        ========================== */
-
-        main {
-            max-width: 1200px;
-            margin: auto;
-            padding: 45px 24px 100px;
-        }
-
-
-        /* =========================
-           SEARCH
-        ========================== */
-
-        .search-wrap {
-            max-width: 650px;
-            margin: 0 auto 35px;
-            position: relative;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-
-            font-size: 17px;
-            color: #999;
-        }
-
-        #searchInput {
-            width: 100%;
-            height: 54px;
-
-            border: 1px solid #ddd;
-            border-radius: 30px;
-
-            padding: 0 22px 0 48px;
-
-            background: white;
-            outline: none;
-
-            transition: 0.2s;
-        }
-
-        #searchInput:focus {
-            border-color: var(--red);
-            box-shadow: 0 0 0 4px rgba(169, 21, 28, 0.08);
-        }
-
-
-        /* =========================
-           CATEGORY BAR
-        ========================== */
-
-        .categories {
-            display: flex;
-            justify-content: center;
-            gap: 9px;
-
-            overflow-x: auto;
-            padding: 5px 0 20px;
-
-            scrollbar-width: none;
-        }
-
-        .categories::-webkit-scrollbar {
-            display: none;
-        }
-
-        .category-btn {
-            flex: 0 0 auto;
-
-            border: 1px solid #ddd;
-            background: white;
-
-            padding: 10px 18px;
-            border-radius: 30px;
-
-            color: #555;
-            font-size: 13px;
-            font-weight: 600;
-
-            transition: 0.2s;
-        }
-
-        .category-btn:hover {
-            border-color: var(--red);
-            color: var(--red);
-        }
-
-        .category-btn.active {
-            background: var(--red);
-            border-color: var(--red);
-            color: white;
-        }
-
-
-        /* =========================
-           SECTION TITLE
-        ========================== */
-
-        .section-heading {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            margin: 25px 0 20px;
-        }
-
-        .section-heading h3 {
-            font-size: 24px;
-            letter-spacing: -0.5px;
-        }
-
-        .item-count {
-            color: #999;
-            font-size: 12px;
-        }
-
-
-        /* =========================
-           MENU GRID
-        ========================== */
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-        }
-
-        .menu-card {
-            background: white;
-
-            border: 1px solid #e7e7e7;
-            border-radius: var(--radius);
-
-            padding: 22px;
-
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-
-            min-height: 170px;
-
-            transition:
-                transform 0.2s ease,
-                box-shadow 0.2s ease,
-                border-color 0.2s ease;
-        }
-
-        .menu-card:hover {
-            transform: translateY(-3px);
-            border-color: #ddd;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07);
-        }
-
-        .item-top {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .item-name {
-            font-size: 17px;
-            font-weight: 700;
-            color: var(--black);
-        }
-
-        .item-description {
-            color: var(--gray);
-            font-size: 12px;
-            line-height: 1.6;
-            margin-top: 7px;
-            max-width: 430px;
-        }
-
-        .item-price {
-            flex: 0 0 auto;
-
-            color: var(--red);
-            font-size: 16px;
-            font-weight: 800;
-        }
-
-        .item-bottom {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            margin-top: 20px;
-        }
-
-        .item-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-
-            font-size: 10px;
-            color: #777;
-            text-transform: uppercase;
-            letter-spacing: 0.7px;
-        }
-
-        .veg-dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            border: 2px solid #299647;
-        }
-
-        .nonveg-dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: #a9151c;
-        }
-
-        .popular {
-            color: #a9151c;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.7px;
-        }
-
-
-        /* =========================
-           EMPTY STATE
-        ========================== */
-
-        .empty {
-            display: none;
-            text-align: center;
-
-            padding: 60px 20px;
-
-            color: #777;
-        }
-
-        .empty-icon {
-            font-size: 35px;
-            margin-bottom: 10px;
-        }
-
-        .empty h4 {
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .empty p {
-            font-size: 13px;
-        }
-
-
-        /* =========================
-           INFO STRIP
-        ========================== */
-
-        .info-strip {
-            margin-top: 55px;
-
-            background: var(--black);
-            color: white;
-
-            border-radius: var(--radius);
-
-            padding: 25px;
-
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-
-            text-align: center;
-        }
-
-        .info-box {
-            padding: 10px;
-        }
-
-        .info-icon {
-            font-size: 21px;
-            margin-bottom: 7px;
-        }
-
-        .info-box strong {
-            display: block;
-            font-size: 13px;
-        }
-
-        .info-box span {
-            display: block;
-            color: #999;
-            font-size: 11px;
-            margin-top: 3px;
-        }
-
-
-        /* =========================
-           FOOTER
-        ========================== */
-
-        footer {
-            background: #111;
-            color: white;
-
-            text-align: center;
-            padding: 35px 20px;
-        }
-
-        footer h3 {
-            font-size: 20px;
-            letter-spacing: 1px;
-        }
-
-        footer p {
-            margin-top: 7px;
-            color: #888;
-            font-size: 12px;
-        }
-
-        .footer-line {
-            width: 35px;
-            height: 2px;
-            background: var(--red);
-            margin: 17px auto;
-        }
-
-        .copyright {
-            color: #555;
-            font-size: 10px;
-            margin-top: 20px;
-        }
-
-
-        /* =========================
-           RESPONSIVE
-        ========================== */
-
-        @media (max-width: 700px) {
-
-            .nav {
-                height: 64px;
-                padding: 0 17px;
-            }
-
-            .brand-mark {
-                width: 37px;
-                height: 37px;
-                font-size: 17px;
-            }
-
-            .brand-text h1 {
-                font-size: 17px;
-            }
-
-            .brand-text span {
-                font-size: 8px;
-                letter-spacing: 2px;
-            }
-
-            .nav-status {
-                font-size: 10px;
-            }
-
-            .hero {
-                padding: 55px 20px 60px;
-            }
-
-            .hero h2 {
-                letter-spacing: -2px;
-            }
-
-            .hero p {
-                font-size: 13px;
-            }
-
-            main {
-                padding: 30px 15px 70px;
-            }
-
-            .categories {
-                justify-content: flex-start;
-            }
-
-            .menu-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .menu-card {
-                min-height: 150px;
-            }
-
-            .info-strip {
-                grid-template-columns: 1fr;
-                gap: 0;
-            }
-        }
-
-        @media (max-width: 400px) {
-
-            .nav-status {
-                display: none;
-            }
-
-            .hero h2 {
-                font-size: 43px;
-            }
-
-            .menu-card {
-                padding: 18px;
-            }
-        }
-    </style>
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 </head>
-
 
 <body>
 
-    <!-- =========================
-         HEADER
-    ========================== -->
+    <!-- HEADER -->
 
-    <header>
+    <header class="header">
 
-        <div class="nav">
+        <div class="nav container">
 
-            <div class="brand">
+            <a href="#" class="brand">
 
                 <div class="brand-mark">
                     P
                 </div>
 
-                <div class="brand-text">
+                <div class="brand-info">
+
                     <h1>PANKAJ</h1>
-                    <span>Restaurant</span>
+
+                    <span>
+                        RESTAURANT
+                    </span>
+
                 </div>
 
-            </div>
+            </a>
 
-            <div class="nav-status">
+            <div class="open-status">
                 <span class="status-dot"></span>
                 Open Now
             </div>
@@ -650,50 +63,47 @@
     </header>
 
 
-    <!-- =========================
-         HERO
-    ========================== -->
+    <!-- HERO -->
 
     <section class="hero">
 
         <div class="hero-content">
 
-            <div class="hero-label">
+            <p class="hero-label">
                 Welcome to Pankaj
-            </div>
+            </p>
 
             <h2>
                 Our Menu
             </h2>
 
-            <p>
-                Fresh ingredients, authentic flavours and dishes
-                prepared with care. Take your pick.
+            <p class="hero-description">
+                Fresh ingredients, authentic flavours
+                and dishes prepared with care.
             </p>
 
-            <div class="hero-line"></div>
+            <div class="hero-divider"></div>
 
         </div>
 
     </section>
 
 
-    <!-- =========================
-         MAIN
-    ========================== -->
+    <!-- MAIN -->
 
-    <main>
+    <main class="main container">
+
 
         <!-- SEARCH -->
 
-        <div class="search-wrap">
+        <div class="search-box">
 
             <span class="search-icon">
                 ⌕
             </span>
 
             <input
-                type="text"
+                type="search"
                 id="searchInput"
                 placeholder="Search for a dish..."
                 autocomplete="off"
@@ -704,7 +114,7 @@
 
         <!-- CATEGORIES -->
 
-        <div class="categories">
+        <nav class="categories">
 
             <button
                 class="category-btn active"
@@ -722,7 +132,7 @@
 
             <button
                 class="category-btn"
-                data-category="main"
+                data-category="main-course"
             >
                 Main Course
             </button>
@@ -748,36 +158,44 @@
                 Drinks
             </button>
 
-        </div>
+        </nav>
 
 
-        <!-- SECTION HEADING -->
+        <!-- MENU HEADER -->
 
-        <div class="section-heading">
+        <div class="menu-heading">
 
-            <h3>
-                Popular Favourites
-            </h3>
+            <div>
+
+                <span class="eyebrow">
+                    EXPLORE
+                </span>
+
+                <h3>
+                    Popular Favourites
+                </h3>
+
+            </div>
 
             <span
                 class="item-count"
                 id="itemCount"
             >
-                18 items
+                17 items
             </span>
 
         </div>
 
 
-        <!-- MENU -->
+        <!-- MENU GRID -->
 
-        <div
+        <section
             class="menu-grid"
             id="menuGrid"
         >
 
 
-            <!-- BIRIYANI -->
+            <!-- CHICKEN BIRIYANI -->
 
             <article
                 class="menu-card"
@@ -785,29 +203,38 @@
                 data-name="chicken biriyani"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Chicken Biriyani
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Chicken Biriyani
+                            </h4>
+
+                            <span class="food-type nonveg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
-                            Fragrant basmati rice layered with
-                            tender chicken and aromatic spices.
-                        </div>
+                        <p>
+                            Fragrant basmati rice layered
+                            with tender chicken and aromatic spices.
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹180
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="nonveg-dot"></span>
+                    <span class="item-type">
                         Non-Veg
                     </span>
 
@@ -819,6 +246,8 @@
 
             </article>
 
+
+            <!-- BEEF BIRIYANI -->
 
             <article
                 class="menu-card"
@@ -826,29 +255,38 @@
                 data-name="beef biriyani"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Beef Biriyani
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Beef Biriyani
+                            </h4>
+
+                            <span class="food-type nonveg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
+                        <p>
                             Kerala-style biriyani with tender
-                            beef and fragrant rice.
-                        </div>
+                            beef and fragrant spiced rice.
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹200
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="nonveg-dot"></span>
+                    <span class="item-type">
                         Non-Veg
                     </span>
 
@@ -856,6 +294,8 @@
 
             </article>
 
+
+            <!-- EGG BIRIYANI -->
 
             <article
                 class="menu-card"
@@ -863,29 +303,38 @@
                 data-name="egg biriyani"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Egg Biriyani
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Egg Biriyani
+                            </h4>
+
+                            <span class="food-type nonveg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
-                            Aromatic biriyani rice served with
-                            perfectly cooked eggs.
-                        </div>
+                        <p>
+                            Aromatic biriyani rice served
+                            with perfectly cooked eggs.
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹140
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="nonveg-dot"></span>
+                    <span class="item-type">
                         Non-Veg
                     </span>
 
@@ -894,37 +343,46 @@
             </article>
 
 
-            <!-- MAIN COURSE -->
+            <!-- CHICKEN CURRY -->
 
             <article
                 class="menu-card"
-                data-category="main"
+                data-category="main-course"
                 data-name="chicken curry"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Chicken Curry
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Chicken Curry
+                            </h4>
+
+                            <span class="food-type nonveg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
-                            Slow-cooked chicken in a rich,
+                        <p>
+                            Tender chicken cooked in a rich
                             traditional Kerala-style gravy.
-                        </div>
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹140
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="nonveg-dot"></span>
+                    <span class="item-type">
                         Non-Veg
                     </span>
 
@@ -933,35 +391,46 @@
             </article>
 
 
+            <!-- BEEF CURRY -->
+
             <article
                 class="menu-card"
-                data-category="main"
+                data-category="main-course"
                 data-name="beef curry"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Beef Curry
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Beef Curry
+                            </h4>
+
+                            <span class="food-type nonveg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
-                            Spicy Kerala-style beef curry cooked
-                            with roasted spices.
-                        </div>
+                        <p>
+                            Spicy Kerala-style beef curry
+                            cooked with roasted spices.
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹160
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="nonveg-dot"></span>
+                    <span class="item-type">
                         Non-Veg
                     </span>
 
@@ -969,36 +438,47 @@
 
             </article>
 
+
+            <!-- EGG CURRY -->
 
             <article
                 class="menu-card"
-                data-category="main"
+                data-category="main-course"
                 data-name="egg curry"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Egg Curry
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Egg Curry
+                            </h4>
+
+                            <span class="food-type nonveg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
-                            Boiled eggs simmered in a creamy,
+                        <p>
+                            Boiled eggs simmered in a creamy
                             spiced onion gravy.
-                        </div>
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹90
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="nonveg-dot"></span>
+                    <span class="item-type">
                         Non-Veg
                     </span>
 
@@ -1007,7 +487,7 @@
             </article>
 
 
-            <!-- RICE & NOODLES -->
+            <!-- CHICKEN FRIED RICE -->
 
             <article
                 class="menu-card"
@@ -1015,29 +495,38 @@
                 data-name="chicken fried rice"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Chicken Fried Rice
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Chicken Fried Rice
+                            </h4>
+
+                            <span class="food-type nonveg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
+                        <p>
                             Wok-fried rice with chicken,
                             vegetables and Asian seasonings.
-                        </div>
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹160
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="nonveg-dot"></span>
+                    <span class="item-type">
                         Non-Veg
                     </span>
 
@@ -1049,6 +538,8 @@
 
             </article>
 
+
+            <!-- VEG FRIED RICE -->
 
             <article
                 class="menu-card"
@@ -1056,29 +547,38 @@
                 data-name="veg fried rice"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Veg Fried Rice
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Veg Fried Rice
+                            </h4>
+
+                            <span class="food-type veg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
+                        <p>
                             Fragrant rice tossed with fresh
                             vegetables and sauces.
-                        </div>
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹130
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="veg-dot"></span>
+                    <span class="item-type">
                         Veg
                     </span>
 
@@ -1087,35 +587,46 @@
             </article>
 
 
+            <!-- CHICKEN NOODLES -->
+
             <article
                 class="menu-card"
                 data-category="rice"
                 data-name="chicken noodles"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Chicken Noodles
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Chicken Noodles
+                            </h4>
+
+                            <span class="food-type nonveg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
-                            Stir-fried noodles with tender chicken
-                            and crunchy vegetables.
-                        </div>
+                        <p>
+                            Stir-fried noodles with tender
+                            chicken and crunchy vegetables.
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹160
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="nonveg-dot"></span>
+                    <span class="item-type">
                         Non-Veg
                     </span>
 
@@ -1124,7 +635,7 @@
             </article>
 
 
-            <!-- SIDES -->
+            <!-- CHICKEN 65 -->
 
             <article
                 class="menu-card"
@@ -1132,29 +643,38 @@
                 data-name="chicken 65"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Chicken 65
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Chicken 65
+                            </h4>
+
+                            <span class="food-type nonveg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
+                        <p>
                             Crispy, spicy fried chicken pieces
                             seasoned with aromatic spices.
-                        </div>
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹180
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="nonveg-dot"></span>
+                    <span class="item-type">
                         Non-Veg
                     </span>
 
@@ -1167,35 +687,46 @@
             </article>
 
 
+            <!-- CHICKEN FRY -->
+
             <article
                 class="menu-card"
                 data-category="sides"
                 data-name="chicken fry"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Chicken Fry
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Chicken Fry
+                            </h4>
+
+                            <span class="food-type nonveg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
-                            Kerala-style crispy chicken marinated
-                            with house spices.
-                        </div>
+                        <p>
+                            Kerala-style crispy chicken
+                            marinated with house spices.
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹170
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="nonveg-dot"></span>
+                    <span class="item-type">
                         Non-Veg
                     </span>
 
@@ -1204,34 +735,46 @@
             </article>
 
 
+            <!-- POROTTA -->
+
             <article
                 class="menu-card"
                 data-category="sides"
                 data-name="porotta"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Porotta
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Porotta
+                            </h4>
+
+                            <span class="food-type veg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
-                            Soft, flaky Kerala layered flatbread.
-                        </div>
+                        <p>
+                            Soft, flaky Kerala layered
+                            flatbread.
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹15
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="veg-dot"></span>
+                    <span class="item-type">
                         Veg
                     </span>
 
@@ -1239,6 +782,8 @@
 
             </article>
 
+
+            <!-- CHAPATHI -->
 
             <article
                 class="menu-card"
@@ -1246,28 +791,38 @@
                 data-name="chapathi"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Chapathi
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Chapathi
+                            </h4>
+
+                            <span class="food-type veg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
-                            Soft whole-wheat Indian flatbread.
-                        </div>
+                        <p>
+                            Soft whole-wheat Indian
+                            flatbread.
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹12
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="veg-dot"></span>
+                    <span class="item-type">
                         Veg
                     </span>
 
@@ -1276,7 +831,7 @@
             </article>
 
 
-            <!-- DRINKS -->
+            <!-- FRESH LIME -->
 
             <article
                 class="menu-card"
@@ -1284,29 +839,38 @@
                 data-name="fresh lime"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Fresh Lime
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Fresh Lime
+                            </h4>
+
+                            <span class="food-type veg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
-                            Freshly squeezed lime with a refreshing
-                            balance of sweet and sour.
-                        </div>
+                        <p>
+                            Freshly squeezed lime with a
+                            refreshing sweet and sour balance.
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹40
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="veg-dot"></span>
+                    <span class="item-type">
                         Veg
                     </span>
 
@@ -1314,6 +878,8 @@
 
             </article>
 
+
+            <!-- LIME SODA -->
 
             <article
                 class="menu-card"
@@ -1321,29 +887,38 @@
                 data-name="lime soda"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Lime Soda
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Lime Soda
+                            </h4>
+
+                            <span class="food-type veg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
-                            Chilled soda with fresh lime and
-                            your choice of sweet or salt.
-                        </div>
+                        <p>
+                            Chilled soda with fresh lime,
+                            sweet or salted.
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹50
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="veg-dot"></span>
+                    <span class="item-type">
                         Veg
                     </span>
 
@@ -1351,6 +926,8 @@
 
             </article>
 
+
+            <!-- TEA -->
 
             <article
                 class="menu-card"
@@ -1358,28 +935,37 @@
                 data-name="tea"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Tea
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Tea
+                            </h4>
+
+                            <span class="food-type veg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
+                        <p>
                             Hot, creamy Indian milk tea.
-                        </div>
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹20
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="veg-dot"></span>
+                    <span class="item-type">
                         Veg
                     </span>
 
@@ -1387,6 +973,8 @@
 
             </article>
 
+
+            <!-- COFFEE -->
 
             <article
                 class="menu-card"
@@ -1394,28 +982,38 @@
                 data-name="coffee"
             >
 
-                <div class="item-top">
+                <div class="menu-card-top">
 
-                    <div>
-                        <div class="item-name">
-                            Coffee
+                    <div class="menu-info">
+
+                        <div class="item-title-row">
+
+                            <h4>
+                                Coffee
+                            </h4>
+
+                            <span class="food-type veg">
+                                <span></span>
+                            </span>
+
                         </div>
 
-                        <div class="item-description">
-                            Freshly prepared hot South Indian coffee.
-                        </div>
+                        <p>
+                            Freshly prepared hot
+                            South Indian coffee.
+                        </p>
+
                     </div>
 
-                    <div class="item-price">
+                    <strong class="price">
                         ₹30
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div class="item-bottom">
+                <div class="menu-card-bottom">
 
-                    <span class="item-tag">
-                        <span class="veg-dot"></span>
+                    <span class="item-type">
                         Veg
                     </span>
 
@@ -1423,13 +1021,13 @@
 
             </article>
 
-        </div>
+        </section>
 
 
-        <!-- EMPTY -->
+        <!-- EMPTY STATE -->
 
         <div
-            class="empty"
+            class="empty-state"
             id="emptyState"
         >
 
@@ -1448,57 +1046,69 @@
         </div>
 
 
-        <!-- INFO -->
+        <!-- RESTAURANT INFO -->
 
-        <section class="info-strip">
+        <section class="restaurant-info">
 
-            <div class="info-box">
+            <div class="info-item">
 
-                <div class="info-icon">
-                    🕐
-                </div>
-
-                <strong>
-                    Open Daily
-                </strong>
-
-                <span>
-                    7:00 AM — 11:00 PM
+                <span class="info-icon">
+                    ◷
                 </span>
+
+                <div>
+
+                    <strong>
+                        Open Daily
+                    </strong>
+
+                    <span>
+                        7:00 AM — 11:00 PM
+                    </span>
+
+                </div>
 
             </div>
 
 
-            <div class="info-box">
+            <div class="info-item">
 
-                <div class="info-icon">
-                    🍴
-                </div>
-
-                <strong>
-                    Freshly Prepared
-                </strong>
-
-                <span>
-                    Made to order
+                <span class="info-icon">
+                    ✦
                 </span>
+
+                <div>
+
+                    <strong>
+                        Freshly Prepared
+                    </strong>
+
+                    <span>
+                        Made to order
+                    </span>
+
+                </div>
 
             </div>
 
 
-            <div class="info-box">
+            <div class="info-item">
 
-                <div class="info-icon">
+                <span class="info-icon">
                     ☎
-                </div>
-
-                <strong>
-                    Call Us
-                </strong>
-
-                <span>
-                    For reservations & orders
                 </span>
+
+                <div>
+
+                    <strong>
+                        Call Us
+                    </strong>
+
+                    <span>
+                        For orders & reservations
+                    </span>
+
+                </div>
 
             </div>
 
@@ -1507,136 +1117,28 @@
     </main>
 
 
-    <!-- =========================
-         FOOTER
-    ========================== -->
+    <!-- FOOTER -->
 
-    <footer>
+    <footer class="footer">
 
-        <h3>
+        <div class="footer-brand">
             PANKAJ
-        </h3>
+        </div>
 
         <p>
             Good food. Good mood.
         </p>
 
-        <div class="footer-line"></div>
+        <div class="footer-divider"></div>
 
-        <div class="copyright">
+        <small>
             © 2026 Pankaj Restaurant. All rights reserved.
-        </div>
+        </small>
 
     </footer>
 
 
-    <!-- =========================
-         JAVASCRIPT
-    ========================== -->
-
-    <script>
-
-        const categoryButtons =
-            document.querySelectorAll(".category-btn");
-
-        const menuCards =
-            document.querySelectorAll(".menu-card");
-
-        const searchInput =
-            document.getElementById("searchInput");
-
-        const itemCount =
-            document.getElementById("itemCount");
-
-        const emptyState =
-            document.getElementById("emptyState");
-
-
-        let currentCategory = "all";
-
-
-        function filterMenu() {
-
-            const searchTerm =
-                searchInput.value
-                    .toLowerCase()
-                    .trim();
-
-            let visibleCount = 0;
-
-
-            menuCards.forEach(card => {
-
-                const category =
-                    card.dataset.category;
-
-                const name =
-                    card.dataset.name;
-
-
-                const categoryMatch =
-                    currentCategory === "all" ||
-                    category === currentCategory;
-
-
-                const searchMatch =
-                    name.includes(searchTerm);
-
-
-                if (categoryMatch && searchMatch) {
-
-                    card.style.display = "flex";
-
-                    visibleCount++;
-
-                } else {
-
-                    card.style.display = "none";
-
-                }
-
-            });
-
-
-            itemCount.textContent =
-                `${visibleCount} ${visibleCount === 1 ? "item" : "items"}`;
-
-
-            emptyState.style.display =
-                visibleCount === 0 ? "block" : "none";
-
-        }
-
-
-        categoryButtons.forEach(button => {
-
-            button.addEventListener("click", () => {
-
-                categoryButtons.forEach(btn => {
-                    btn.classList.remove("active");
-                });
-
-                button.classList.add("active");
-
-                currentCategory =
-                    button.dataset.category;
-
-                filterMenu();
-
-            });
-
-        });
-
-
-        searchInput.addEventListener(
-            "input",
-            filterMenu
-        );
-
-
-        filterMenu();
-
-    </script>
+    <script src="script.js"></script>
 
 </body>
 
