@@ -7,20 +7,14 @@
 :root {
     --red: #b5121b;
     --red-dark: #8f0d15;
-    --red-soft: #fff3f3;
-
+    --red-soft: #fff4f4;
     --black: #151515;
     --text: #292929;
-    --muted: #777777;
-
-    --white: #ffffff;
-    --background: #f7f7f7;
-
-    --border: #e9e9e9;
-
-    --shadow:
-        0 8px 30px rgba(0, 0, 0, 0.055);
-
+    --muted: #777;
+    --white: #fff;
+    --background: #f6f6f6;
+    --border: #e8e8e8;
+    --shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
     --radius: 16px;
 }
 
@@ -30,15 +24,9 @@ html {
 
 body {
     min-height: 100vh;
-
     background: var(--background);
     color: var(--text);
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
+    font-family: Arial, Helvetica, sans-serif;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -49,11 +37,8 @@ body {
 
 .topbar {
     height: 74px;
-
-    padding: 0 5%;
-
-    background: rgba(255, 255, 255, 0.97);
-
+    padding: 0 32px;
+    background: rgba(255, 255, 255, 0.98);
     border-bottom: 1px solid var(--border);
 
     display: flex;
@@ -80,36 +65,30 @@ body {
     justify-content: center;
 
     background: var(--red);
-    color: white;
+    color: #fff;
 
     border-radius: 11px;
 
     font-size: 13px;
     font-weight: 900;
+    letter-spacing: 1px;
 
-    box-shadow:
-        0 5px 16px rgba(181, 18, 27, 0.2);
+    box-shadow: 0 5px 16px rgba(181, 18, 27, 0.18);
 }
 
 .brand h1 {
     color: var(--black);
-
     font-size: 20px;
     font-weight: 900;
-
     letter-spacing: 2px;
-
     line-height: 1;
 }
 
 .brand p {
     margin-top: 4px;
-
     color: var(--red);
-
     font-size: 8px;
     font-weight: 800;
-
     letter-spacing: 3px;
 }
 
@@ -120,28 +99,25 @@ body {
     background: var(--red-soft);
 
     border: 1px solid #f0d7d8;
-
     border-radius: 50px;
 
     font-size: 9px;
     font-weight: 800;
-
     letter-spacing: 1px;
 }
 
 
 /* =========================
-   CONTAINER
+   MAIN CONTAINER
 ========================= */
 
 .container {
-    width: min(1180px, 100%);
+    width: 100%;
+    max-width: 1320px;
 
-    margin: auto;
+    margin: 0 auto;
 
-    padding:
-        55px 30px
-        100px;
+    padding: 52px 36px 100px;
 }
 
 
@@ -150,7 +126,7 @@ body {
 ========================= */
 
 .welcome {
-    margin-bottom: 50px;
+    margin-bottom: 48px;
 }
 
 .eyebrow,
@@ -161,7 +137,6 @@ body {
 
     font-size: 9px;
     font-weight: 800;
-
     letter-spacing: 2.5px;
 }
 
@@ -170,12 +145,10 @@ body {
 
     color: var(--black);
 
-    font-size: clamp(38px, 5vw, 58px);
-
+    font-size: clamp(40px, 4vw, 58px);
     line-height: 1.03;
 
     letter-spacing: -2px;
-
     font-weight: 900;
 }
 
@@ -194,7 +167,6 @@ body {
     margin-top: 18px;
 
     background: var(--red);
-
     border-radius: 10px;
 }
 
@@ -206,7 +178,6 @@ body {
     color: var(--muted);
 
     font-size: 13px;
-
     line-height: 1.6;
 }
 
@@ -231,7 +202,7 @@ body {
     color: var(--black);
 
     font-size: 21px;
-    font-weight: 850;
+    font-weight: 800;
 }
 
 .menu-count,
@@ -254,7 +225,6 @@ body {
     overflow-x: auto;
 
     padding-bottom: 9px;
-
     margin-bottom: 25px;
 
     scrollbar-width: none;
@@ -269,7 +239,7 @@ body {
 
     border: 1px solid var(--border);
 
-    background: white;
+    background: #fff;
     color: #555;
 
     padding: 10px 17px;
@@ -281,63 +251,57 @@ body {
     font-size: 11px;
     font-weight: 700;
 
-    transition:
-        background 0.18s ease,
-        color 0.18s ease,
-        border-color 0.18s ease;
+    transition: 0.18s ease;
 }
 
 .category:hover {
-    border-color: #d6d6d6;
     color: var(--red);
+    border-color: #d7d7d7;
 }
 
 .category.active {
     background: var(--red);
-    color: white;
-
+    color: #fff;
     border-color: var(--red);
 
-    box-shadow:
-        0 5px 15px rgba(181, 18, 27, 0.15);
+    box-shadow: 0 5px 15px rgba(181, 18, 27, 0.15);
 }
 
 
 /* =========================
-   MENU
+   MENU GRID
 ========================= */
 
 .menu-grid {
     display: grid;
 
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
 
-    gap: 17px;
+    gap: 18px;
 }
 
 .menu-card {
+    min-width: 0;
+
     overflow: hidden;
 
-    background: white;
+    background: #fff;
 
-    border:
-        1px solid var(--border);
-
+    border: 1px solid var(--border);
     border-radius: var(--radius);
 
     box-shadow: var(--shadow);
 
     transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+        transform 0.18s ease,
+        box-shadow 0.18s ease;
 }
 
 .menu-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
 
     box-shadow:
-        0 14px 35px rgba(0, 0, 0, 0.08);
+        0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
 .food-image {
@@ -351,13 +315,12 @@ body {
         linear-gradient(
             135deg,
             #fff7f7,
-            #f4f4f4
+            #f5f5f5
         );
 
     font-size: 52px;
 
-    border-bottom:
-        1px solid #eeeeee;
+    border-bottom: 1px solid #eee;
 }
 
 .food-content {
@@ -366,6 +329,7 @@ body {
 
 .food-top {
     display: flex;
+    align-items: flex-start;
 
     justify-content: space-between;
 
@@ -387,7 +351,6 @@ body {
     color: var(--muted);
 
     font-size: 10px;
-
     line-height: 1.5;
 }
 
@@ -402,26 +365,22 @@ body {
 
 .add-button {
     width: 100%;
-
-    height: 39px;
+    height: 40px;
 
     margin-top: 15px;
 
     border: none;
-
     border-radius: 9px;
 
     background: var(--red);
-    color: white;
+    color: #fff;
 
     cursor: pointer;
 
     font-size: 11px;
     font-weight: 800;
 
-    transition:
-        background 0.18s ease,
-        transform 0.12s ease;
+    transition: 0.15s ease;
 }
 
 .add-button:hover {
@@ -434,22 +393,17 @@ body {
 
 
 /* =========================
-   ORDER
+   ORDER SECTION
 ========================= */
 
-.order-section,
-.active-section {
-    margin-top: 70px;
-}
-
 .order-section {
-    padding: 25px;
+    margin-top: 65px;
 
-    background: white;
+    padding: 26px;
 
-    border:
-        1px solid var(--border);
+    background: #fff;
 
+    border: 1px solid var(--border);
     border-radius: 20px;
 
     box-shadow: var(--shadow);
@@ -480,7 +434,6 @@ body {
 .cart-items {
     display: flex;
     flex-direction: column;
-
     gap: 8px;
 }
 
@@ -491,9 +444,7 @@ body {
 
     background: #fafafa;
 
-    border:
-        1px dashed #dddddd;
-
+    border: 1px dashed #ddd;
     border-radius: 13px;
 }
 
@@ -519,7 +470,6 @@ body {
     display: block;
 
     color: var(--black);
-
     font-size: 13px;
 }
 
@@ -529,24 +479,24 @@ body {
     margin-top: 5px;
 
     color: var(--muted);
-
     font-size: 10px;
 }
+
+
+/* =========================
+   CART ITEM
+========================= */
 
 .cart-item {
     padding: 14px;
 
     background: #fafafa;
 
-    border:
-        1px solid #eeeeee;
-
+    border: 1px solid #eee;
     border-radius: 12px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     gap: 15px;
@@ -575,7 +525,6 @@ body {
 .quantity {
     display: flex;
     align-items: center;
-
     gap: 8px;
 }
 
@@ -583,10 +532,9 @@ body {
     width: 29px;
     height: 29px;
 
-    border: 1px solid #dddddd;
+    border: 1px solid #ddd;
 
-    background: white;
-
+    background: #fff;
     border-radius: 7px;
 
     cursor: pointer;
@@ -621,29 +569,27 @@ body {
 
     font-size: 9px;
     font-weight: 800;
-
     letter-spacing: 1.5px;
 }
 
 .note-box textarea {
     width: 100%;
 
-    resize: vertical;
-
     min-height: 75px;
+
+    resize: vertical;
 
     padding: 12px;
 
-    border:
-        1px solid var(--border);
-
+    border: 1px solid var(--border);
     border-radius: 10px;
 
     outline: none;
 
     font-family: inherit;
-
     font-size: 12px;
+
+    transition: border 0.15s ease;
 }
 
 .note-box textarea:focus {
@@ -660,13 +606,10 @@ body {
 
     padding-top: 18px;
 
-    border-top:
-        1px solid var(--border);
+    border-top: 1px solid var(--border);
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     gap: 20px;
@@ -678,9 +621,7 @@ body {
 
 .total-row {
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     gap: 30px;
@@ -696,36 +637,30 @@ body {
 
 .grand-total {
     color: var(--black);
-
     font-size: 16px;
 }
 
 .grand-total strong {
     color: var(--red);
-
     font-size: 19px;
 }
 
 .confirm-button {
     min-width: 220px;
-
     height: 48px;
 
     border: none;
-
     border-radius: 10px;
 
     background: var(--red);
-    color: white;
+    color: #fff;
 
     cursor: pointer;
 
     font-size: 12px;
     font-weight: 800;
 
-    transition:
-        background 0.18s ease,
-        transform 0.12s ease;
+    transition: 0.15s ease;
 }
 
 .confirm-button:hover:not(:disabled) {
@@ -737,10 +672,8 @@ body {
 }
 
 .confirm-button:disabled {
-    background: #dddddd;
-
+    background: #ddd;
     color: #999;
-
     cursor: not-allowed;
 }
 
@@ -748,6 +681,10 @@ body {
 /* =========================
    ACTIVE ORDERS
 ========================= */
+
+.active-section {
+    margin-top: 65px;
+}
 
 .orders-list {
     display: grid;
@@ -761,11 +698,9 @@ body {
 .order-card {
     padding: 17px;
 
-    background: white;
+    background: #fff;
 
-    border:
-        1px solid var(--border);
-
+    border: 1px solid var(--border);
     border-radius: 14px;
 
     box-shadow: var(--shadow);
@@ -773,7 +708,6 @@ body {
 
 .order-card-top {
     display: flex;
-
     align-items: center;
     justify-content: space-between;
 
@@ -784,7 +718,7 @@ body {
     color: var(--black);
 
     font-size: 12px;
-    font-weight: 850;
+    font-weight: 800;
 }
 
 .order-status {
@@ -805,7 +739,6 @@ body {
     color: #555;
 
     font-size: 11px;
-
     line-height: 1.7;
 }
 
@@ -814,17 +747,15 @@ body {
 
     padding-top: 11px;
 
-    border-top:
-        1px solid #eeeeee;
+    border-top: 1px solid #eee;
 
     display: flex;
-
     justify-content: space-between;
 
     color: var(--red);
 
     font-size: 13px;
-    font-weight: 850;
+    font-weight: 800;
 }
 
 
@@ -847,14 +778,12 @@ body {
     left: 50%;
     bottom: 25px;
 
-    transform:
-        translate(-50%, 20px);
+    transform: translate(-50%, 20px);
 
-    padding:
-        12px 18px;
+    padding: 12px 18px;
 
     background: #171717;
-    color: white;
+    color: #fff;
 
     border-radius: 9px;
 
@@ -875,8 +804,47 @@ body {
 .toast.show {
     opacity: 1;
 
-    transform:
-        translate(-50%, 0);
+    transform: translate(-50%, 0);
+}
+
+
+/* =========================
+   LARGE LAPTOP
+========================= */
+
+@media (min-width: 1200px) {
+
+    .menu-grid {
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr));
+    }
+
+    .container {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+}
+
+
+/* =========================
+   LAPTOP
+========================= */
+
+@media (max-width: 1199px) and (min-width: 701px) {
+
+    .container {
+        padding:
+            45px 28px 90px;
+    }
+
+    .menu-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+    .food-image {
+        height: 145px;
+    }
 }
 
 
@@ -884,11 +852,24 @@ body {
    TABLET
 ========================= */
 
-@media (max-width: 1000px) {
+@media (max-width: 900px) and (min-width: 701px) {
+
+    .topbar {
+        padding: 0 24px;
+    }
+
+    .container {
+        padding-left: 22px;
+        padding-right: 22px;
+    }
 
     .menu-grid {
         grid-template-columns:
-            repeat(3, minmax(0, 1fr));
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .orders-list {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -905,9 +886,7 @@ body {
 
     .topbar {
         height: 64px;
-
-        padding:
-            0 14px;
+        padding: 0 14px;
     }
 
     .logo {
@@ -925,17 +904,12 @@ body {
 
     .waiter-badge {
         padding: 7px 10px;
-
         font-size: 8px;
     }
 
-
     .container {
-        padding:
-            30px 13px
-            70px;
+        padding: 30px 13px 70px;
     }
-
 
     .welcome {
         margin-bottom: 38px;
@@ -945,7 +919,6 @@ body {
         font-size: 39px;
     }
 
-
     .menu-grid {
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
@@ -953,14 +926,12 @@ body {
         gap: 10px;
     }
 
-
     .menu-card {
         border-radius: 13px;
     }
 
     .food-image {
         height: 110px;
-
         font-size: 40px;
     }
 
@@ -978,7 +949,6 @@ body {
 
     .food-description {
         font-size: 9px;
-
         min-height: 27px;
     }
 
@@ -992,14 +962,11 @@ body {
 
     .add-button {
         height: 35px;
-
         margin-top: 10px;
     }
 
-
     .order-section {
         padding: 16px;
-
         border-radius: 15px;
     }
 
@@ -1009,20 +976,16 @@ body {
 
     .confirm-button {
         width: 100%;
-
         margin-top: 15px;
     }
-
 
     .cart-item {
         align-items: flex-start;
     }
 
-
     .orders-list {
         grid-template-columns: 1fr;
     }
-
 
     .mobile-cart {
         position: fixed;
@@ -1033,19 +996,15 @@ body {
 
         height: 58px;
 
-        padding:
-            8px 9px 8px 15px;
+        padding: 8px 9px 8px 15px;
 
         background: #171717;
-
-        color: white;
+        color: #fff;
 
         border-radius: 13px;
 
         display: flex;
-
         align-items: center;
-
         justify-content: space-between;
 
         z-index: 200;
@@ -1076,12 +1035,10 @@ body {
         padding: 0 17px;
 
         border: none;
-
         border-radius: 8px;
 
         background: var(--red);
-
-        color: white;
+        color: #fff;
 
         font-size: 10px;
         font-weight: 800;
