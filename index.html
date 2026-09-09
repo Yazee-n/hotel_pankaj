@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -25,17 +26,25 @@
         rel="stylesheet"
         href="style.css"
     >
+
 </head>
+
 
 <body>
 
-    <!-- HEADER -->
+
+    <!-- =================================
+         HEADER
+    ================================== -->
 
     <header class="header">
 
-        <div class="nav container">
+        <div class="container nav">
 
-            <a href="#" class="brand">
+            <a
+                href="#"
+                class="brand"
+            >
 
                 <div class="brand-mark">
                     P
@@ -43,7 +52,9 @@
 
                 <div class="brand-info">
 
-                    <h1>PANKAJ</h1>
+                    <h1>
+                        PANKAJ
+                    </h1>
 
                     <span>
                         RESTAURANT
@@ -53,9 +64,13 @@
 
             </a>
 
+
             <div class="open-status">
+
                 <span class="status-dot"></span>
+
                 Open Now
+
             </div>
 
         </div>
@@ -63,14 +78,17 @@
     </header>
 
 
-    <!-- HERO -->
+
+    <!-- =================================
+         HERO
+    ================================== -->
 
     <section class="hero">
 
         <div class="hero-content">
 
             <p class="hero-label">
-                Welcome to Pankaj
+                WELCOME TO PANKAJ
             </p>
 
             <h2>
@@ -89,9 +107,12 @@
     </section>
 
 
-    <!-- MAIN -->
 
-    <main class="main container">
+    <!-- =================================
+         MAIN
+    ================================== -->
+
+    <main class="container main">
 
 
         <!-- SEARCH -->
@@ -112,9 +133,13 @@
         </div>
 
 
-        <!-- CATEGORIES -->
 
-        <nav class="categories">
+        <!-- CATEGORY FILTER -->
+
+        <nav
+            class="categories"
+            aria-label="Menu categories"
+        >
 
             <button
                 class="category-btn active"
@@ -161,7 +186,8 @@
         </nav>
 
 
-        <!-- MENU HEADER -->
+
+        <!-- MENU HEADING -->
 
         <div class="menu-heading">
 
@@ -172,7 +198,7 @@
                 </span>
 
                 <h3>
-                    Popular Favourites
+                    Our Favourites
                 </h3>
 
             </div>
@@ -181,13 +207,16 @@
                 class="item-count"
                 id="itemCount"
             >
-                17 items
+                15 items
             </span>
 
         </div>
 
 
-        <!-- MENU GRID -->
+
+        <!-- =================================
+             MENU GRID
+        ================================== -->
 
         <section
             class="menu-grid"
@@ -232,19 +261,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Non-Veg
                     </span>
 
-                    <span class="popular">
-                        ★ Popular
-                    </span>
+                    <button
+                        class="add-cart-btn"
+                        data-name="Chicken Biriyani"
+                        data-price="180"
+                    >
+                        + Add
+                    </button>
 
                 </div>
 
             </article>
+
 
 
             <!-- BEEF BIRIYANI -->
@@ -284,15 +319,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Non-Veg
                     </span>
 
+                    <button
+                        class="add-cart-btn"
+                        data-name="Beef Biriyani"
+                        data-price="200"
+                    >
+                        + Add
+                    </button>
+
                 </div>
 
             </article>
+
 
 
             <!-- EGG BIRIYANI -->
@@ -332,15 +377,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Non-Veg
                     </span>
 
+                    <button
+                        class="add-cart-btn"
+                        data-name="Egg Biriyani"
+                        data-price="140"
+                    >
+                        + Add
+                    </button>
+
                 </div>
 
             </article>
+
 
 
             <!-- CHICKEN CURRY -->
@@ -380,15 +435,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Non-Veg
                     </span>
 
+                    <button
+                        class="add-cart-btn"
+                        data-name="Chicken Curry"
+                        data-price="140"
+                    >
+                        + Add
+                    </button>
+
                 </div>
 
             </article>
+
 
 
             <!-- BEEF CURRY -->
@@ -428,15 +493,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Non-Veg
                     </span>
 
+                    <button
+                        class="add-cart-btn"
+                        data-name="Beef Curry"
+                        data-price="160"
+                    >
+                        + Add
+                    </button>
+
                 </div>
 
             </article>
+
 
 
             <!-- EGG CURRY -->
@@ -476,15 +551,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Non-Veg
                     </span>
 
+                    <button
+                        class="add-cart-btn"
+                        data-name="Egg Curry"
+                        data-price="90"
+                    >
+                        + Add
+                    </button>
+
                 </div>
 
             </article>
+
 
 
             <!-- CHICKEN FRIED RICE -->
@@ -524,19 +609,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Non-Veg
                     </span>
 
-                    <span class="popular">
-                        ★ Popular
-                    </span>
+                    <button
+                        class="add-cart-btn"
+                        data-name="Chicken Fried Rice"
+                        data-price="160"
+                    >
+                        + Add
+                    </button>
 
                 </div>
 
             </article>
+
 
 
             <!-- VEG FRIED RICE -->
@@ -576,15 +667,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Veg
                     </span>
 
+                    <button
+                        class="add-cart-btn"
+                        data-name="Veg Fried Rice"
+                        data-price="130"
+                    >
+                        + Add
+                    </button>
+
                 </div>
 
             </article>
+
 
 
             <!-- CHICKEN NOODLES -->
@@ -624,15 +725,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Non-Veg
                     </span>
 
+                    <button
+                        class="add-cart-btn"
+                        data-name="Chicken Noodles"
+                        data-price="160"
+                    >
+                        + Add
+                    </button>
+
                 </div>
 
             </article>
+
 
 
             <!-- CHICKEN 65 -->
@@ -672,19 +783,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Non-Veg
                     </span>
 
-                    <span class="popular">
-                        ★ Popular
-                    </span>
+                    <button
+                        class="add-cart-btn"
+                        data-name="Chicken 65"
+                        data-price="180"
+                    >
+                        + Add
+                    </button>
 
                 </div>
 
             </article>
+
 
 
             <!-- CHICKEN FRY -->
@@ -724,15 +841,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Non-Veg
                     </span>
 
+                    <button
+                        class="add-cart-btn"
+                        data-name="Chicken Fry"
+                        data-price="170"
+                    >
+                        + Add
+                    </button>
+
                 </div>
 
             </article>
+
 
 
             <!-- POROTTA -->
@@ -772,15 +899,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Veg
                     </span>
 
+                    <button
+                        class="add-cart-btn"
+                        data-name="Porotta"
+                        data-price="15"
+                    >
+                        + Add
+                    </button>
+
                 </div>
 
             </article>
+
 
 
             <!-- CHAPATHI -->
@@ -820,15 +957,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Veg
                     </span>
 
+                    <button
+                        class="add-cart-btn"
+                        data-name="Chapathi"
+                        data-price="12"
+                    >
+                        + Add
+                    </button>
+
                 </div>
 
             </article>
+
 
 
             <!-- FRESH LIME -->
@@ -868,15 +1015,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Veg
                     </span>
 
+                    <button
+                        class="add-cart-btn"
+                        data-name="Fresh Lime"
+                        data-price="40"
+                    >
+                        + Add
+                    </button>
+
                 </div>
 
             </article>
+
 
 
             <!-- LIME SODA -->
@@ -916,15 +1073,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Veg
                     </span>
 
+                    <button
+                        class="add-cart-btn"
+                        data-name="Lime Soda"
+                        data-price="50"
+                    >
+                        + Add
+                    </button>
+
                 </div>
 
             </article>
+
 
 
             <!-- TEA -->
@@ -963,15 +1130,25 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Veg
                     </span>
 
+                    <button
+                        class="add-cart-btn"
+                        data-name="Tea"
+                        data-price="20"
+                    >
+                        + Add
+                    </button>
+
                 </div>
 
             </article>
+
 
 
             <!-- COFFEE -->
@@ -1011,20 +1188,31 @@
 
                 </div>
 
+
                 <div class="menu-card-bottom">
 
                     <span class="item-type">
                         Veg
                     </span>
 
+                    <button
+                        class="add-cart-btn"
+                        data-name="Coffee"
+                        data-price="30"
+                    >
+                        + Add
+                    </button>
+
                 </div>
 
             </article>
 
+
         </section>
 
 
-        <!-- EMPTY STATE -->
+
+        <!-- EMPTY MENU -->
 
         <div
             class="empty-state"
@@ -1044,6 +1232,7 @@
             </p>
 
         </div>
+
 
 
         <!-- RESTAURANT INFO -->
@@ -1117,6 +1306,209 @@
     </main>
 
 
+
+    <!-- =================================
+         FLOATING CART
+    ================================== -->
+
+    <button
+        class="cart-floating"
+        id="cartButton"
+        aria-label="Open order cart"
+    >
+
+        <span class="cart-icon">
+            🛒
+        </span>
+
+        <span>
+            Order
+        </span>
+
+        <span
+            class="cart-count"
+            id="cartCount"
+        >
+            0
+        </span>
+
+    </button>
+
+
+
+    <!-- =================================
+         CART OVERLAY
+    ================================== -->
+
+    <div
+        class="cart-overlay"
+        id="cartOverlay"
+    ></div>
+
+
+
+    <!-- =================================
+         CART DRAWER
+    ================================== -->
+
+    <aside
+        class="cart-drawer"
+        id="cartDrawer"
+        aria-label="Current order"
+    >
+
+        <div class="cart-header">
+
+            <div>
+
+                <span class="cart-eyebrow">
+                    PANKAJ
+                </span>
+
+                <h3>
+                    Current Order
+                </h3>
+
+            </div>
+
+
+            <button
+                class="cart-close"
+                id="cartClose"
+                aria-label="Close cart"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+
+        <!-- CART ITEMS -->
+
+        <div
+            class="cart-items"
+            id="cartItems"
+        ></div>
+
+
+
+        <!-- EMPTY CART -->
+
+        <div
+            class="cart-empty"
+            id="cartEmpty"
+        >
+
+            <div class="cart-empty-icon">
+                🛒
+            </div>
+
+            <h4>
+                Your order is empty
+            </h4>
+
+            <p>
+                Add dishes from the menu to start an order.
+            </p>
+
+        </div>
+
+
+
+        <!-- CART FOOTER -->
+
+        <div class="cart-footer">
+
+            <div class="cart-total-row">
+
+                <span>
+                    Total
+                </span>
+
+                <strong id="cartTotal">
+                    ₹0
+                </strong>
+
+            </div>
+
+
+            <button
+                class="place-order-btn"
+                id="placeOrder"
+                disabled
+            >
+                Place Order
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =================================
+         ORDER CONFIRMATION MODAL
+    ================================== -->
+
+    <div
+        class="order-modal"
+        id="orderModal"
+        role="dialog"
+        aria-modal="true"
+    >
+
+        <div class="order-modal-content">
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <span class="cart-eyebrow">
+                PANKAJ RESTAURANT
+            </span>
+
+            <h3>
+                Order Confirmed
+            </h3>
+
+            <p>
+                The order has been placed successfully.
+            </p>
+
+
+            <div
+                class="confirmed-order"
+                id="confirmedOrder"
+            ></div>
+
+
+            <div class="confirmed-total">
+
+                <span>
+                    Total
+                </span>
+
+                <strong id="confirmedTotal">
+                    ₹0
+                </strong>
+
+            </div>
+
+
+            <button
+                class="new-order-btn"
+                id="newOrder"
+            >
+                New Order
+            </button>
+
+        </div>
+
+    </div>
+
+
+
     <!-- FOOTER -->
 
     <footer class="footer">
@@ -1136,6 +1528,7 @@
         </small>
 
     </footer>
+
 
 
     <script src="script.js"></script>
