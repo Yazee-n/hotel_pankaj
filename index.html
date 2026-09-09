@@ -17,7 +17,7 @@
 
     <meta
         name="description"
-        content="Pankaj Restaurant Menu and Order System"
+        content="Pankaj Restaurant Menu"
     >
 
     <title>Pankaj Restaurant | Menu</title>
@@ -44,7 +44,6 @@
             <a
                 href="#"
                 class="brand"
-                id="brandHome"
             >
 
                 <div class="brand-mark">
@@ -66,30 +65,11 @@
             </a>
 
 
-            <div class="header-actions">
+            <div class="open-status">
 
-                <button
-                    type="button"
-                    class="history-nav-btn"
-                    id="historyButton"
-                >
+                <span class="status-dot"></span>
 
-                    <span>
-                        ↺
-                    </span>
-
-                    History
-
-                </button>
-
-
-                <div class="open-status">
-
-                    <span class="status-dot"></span>
-
-                    Open Now
-
-                </div>
+                Open Now
 
             </div>
 
@@ -100,10 +80,43 @@
 
 
     <!-- =================================
-         HOME PAGE
+         PAGE NAVIGATION
     ================================== -->
 
-    <div id="homePage">
+    <nav class="page-navigation">
+
+        <div class="container page-nav-inner">
+
+            <button
+                type="button"
+                class="page-tab active"
+                id="menuTab"
+            >
+                Menu
+            </button>
+
+            <button
+                type="button"
+                class="page-tab"
+                id="historyTab"
+            >
+                Order History
+            </button>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =================================
+         MENU SECTION
+    ================================== -->
+
+    <section
+        class="page-section active"
+        id="menuSection"
+    >
 
 
         <!-- =================================
@@ -1355,32 +1368,27 @@
 
         </main>
 
-
-    </div>
+    </section>
 
 
 
     <!-- =================================
-         ORDER HISTORY PAGE
+         ORDER HISTORY SECTION
     ================================== -->
 
     <section
-        class="history-page"
-        id="historyPage"
-        hidden
+        class="page-section"
+        id="historySection"
     >
 
-        <div class="container history-container">
+        <main class="container main history-main">
 
-
-            <!-- HISTORY HEADER -->
-
-            <div class="history-page-header">
+            <div class="history-heading">
 
                 <div>
 
                     <span class="eyebrow">
-                        PANKAJ RESTAURANT
+                        PANKAJ
                     </span>
 
                     <h2>
@@ -1388,64 +1396,20 @@
                     </h2>
 
                     <p>
-                        Confirmed orders are kept here for reference.
+                        View and manage your previous orders.
                     </p>
 
                 </div>
 
-
-                <button
-                    type="button"
-                    class="back-home-btn"
-                    id="backHomeButton"
-                >
-                    ← Back to Menu
-                </button>
-
             </div>
-
-
-
-            <!-- HISTORY SUMMARY -->
-
-            <div class="history-summary">
-
-                <div class="history-summary-card">
-
-                    <span>
-                        Total Orders
-                    </span>
-
-                    <strong id="historyOrderCount">
-                        0
-                    </strong>
-
-                </div>
-
-
-                <div class="history-summary-card">
-
-                    <span>
-                        Total Sales
-                    </span>
-
-                    <strong id="historySalesTotal">
-                        ₹0
-                    </strong>
-
-                </div>
-
-            </div>
-
 
 
             <!-- HISTORY LIST -->
 
-            <div
+            <section
                 class="history-list"
                 id="historyList"
-            ></div>
-
+            ></section>
 
 
             <!-- EMPTY HISTORY -->
@@ -1456,7 +1420,7 @@
             >
 
                 <div class="history-empty-icon">
-                    ↺
+                    🧾
                 </div>
 
                 <h3>
@@ -1464,20 +1428,20 @@
                 </h3>
 
                 <p>
-                    Confirmed orders will appear here automatically.
+                    Your completed orders will appear here.
                 </p>
 
                 <button
                     type="button"
-                    class="history-empty-btn"
-                    id="historyEmptyButton"
+                    class="back-menu-btn"
+                    id="backMenuButton"
                 >
-                    Start New Order
+                    Browse Menu
                 </button>
 
             </div>
 
-        </div>
+        </main>
 
     </section>
 
@@ -1617,7 +1581,7 @@
                 id="placeOrder"
                 disabled
             >
-                Confirm Order
+                Place Order
             </button>
 
         </div>
@@ -1635,7 +1599,6 @@
         id="orderModal"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="orderModalTitle"
     >
 
         <div class="order-modal-content">
@@ -1648,34 +1611,20 @@
                 PANKAJ RESTAURANT
             </span>
 
-            <h3 id="orderModalTitle">
+            <h3>
                 Order Confirmed
             </h3>
 
-            <p id="orderModalMessage">
+            <p>
                 The order has been placed successfully.
             </p>
 
-
-            <!-- ORDER ID -->
-
-            <div
-                class="confirmed-order-id"
-                id="confirmedOrderId"
-            >
-                Order #PK-000000
-            </div>
-
-
-            <!-- CONFIRMED ITEMS -->
 
             <div
                 class="confirmed-order"
                 id="confirmedOrder"
             ></div>
 
-
-            <!-- TOTAL -->
 
             <div class="confirmed-total">
 
@@ -1690,127 +1639,13 @@
             </div>
 
 
-            <div class="confirmation-actions">
-
-                <button
-                    type="button"
-                    class="new-order-btn"
-                    id="newOrder"
-                >
-                    New Order
-                </button>
-
-
-                <button
-                    type="button"
-                    class="view-history-btn"
-                    id="viewHistoryFromModal"
-                >
-                    View History
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- =================================
-         EDIT HISTORY ORDER MODAL
-    ================================== -->
-
-    <div
-        class="edit-order-modal"
-        id="editOrderModal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="editOrderTitle"
-    >
-
-        <div class="edit-order-content">
-
-            <div class="edit-order-header">
-
-                <div>
-
-                    <span class="cart-eyebrow">
-                        PANKAJ
-                    </span>
-
-                    <h3 id="editOrderTitle">
-                        Edit Order
-                    </h3>
-
-                </div>
-
-
-                <button
-                    type="button"
-                    class="edit-close"
-                    id="editOrderClose"
-                    aria-label="Close edit order"
-                >
-                    ×
-                </button>
-
-            </div>
-
-
-
-            <p class="edit-order-note">
-                Modify quantities below and save the updated order.
-            </p>
-
-
-
-            <!-- EDIT ITEMS -->
-
-            <div
-                class="edit-order-items"
-                id="editOrderItems"
-            ></div>
-
-
-
-            <!-- EDIT TOTAL -->
-
-            <div class="edit-total-row">
-
-                <span>
-                    Updated Total
-                </span>
-
-                <strong id="editOrderTotal">
-                    ₹0
-                </strong>
-
-            </div>
-
-
-
-            <!-- EDIT ACTIONS -->
-
-            <div class="edit-order-actions">
-
-                <button
-                    type="button"
-                    class="cancel-edit-btn"
-                    id="cancelEditOrder"
-                >
-                    Cancel
-                </button>
-
-                <button
-                    type="button"
-                    class="save-edit-btn"
-                    id="saveEditOrder"
-                >
-                    Save Changes
-                </button>
-
-            </div>
+            <button
+                type="button"
+                class="new-order-btn"
+                id="newOrder"
+            >
+                New Order
+            </button>
 
         </div>
 
