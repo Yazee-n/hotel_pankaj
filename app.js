@@ -1,159 +1,229 @@
-const API_URL = "";
-
 let menu = [];
 let cart = [];
 let orders = [];
+
 let selectedCategory = "All";
 
-document.addEventListener("DOMContentLoaded", initializeApp);
 
-async function initializeApp() {
-    loadLocalData();
-    setupEvents();
+document.addEventListener(
+    "DOMContentLoaded",
+    initializeApp
+);
 
-    document.getElementById("app").style.display = "block";
 
-    await loadData();
-}
+function initializeApp() {
 
-function setupEvents() {
-    document.addEventListener("click", handleClick);
+    loadMenu();
 
-    const confirmButton =
-        document.getElementById("confirmOrderButton");
-
-    if (confirmButton) {
-        confirmButton.addEventListener(
-            "click",
-            confirmOrder
-        );
-    }
-
-    const mobileCartButton =
-        document.getElementById("mobileCartButton");
-
-    if (mobileCartButton) {
-        mobileCartButton.addEventListener(
-            "click",
-            toggleMobileCart
-        );
-    }
-}
-
-async function loadData() {
-    if (API_URL) {
-        try {
-            const result =
-                await apiRequest("getData");
-
-            if (result.success) {
-                menu = Array.isArray(result.menu)
-                    ? result.menu
-                    : [];
-
-                orders = Array.isArray(result.orders)
-                    ? result.orders
-                    : [];
-            }
-        } catch (error) {
-            showToast(
-                "Failed to load restaurant data."
-            );
-        }
-    }
-
-    if (!menu.length) {
-        menu = getDefaultMenu();
-    }
+    loadOrders();
 
     renderCategories();
+
     renderMenu();
-    renderOrders();
+
     renderCart();
+
+    renderOrders();
+
+    setupEvents();
+
 }
 
+
+/* =========================
+   DEFAULT MENU
+========================= */
+
+function loadMenu() {
+
+    const savedMenu =
+        localStorage.getItem("pankaj_menu");
+
+    if (savedMenu) {
+
+        try {
+
+            menu = JSON.parse(savedMenu);
+
+        } catch {
+
+            menu = getDefaultMenu();
+
+        }
+
+    } else {
+
+        menu = getDefaultMenu();
+
+    }
+
+}
+
+
 function getDefaultMenu() {
+
     return [
+
         {
             id: "M001",
             name: "Chicken Biriyani",
             category: "Biriyani",
             price: 160,
             description: "Traditional chicken biriyani",
-            image: "",
+            image: "🍛",
             available: true
         },
+
         {
             id: "M002",
             name: "Beef Biriyani",
             category: "Biriyani",
             price: 180,
             description: "Malabar style beef biriyani",
-            image: "",
+            image: "🍛",
             available: true
         },
+
         {
             id: "M003",
             name: "Mutton Biriyani",
             category: "Biriyani",
             price: 220,
             description: "Tender mutton biriyani",
-            image: "",
+            image: "🍛",
             available: true
         },
+
         {
             id: "M004",
             name: "Chicken Fried Rice",
             category: "Rice",
             price: 140,
-            description: "Chicken fried rice",
-            image: "",
+            description: "Fresh chicken fried rice",
+            image: "🍚",
             available: true
         },
+
         {
             id: "M005",
             name: "Chicken Noodles",
             category: "Noodles",
             price: 140,
             description: "Spicy chicken noodles",
-            image: "",
+            image: "🍜",
             available: true
         },
+
         {
             id: "M006",
             name: "Chicken 65",
             category: "Starters",
             price: 150,
             description: "Crispy spicy chicken",
-            image: "",
+            image: "🍗",
             available: true
         },
+
         {
             id: "M007",
             name: "Porotta",
             category: "Breads",
             price: 15,
             description: "Kerala layered flatbread",
-            image: "",
+            image: "🫓",
             available: true
         },
+
         {
             id: "M008",
             name: "Chicken Curry",
             category: "Curries",
             price: 130,
             description: "Kerala style chicken curry",
-            image: "",
+            image: "🍛",
+            available: true
+        },
+
+        {
+            id: "M009",
+            name: "Fresh Lime",
+            category: "Drinks",
+            price: 40,
+            description: "Fresh lime juice",
+            image: "🍋",
             available: true
         }
+
     ];
+
 }
 
+
+/* =========================
+   ORDERS
+========================= */
+
+function loadOrders() {
+
+    const savedOrders =
+        localStorage.getItem("pankaj_orders");
+
+    if (!savedOrders) {
+
+        orders = [];
+
+        return;
+    }
+
+    try {
+
+        orders =
+            JSON.parse(savedOrders);
+
+    } catch {
+
+        orders = [];
+
+    }
+
+}
+
+
+function saveOrders() {
+
+    localStorage.setItem(
+        "pankaj_orders",
+        JSON.stringify(orders)
+    );
+
+}
+
+
+/* =========================
+   EVENTS
+========================= */
+
+function setupEvents() {
+
+    document.addEventListener(
+        "click",
+        handleClick
+    );
+
+}
+
+
+/* =========================
+   CATEGORIES
+========================= */
+
 function renderCategories() {
+
     const container =
         document.getElementById("categories");
 
     if (!container) return;
+
 
     const categories = [
         "All",
@@ -164,137 +234,304 @@ function renderCategories() {
         )
     ];
 
+
     container.innerHTML =
         categories.map(category => `
+
             <button
                 type="button"
-                class="category-btn ${
+                class="category ${
                     category === selectedCategory
                         ? "active"
                         : ""
                 }"
-                data-category="${escapeAttribute(category)}"
+                data-category="${escapeHTML(category)}"
             >
                 ${escapeHTML(category)}
             </button>
+
         `).join("");
+
 }
 
+
+function selectCategory(category) {
+
+    selectedCategory =
+        category;
+
+    renderCategories();
+
+    renderMenu();
+
+}
+
+
+/* =========================
+   MENU
+========================= */
+
 function renderMenu() {
+
     const container =
         document.getElementById("menuGrid");
 
     if (!container) return;
+
 
     const filteredMenu =
         selectedCategory === "All"
             ? menu
             : menu.filter(
                 item =>
-                    item.category === selectedCategory
+                    item.category ===
+                    selectedCategory
             );
 
+
+    const availableItems =
+        filteredMenu.filter(
+            item =>
+                item.available !== false
+        );
+
+
+    const count =
+        document.getElementById(
+            "menuCount"
+        );
+
+    if (count) {
+
+        count.textContent =
+            `${availableItems.length} Items`;
+
+    }
+
+
     if (!filteredMenu.length) {
+
         container.innerHTML = `
-            <div class="empty-cart">
+            <div class="empty-order">
                 No items available
             </div>
         `;
+
         return;
     }
 
+
     container.innerHTML =
         filteredMenu.map(item => {
+
             const unavailable =
                 item.available === false;
 
-            return `
-                <article
-                    class="menu-item ${
-                        unavailable
-                            ? "item-unavailable"
-                            : ""
-                    }"
-                >
 
-                    <div class="item-image">
-                        ${
-                            item.image
-                                ? `
-                                    <img
-                                        src="${escapeAttribute(item.image)}"
-                                        alt="${escapeAttribute(item.name)}"
-                                    >
-                                `
-                                : "🍽️"
-                        }
+            return `
+
+                <article class="menu-card">
+
+                    <div class="food-image">
+                        ${item.image || "🍽️"}
                     </div>
 
-                    <div class="item-info">
+                    <div class="food-content">
 
-                        <div class="item-name">
-                            ${escapeHTML(item.name)}
-                        </div>
+                        <div class="food-top">
 
-                        <div class="item-description">
-                            ${escapeHTML(
-                                item.description || ""
-                            )}
-                        </div>
+                            <div>
 
-                        <div class="item-bottom">
+                                <div class="food-name">
+                                    ${escapeHTML(item.name)}
+                                </div>
 
-                            <span class="item-price">
+                                <div class="food-description">
+                                    ${escapeHTML(
+                                        item.description || ""
+                                    )}
+                                </div>
+
+                            </div>
+
+                            <strong class="food-price">
                                 ₹${formatMoney(item.price)}
-                            </span>
-
-                            ${
-                                unavailable
-                                    ? `
-                                        <span class="unavailable-label">
-                                            Unavailable
-                                        </span>
-                                    `
-                                    : `
-                                        <button
-                                            type="button"
-                                            class="add-btn"
-                                            data-add-item="${escapeAttribute(item.id)}"
-                                            aria-label="Add ${escapeAttribute(item.name)}"
-                                        >
-                                            +
-                                        </button>
-                                    `
-                            }
+                            </strong>
 
                         </div>
+
+
+                        ${
+                            unavailable
+                                ? `
+                                    <button
+                                        class="add-button"
+                                        disabled
+                                        style="
+                                            background:#ddd;
+                                            color:#888;
+                                            cursor:not-allowed;
+                                        "
+                                    >
+                                        Unavailable
+                                    </button>
+                                `
+                                : `
+                                    <button
+                                        type="button"
+                                        class="add-button"
+                                        data-add="${escapeHTML(item.id)}"
+                                    >
+                                        + Add to Order
+                                    </button>
+                                `
+                        }
 
                     </div>
 
                 </article>
+
             `;
+
         }).join("");
+
 }
 
+
+/* =========================
+   CART
+========================= */
+
+function addToCart(itemId) {
+
+    const item =
+        menu.find(
+            menuItem =>
+                String(menuItem.id) ===
+                String(itemId)
+        );
+
+
+    if (!item) return;
+
+    if (item.available === false) return;
+
+
+    const existing =
+        cart.find(
+            cartItem =>
+                String(cartItem.id) ===
+                String(itemId)
+        );
+
+
+    if (existing) {
+
+        existing.qty += 1;
+
+    } else {
+
+        cart.push({
+
+            id: item.id,
+
+            name: item.name,
+
+            price:
+                Number(item.price) || 0,
+
+            qty: 1
+
+        });
+
+    }
+
+
+    renderCart();
+
+    showToast(
+        `${item.name} added`
+    );
+
+}
+
+
+function changeQuantity(
+    itemId,
+    amount
+) {
+
+    const item =
+        cart.find(
+            cartItem =>
+                String(cartItem.id) ===
+                String(itemId)
+        );
+
+
+    if (!item) return;
+
+
+    item.qty += amount;
+
+
+    if (item.qty <= 0) {
+
+        cart =
+            cart.filter(
+                cartItem =>
+                    String(cartItem.id) !==
+                    String(itemId)
+            );
+
+    }
+
+
+    renderCart();
+
+}
+
+
 function renderCart() {
+
     const container =
-        document.getElementById("cartItems");
+        document.getElementById(
+            "cartItems"
+        );
 
     if (!container) return;
 
+
     if (!cart.length) {
+
         container.innerHTML = `
-            <div class="empty-cart">
-                <strong>No items added</strong>
-                <span>Select items from the menu</span>
+
+            <div class="empty-order">
+
+                <div class="empty-icon">
+                    +
+                </div>
+
+                <strong>
+                    No items added
+                </strong>
+
+                <span>
+                    Select items from the menu above
+                </span>
+
             </div>
+
         `;
+
     } else {
+
         container.innerHTML =
             cart.map(item => `
+
                 <div class="cart-item">
 
-                    <div class="cart-item-top">
+                    <div class="cart-item-info">
 
                         <div class="cart-item-name">
                             ${escapeHTML(item.name)}
@@ -308,129 +545,46 @@ function renderCart() {
 
                     </div>
 
-                    <div class="cart-controls">
 
-                        <div class="qty-controls">
-
-                            <button
-                                type="button"
-                                class="qty-btn"
-                                data-qty-minus="${escapeAttribute(item.id)}"
-                            >
-                                −
-                            </button>
-
-                            <span class="qty">
-                                ${item.qty}
-                            </span>
-
-                            <button
-                                type="button"
-                                class="qty-btn"
-                                data-qty-plus="${escapeAttribute(item.id)}"
-                            >
-                                +
-                            </button>
-
-                        </div>
+                    <div class="quantity">
 
                         <button
                             type="button"
-                            class="remove-btn"
-                            data-remove-item="${escapeAttribute(item.id)}"
+                            data-minus="${escapeHTML(item.id)}"
                         >
-                            Remove
+                            −
+                        </button>
+
+                        <span>
+                            ${item.qty}
+                        </span>
+
+                        <button
+                            type="button"
+                            data-plus="${escapeHTML(item.id)}"
+                        >
+                            +
                         </button>
 
                     </div>
 
                 </div>
+
             `).join("");
+
     }
+
 
     updateCartSummary();
+
 }
 
-function addToCart(itemId) {
-    const item =
-        menu.find(
-            menuItem =>
-                String(menuItem.id) ===
-                String(itemId)
-        );
 
-    if (!item || item.available === false) {
-        return;
-    }
-
-    const existing =
-        cart.find(
-            cartItem =>
-                String(cartItem.id) ===
-                String(itemId)
-        );
-
-    if (existing) {
-        existing.qty += 1;
-    } else {
-        cart.push({
-            id: item.id,
-            name: item.name,
-            price: Number(item.price) || 0,
-            qty: 1
-        });
-    }
-
-    renderCart();
-
-    showToast(
-        `${item.name} added`
-    );
-}
-
-function changeQuantity(itemId, amount) {
-    const item =
-        cart.find(
-            cartItem =>
-                String(cartItem.id) ===
-                String(itemId)
-        );
-
-    if (!item) return;
-
-    item.qty += amount;
-
-    if (item.qty <= 0) {
-        cart =
-            cart.filter(
-                cartItem =>
-                    String(cartItem.id) !==
-                    String(itemId)
-            );
-    }
-
-    renderCart();
-}
-
-function removeFromCart(itemId) {
-    cart =
-        cart.filter(
-            item =>
-                String(item.id) !==
-                String(itemId)
-        );
-
-    renderCart();
-}
+/* =========================
+   SUMMARY
+========================= */
 
 function updateCartSummary() {
-    const total =
-        cart.reduce(
-            (sum, item) =>
-                sum +
-                item.price * item.qty,
-            0
-        );
 
     const itemCount =
         cart.reduce(
@@ -439,146 +593,193 @@ function updateCartSummary() {
             0
         );
 
-    const countElement =
-        document.getElementById("cartCount");
 
-    const itemsElement =
-        document.getElementById("summaryItems");
+    const total =
+        cart.reduce(
+            (sum, item) =>
+                sum +
+                item.price *
+                item.qty,
+            0
+        );
 
-    const totalElement =
-        document.getElementById("summaryTotal");
 
-    const mobileTotalElement =
-        document.getElementById("mobileCartTotal");
+    const cartCount =
+        document.getElementById(
+            "cartCount"
+        );
+
+    const summaryItems =
+        document.getElementById(
+            "summaryItems"
+        );
+
+    const summaryTotal =
+        document.getElementById(
+            "summaryTotal"
+        );
+
+    const mobileTotal =
+        document.getElementById(
+            "mobileCartTotal"
+        );
 
     const confirmButton =
         document.getElementById(
             "confirmOrderButton"
         );
 
-    if (countElement) {
-        countElement.textContent =
+
+    if (cartCount) {
+
+        cartCount.textContent =
             itemCount;
+
     }
 
-    if (itemsElement) {
-        itemsElement.textContent =
+
+    if (summaryItems) {
+
+        summaryItems.textContent =
             itemCount;
+
     }
 
-    if (totalElement) {
-        totalElement.textContent =
+
+    if (summaryTotal) {
+
+        summaryTotal.textContent =
             `₹${formatMoney(total)}`;
+
     }
 
-    if (mobileTotalElement) {
-        mobileTotalElement.textContent =
+
+    if (mobileTotal) {
+
+        mobileTotal.textContent =
             `₹${formatMoney(total)}`;
+
     }
+
 
     if (confirmButton) {
+
         confirmButton.disabled =
             cart.length === 0;
+
     }
+
 }
 
-function selectCategory(category) {
-    selectedCategory =
-        category;
 
-    renderCategories();
-    renderMenu();
-}
+/* =========================
+   CONFIRM ORDER
+========================= */
 
-async function confirmOrder() {
+function confirmOrder() {
+
     if (!cart.length) {
+
         showToast(
-            "Add at least one item."
+            "Add items first"
         );
+
         return;
     }
 
+
     const noteElement =
-        document.getElementById("orderNote");
+        document.getElementById(
+            "orderNote"
+        );
+
 
     const note =
         noteElement
             ? noteElement.value.trim()
             : "";
 
+
+    const total =
+        cart.reduce(
+            (sum, item) =>
+                sum +
+                item.price *
+                item.qty,
+            0
+        );
+
+
     const order = {
-        id: generateOrderId(),
+
+        id:
+            generateOrderId(),
 
         items:
             cart.map(item => ({
+
                 id: item.id,
+
                 name: item.name,
+
                 price: item.price,
+
                 qty: item.qty
+
             })),
 
         note,
 
-        total:
-            cart.reduce(
-                (sum, item) =>
-                    sum +
-                    item.price *
-                    item.qty,
-                0
-            ),
+        total,
 
         status: "Pending",
 
         createdAt:
             new Date().toISOString()
+
     };
 
-    try {
-        if (API_URL) {
-            const result =
-                await apiRequest(
-                    "createOrder",
-                    order
-                );
 
-            if (!result.success) {
-                showToast(
-                    result.message ||
-                    "Order failed."
-                );
-                return;
-            }
+    orders.unshift(order);
 
-            orders.unshift(
-                result.order || order
-            );
-        } else {
-            orders.unshift(order);
-            saveLocalOrders();
-        }
+    saveOrders();
 
-        cart = [];
 
-        if (noteElement) {
-            noteElement.value = "";
-        }
+    cart = [];
 
-        renderCart();
-        renderOrders();
 
-        showToast(
-            `Order ${order.id} confirmed`
-        );
+    if (noteElement) {
 
-    } catch (error) {
-        showToast(
-            "Unable to place order."
-        );
+        noteElement.value = "";
+
     }
+
+
+    renderCart();
+
+    renderOrders();
+
+
+    showToast(
+        `Order ${order.id} confirmed`
+    );
+
+
+    document
+        .getElementById("orderSection")
+        ?.scrollIntoView({
+            behavior: "smooth"
+        });
+
 }
 
+
+/* =========================
+   ORDERS
+========================= */
+
 function renderOrders() {
+
     const container =
         document.getElementById(
             "ordersList"
@@ -586,289 +787,231 @@ function renderOrders() {
 
     if (!container) return;
 
-    if (!orders.length) {
+
+    const activeOrders =
+        orders.filter(
+            order =>
+                order.status !==
+                "Completed"
+        );
+
+
+    const count =
+        document.getElementById(
+            "activeOrderCount"
+        );
+
+
+    if (count) {
+
+        count.textContent =
+            `${activeOrders.length} Active`;
+
+    }
+
+
+    if (!activeOrders.length) {
+
         container.innerHTML = `
-            <div class="empty-orders">
-                No active orders
+
+            <div class="empty-order">
+
+                <strong>
+                    No active orders
+                </strong>
+
+                <span>
+                    Confirmed orders will appear here
+                </span>
+
             </div>
+
         `;
 
-        updateOrderCount();
         return;
     }
 
+
     container.innerHTML =
-        orders
-            .filter(
-                order =>
-                    order.status !==
-                    "Completed"
-            )
+        activeOrders
             .slice(0, 20)
             .map(order => `
-                <div class="order-card">
 
-                    <div class="order-card-header">
+                <article class="order-card">
 
-                        <div class="order-number">
+                    <div class="order-card-top">
+
+                        <span class="order-id">
                             ${escapeHTML(order.id)}
-                        </div>
+                        </span>
 
-                        <div class="status">
+                        <span class="order-status">
                             ${escapeHTML(
                                 order.status ||
                                 "Pending"
                             )}
-                        </div>
+                        </span>
 
                     </div>
 
+
                     <div class="order-items">
+
                         ${
                             Array.isArray(order.items)
                                 ? order.items
-                                    .map(
-                                        item =>
-                                            `${escapeHTML(item.name)} × ${Number(item.qty) || 1}`
+                                    .map(item =>
+                                        `${escapeHTML(item.name)}
+                                        × ${item.qty}`
                                     )
                                     .join("<br>")
                                 : ""
                         }
+
+                        ${
+                            order.note
+                                ? `
+                                    <br>
+                                    <small>
+                                        Note:
+                                        ${escapeHTML(order.note)}
+                                    </small>
+                                `
+                                : ""
+                        }
+
                     </div>
 
-                    ${
-                        order.note
-                            ? `
-                                <div class="order-note-display">
-                                    ${escapeHTML(order.note)}
-                                </div>
-                            `
-                            : ""
-                    }
 
-                    <div class="order-total">
+                    <div class="order-bottom">
 
                         <span>
                             Total
                         </span>
 
-                        <span>
+                        <strong>
                             ₹${formatMoney(order.total)}
-                        </span>
+                        </strong>
 
                     </div>
 
-                    <button
-                        type="button"
-                        class="edit-order-btn"
-                        data-edit-order="${escapeAttribute(order.id)}"
-                    >
-                        Edit Order
-                    </button>
+                </article>
 
-                </div>
             `)
             .join("");
 
-    updateOrderCount();
 }
 
-function updateOrderCount() {
-    const element =
+
+/* =========================
+   MOBILE CART
+========================= */
+
+function openOrder() {
+
+    const section =
         document.getElementById(
-            "activeOrderCount"
+            "orderSection"
         );
 
-    if (!element) return;
+    if (!section) return;
 
-    const active =
-        orders.filter(
-            order =>
-                order.status !==
-                "Completed"
-        ).length;
+    section.scrollIntoView({
+        behavior: "smooth"
+    });
 
-    element.textContent =
-        `${active} Active`;
 }
 
-function editOrder(orderId) {
-    const order =
-        orders.find(
-            item =>
-                String(item.id) ===
-                String(orderId)
-        );
 
-    if (!order) return;
-
-    cart =
-        Array.isArray(order.items)
-            ? order.items.map(
-                item => ({
-                    id: item.id,
-                    name: item.name,
-                    price:
-                        Number(item.price) || 0,
-                    qty:
-                        Number(item.qty) || 1
-                })
-            )
-            : [];
-
-    const noteElement =
-        document.getElementById(
-            "orderNote"
-        );
-
-    if (noteElement) {
-        noteElement.value =
-            order.note || "";
-    }
-
-    renderCart();
-
-    const orderSection =
-        document.querySelector(
-            ".order-section"
-        );
-
-    if (orderSection) {
-        orderSection.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-    }
-
-    showToast(
-        `${order.id} loaded for editing`
-    );
-}
+/* =========================
+   CLICK HANDLER
+========================= */
 
 function handleClick(event) {
-    const target =
-        event.target.closest("button");
 
-    if (!target) return;
+    const button =
+        event.target.closest(
+            "button"
+        );
 
-    if (target.dataset.category) {
+    if (!button) return;
+
+
+    if (button.dataset.category) {
+
         selectCategory(
-            target.dataset.category
+            button.dataset.category
         );
+
         return;
     }
 
-    if (target.dataset.addItem) {
+
+    if (button.dataset.add) {
+
         addToCart(
-            target.dataset.addItem
+            button.dataset.add
         );
+
         return;
     }
 
-    if (target.dataset.qtyPlus) {
+
+    if (button.dataset.plus) {
+
         changeQuantity(
-            target.dataset.qtyPlus,
+            button.dataset.plus,
             1
         );
+
         return;
     }
 
-    if (target.dataset.qtyMinus) {
+
+    if (button.dataset.minus) {
+
         changeQuantity(
-            target.dataset.qtyMinus,
+            button.dataset.minus,
             -1
         );
+
         return;
     }
 
-    if (target.dataset.removeItem) {
-        removeFromCart(
-            target.dataset.removeItem
-        );
+
+    if (
+        button.id ===
+        "confirmOrderButton"
+    ) {
+
+        confirmOrder();
+
         return;
     }
 
-    if (target.dataset.editOrder) {
-        editOrder(
-            target.dataset.editOrder
-        );
+
+    if (
+        button.id ===
+        "mobileCartButton"
+    ) {
+
+        openOrder();
+
         return;
     }
+
 }
 
-function toggleMobileCart() {
-    const orderSection =
-        document.querySelector(
-            ".order-section"
-        );
 
-    if (!orderSection) return;
-
-    orderSection.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
-}
-
-async function apiRequest(
-    action,
-    data = {}
-) {
-    if (!API_URL) {
-        return {
-            success: false,
-            message: "API URL not configured."
-        };
-    }
-
-    const response =
-        await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type":
-                    "text/plain;charset=utf-8"
-            },
-            body: JSON.stringify({
-                action,
-                ...data
-            })
-        });
-
-    return await response.json();
-}
-
-function loadLocalData() {
-    try {
-        const savedOrders =
-            localStorage.getItem(
-                "pankaj_orders"
-            );
-
-        if (savedOrders) {
-            orders =
-                JSON.parse(
-                    savedOrders
-                );
-
-            if (!Array.isArray(orders)) {
-                orders = [];
-            }
-        }
-    } catch (error) {
-        orders = [];
-    }
-}
-
-function saveLocalOrders() {
-    localStorage.setItem(
-        "pankaj_orders",
-        JSON.stringify(orders)
-    );
-}
+/* =========================
+   HELPERS
+========================= */
 
 function generateOrderId() {
+
     const date =
         new Date();
+
 
     const datePart =
         date
@@ -876,16 +1019,21 @@ function generateOrderId() {
             .slice(0, 10)
             .replaceAll("-", "");
 
+
     const random =
         Math.floor(
             1000 +
             Math.random() * 9000
         );
 
+
     return `PK-${datePart}-${random}`;
+
 }
 
+
 function formatMoney(value) {
+
     return Number(value || 0)
         .toLocaleString(
             "en-IN",
@@ -894,9 +1042,12 @@ function formatMoney(value) {
                 maximumFractionDigits: 2
             }
         );
+
 }
 
+
 function showToast(message) {
+
     const toast =
         document.getElementById(
             "toast"
@@ -904,30 +1055,40 @@ function showToast(message) {
 
     if (!toast) return;
 
+
     toast.textContent =
         message;
 
-    toast.classList.add("show");
 
-    clearTimeout(
-        showToast.timeout
+    toast.classList.add(
+        "show"
     );
 
-    showToast.timeout =
+
+    clearTimeout(
+        showToast.timer
+    );
+
+
+    showToast.timer =
         setTimeout(() => {
-            toast.classList.remove("show");
+
+            toast.classList.remove(
+                "show"
+            );
+
         }, 2200);
+
 }
 
+
 function escapeHTML(value) {
+
     return String(value ?? "")
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
-}
 
-function escapeAttribute(value) {
-    return escapeHTML(value);
 }
