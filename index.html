@@ -17,7 +17,7 @@
 
     <meta
         name="description"
-        content="Pankaj Restaurant Menu"
+        content="Pankaj Restaurant Menu and Order System"
     >
 
     <title>Pankaj Restaurant | Menu</title>
@@ -44,6 +44,7 @@
             <a
                 href="#"
                 class="brand"
+                id="brandHome"
             >
 
                 <div class="brand-mark">
@@ -65,11 +66,30 @@
             </a>
 
 
-            <div class="open-status">
+            <div class="header-actions">
 
-                <span class="status-dot"></span>
+                <button
+                    type="button"
+                    class="history-nav-btn"
+                    id="historyButton"
+                >
 
-                Open Now
+                    <span>
+                        ↺
+                    </span>
+
+                    History
+
+                </button>
+
+
+                <div class="open-status">
+
+                    <span class="status-dot"></span>
+
+                    Open Now
+
+                </div>
 
             </div>
 
@@ -80,27 +100,1382 @@
 
 
     <!-- =================================
-         HERO
+         HOME PAGE
     ================================== -->
 
-    <section class="hero">
+    <div id="homePage">
 
-        <div class="hero-content">
 
-            <p class="hero-label">
-                WELCOME TO PANKAJ
-            </p>
+        <!-- =================================
+             HERO
+        ================================== -->
 
-            <h2>
-                Our Menu
-            </h2>
+        <section class="hero">
 
-            <p class="hero-description">
-                Fresh ingredients, authentic flavours
-                and dishes prepared with care.
-            </p>
+            <div class="hero-content">
 
-            <div class="hero-divider"></div>
+                <p class="hero-label">
+                    WELCOME TO PANKAJ
+                </p>
+
+                <h2>
+                    Our Menu
+                </h2>
+
+                <p class="hero-description">
+                    Fresh ingredients, authentic flavours
+                    and dishes prepared with care.
+                </p>
+
+                <div class="hero-divider"></div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================
+             MAIN
+        ================================== -->
+
+        <main class="container main">
+
+
+            <!-- SEARCH -->
+
+            <div class="search-box">
+
+                <span class="search-icon">
+                    ⌕
+                </span>
+
+                <input
+                    type="search"
+                    id="searchInput"
+                    placeholder="Search for a dish..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+
+            <!-- CATEGORY FILTER -->
+
+            <nav
+                class="categories"
+                aria-label="Menu categories"
+            >
+
+                <button
+                    type="button"
+                    class="category-btn active"
+                    data-category="all"
+                >
+                    All
+                </button>
+
+                <button
+                    type="button"
+                    class="category-btn"
+                    data-category="biriyani"
+                >
+                    Biriyani
+                </button>
+
+                <button
+                    type="button"
+                    class="category-btn"
+                    data-category="main-course"
+                >
+                    Main Course
+                </button>
+
+                <button
+                    type="button"
+                    class="category-btn"
+                    data-category="rice"
+                >
+                    Rice & Noodles
+                </button>
+
+                <button
+                    type="button"
+                    class="category-btn"
+                    data-category="sides"
+                >
+                    Sides
+                </button>
+
+                <button
+                    type="button"
+                    class="category-btn"
+                    data-category="drinks"
+                >
+                    Drinks
+                </button>
+
+            </nav>
+
+
+
+            <!-- MENU HEADING -->
+
+            <div class="menu-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        EXPLORE
+                    </span>
+
+                    <h3>
+                        Our Favourites
+                    </h3>
+
+                </div>
+
+                <span
+                    class="item-count"
+                    id="itemCount"
+                >
+                    15 items
+                </span>
+
+            </div>
+
+
+
+            <!-- =================================
+                 MENU GRID
+            ================================== -->
+
+            <section
+                class="menu-grid"
+                id="menuGrid"
+            >
+
+
+                <!-- CHICKEN BIRIYANI -->
+
+                <article
+                    class="menu-card"
+                    data-category="biriyani"
+                    data-name="chicken biriyani"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Chicken Biriyani
+                                </h4>
+
+                                <span class="food-type nonveg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Fragrant basmati rice layered
+                                with tender chicken and aromatic spices.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹180
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Non-Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Chicken Biriyani"
+                            data-price="180"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- BEEF BIRIYANI -->
+
+                <article
+                    class="menu-card"
+                    data-category="biriyani"
+                    data-name="beef biriyani"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Beef Biriyani
+                                </h4>
+
+                                <span class="food-type nonveg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Kerala-style biriyani with tender
+                                beef and fragrant spiced rice.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹200
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Non-Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Beef Biriyani"
+                            data-price="200"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- EGG BIRIYANI -->
+
+                <article
+                    class="menu-card"
+                    data-category="biriyani"
+                    data-name="egg biriyani"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Egg Biriyani
+                                </h4>
+
+                                <span class="food-type nonveg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Aromatic biriyani rice served
+                                with perfectly cooked eggs.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹140
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Non-Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Egg Biriyani"
+                            data-price="140"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- CHICKEN CURRY -->
+
+                <article
+                    class="menu-card"
+                    data-category="main-course"
+                    data-name="chicken curry"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Chicken Curry
+                                </h4>
+
+                                <span class="food-type nonveg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Tender chicken cooked in a rich
+                                traditional Kerala-style gravy.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹140
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Non-Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Chicken Curry"
+                            data-price="140"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- BEEF CURRY -->
+
+                <article
+                    class="menu-card"
+                    data-category="main-course"
+                    data-name="beef curry"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Beef Curry
+                                </h4>
+
+                                <span class="food-type nonveg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Spicy Kerala-style beef curry
+                                cooked with roasted spices.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹160
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Non-Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Beef Curry"
+                            data-price="160"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- EGG CURRY -->
+
+                <article
+                    class="menu-card"
+                    data-category="main-course"
+                    data-name="egg curry"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Egg Curry
+                                </h4>
+
+                                <span class="food-type nonveg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Boiled eggs simmered in a creamy
+                                spiced onion gravy.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹90
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Non-Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Egg Curry"
+                            data-price="90"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- CHICKEN FRIED RICE -->
+
+                <article
+                    class="menu-card"
+                    data-category="rice"
+                    data-name="chicken fried rice"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Chicken Fried Rice
+                                </h4>
+
+                                <span class="food-type nonveg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Wok-fried rice with chicken,
+                                vegetables and Asian seasonings.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹160
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Non-Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Chicken Fried Rice"
+                            data-price="160"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- VEG FRIED RICE -->
+
+                <article
+                    class="menu-card"
+                    data-category="rice"
+                    data-name="veg fried rice"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Veg Fried Rice
+                                </h4>
+
+                                <span class="food-type veg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Fragrant rice tossed with fresh
+                                vegetables and sauces.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹130
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Veg Fried Rice"
+                            data-price="130"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- CHICKEN NOODLES -->
+
+                <article
+                    class="menu-card"
+                    data-category="rice"
+                    data-name="chicken noodles"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Chicken Noodles
+                                </h4>
+
+                                <span class="food-type nonveg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Stir-fried noodles with tender
+                                chicken and crunchy vegetables.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹160
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Non-Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Chicken Noodles"
+                            data-price="160"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- CHICKEN 65 -->
+
+                <article
+                    class="menu-card"
+                    data-category="sides"
+                    data-name="chicken 65"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Chicken 65
+                                </h4>
+
+                                <span class="food-type nonveg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Crispy, spicy fried chicken pieces
+                                seasoned with aromatic spices.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹180
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Non-Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Chicken 65"
+                            data-price="180"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- CHICKEN FRY -->
+
+                <article
+                    class="menu-card"
+                    data-category="sides"
+                    data-name="chicken fry"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Chicken Fry
+                                </h4>
+
+                                <span class="food-type nonveg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Kerala-style crispy chicken
+                                marinated with house spices.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹170
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Non-Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Chicken Fry"
+                            data-price="170"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- POROTTA -->
+
+                <article
+                    class="menu-card"
+                    data-category="sides"
+                    data-name="porotta"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Porotta
+                                </h4>
+
+                                <span class="food-type veg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Soft, flaky Kerala layered
+                                flatbread.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹15
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Porotta"
+                            data-price="15"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- CHAPATHI -->
+
+                <article
+                    class="menu-card"
+                    data-category="sides"
+                    data-name="chapathi"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Chapathi
+                                </h4>
+
+                                <span class="food-type veg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Soft whole-wheat Indian
+                                flatbread.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹12
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Chapathi"
+                            data-price="12"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- FRESH LIME -->
+
+                <article
+                    class="menu-card"
+                    data-category="drinks"
+                    data-name="fresh lime"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Fresh Lime
+                                </h4>
+
+                                <span class="food-type veg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Freshly squeezed lime with a
+                                refreshing sweet and sour balance.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹40
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Fresh Lime"
+                            data-price="40"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- LIME SODA -->
+
+                <article
+                    class="menu-card"
+                    data-category="drinks"
+                    data-name="lime soda"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Lime Soda
+                                </h4>
+
+                                <span class="food-type veg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Chilled soda with fresh lime,
+                                sweet or salted.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹50
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Lime Soda"
+                            data-price="50"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- TEA -->
+
+                <article
+                    class="menu-card"
+                    data-category="drinks"
+                    data-name="tea"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Tea
+                                </h4>
+
+                                <span class="food-type veg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Hot, creamy Indian milk tea.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹20
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Tea"
+                            data-price="20"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- COFFEE -->
+
+                <article
+                    class="menu-card"
+                    data-category="drinks"
+                    data-name="coffee"
+                >
+
+                    <div class="menu-card-top">
+
+                        <div class="menu-info">
+
+                            <div class="item-title-row">
+
+                                <h4>
+                                    Coffee
+                                </h4>
+
+                                <span class="food-type veg">
+                                    <span></span>
+                                </span>
+
+                            </div>
+
+                            <p>
+                                Freshly prepared hot
+                                South Indian coffee.
+                            </p>
+
+                        </div>
+
+                        <strong class="price">
+                            ₹30
+                        </strong>
+
+                    </div>
+
+
+                    <div class="menu-card-bottom">
+
+                        <span class="item-type">
+                            Veg
+                        </span>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            data-name="Coffee"
+                            data-price="30"
+                        >
+                            + Add
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+            </section>
+
+
+
+            <!-- EMPTY MENU -->
+
+            <div
+                class="empty-state"
+                id="emptyState"
+            >
+
+                <div class="empty-icon">
+                    🍽
+                </div>
+
+                <h4>
+                    No dishes found
+                </h4>
+
+                <p>
+                    Try searching for another dish.
+                </p>
+
+            </div>
+
+
+
+            <!-- RESTAURANT INFO -->
+
+            <section class="restaurant-info">
+
+                <div class="info-item">
+
+                    <span class="info-icon">
+                        ◷
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Open Daily
+                        </strong>
+
+                        <span>
+                            7:00 AM — 11:00 PM
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-icon">
+                        ✦
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Freshly Prepared
+                        </strong>
+
+                        <span>
+                            Made to order
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-icon">
+                        ☎
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Call Us
+                        </strong>
+
+                        <span>
+                            For orders & reservations
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+    </div>
+
+
+
+    <!-- =================================
+         ORDER HISTORY PAGE
+    ================================== -->
+
+    <section
+        class="history-page"
+        id="historyPage"
+        hidden
+    >
+
+        <div class="container history-container">
+
+
+            <!-- HISTORY HEADER -->
+
+            <div class="history-page-header">
+
+                <div>
+
+                    <span class="eyebrow">
+                        PANKAJ RESTAURANT
+                    </span>
+
+                    <h2>
+                        Order History
+                    </h2>
+
+                    <p>
+                        Confirmed orders are kept here for reference.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="back-home-btn"
+                    id="backHomeButton"
+                >
+                    ← Back to Menu
+                </button>
+
+            </div>
+
+
+
+            <!-- HISTORY SUMMARY -->
+
+            <div class="history-summary">
+
+                <div class="history-summary-card">
+
+                    <span>
+                        Total Orders
+                    </span>
+
+                    <strong id="historyOrderCount">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="history-summary-card">
+
+                    <span>
+                        Total Sales
+                    </span>
+
+                    <strong id="historySalesTotal">
+                        ₹0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- HISTORY LIST -->
+
+            <div
+                class="history-list"
+                id="historyList"
+            ></div>
+
+
+
+            <!-- EMPTY HISTORY -->
+
+            <div
+                class="history-empty"
+                id="historyEmpty"
+            >
+
+                <div class="history-empty-icon">
+                    ↺
+                </div>
+
+                <h3>
+                    No orders yet
+                </h3>
+
+                <p>
+                    Confirmed orders will appear here automatically.
+                </p>
+
+                <button
+                    type="button"
+                    class="history-empty-btn"
+                    id="historyEmptyButton"
+                >
+                    Start New Order
+                </button>
+
+            </div>
 
         </div>
 
@@ -109,1209 +1484,11 @@
 
 
     <!-- =================================
-         MAIN
-    ================================== -->
-
-    <main class="container main">
-
-
-        <!-- SEARCH -->
-
-        <div class="search-box">
-
-            <span class="search-icon">
-                ⌕
-            </span>
-
-            <input
-                type="search"
-                id="searchInput"
-                placeholder="Search for a dish..."
-                autocomplete="off"
-            >
-
-        </div>
-
-
-
-        <!-- CATEGORY FILTER -->
-
-        <nav
-            class="categories"
-            aria-label="Menu categories"
-        >
-
-            <button
-                class="category-btn active"
-                data-category="all"
-            >
-                All
-            </button>
-
-            <button
-                class="category-btn"
-                data-category="biriyani"
-            >
-                Biriyani
-            </button>
-
-            <button
-                class="category-btn"
-                data-category="main-course"
-            >
-                Main Course
-            </button>
-
-            <button
-                class="category-btn"
-                data-category="rice"
-            >
-                Rice & Noodles
-            </button>
-
-            <button
-                class="category-btn"
-                data-category="sides"
-            >
-                Sides
-            </button>
-
-            <button
-                class="category-btn"
-                data-category="drinks"
-            >
-                Drinks
-            </button>
-
-        </nav>
-
-
-
-        <!-- MENU HEADING -->
-
-        <div class="menu-heading">
-
-            <div>
-
-                <span class="eyebrow">
-                    EXPLORE
-                </span>
-
-                <h3>
-                    Our Favourites
-                </h3>
-
-            </div>
-
-            <span
-                class="item-count"
-                id="itemCount"
-            >
-                15 items
-            </span>
-
-        </div>
-
-
-
-        <!-- =================================
-             MENU GRID
-        ================================== -->
-
-        <section
-            class="menu-grid"
-            id="menuGrid"
-        >
-
-
-            <!-- CHICKEN BIRIYANI -->
-
-            <article
-                class="menu-card"
-                data-category="biriyani"
-                data-name="chicken biriyani"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Chicken Biriyani
-                            </h4>
-
-                            <span class="food-type nonveg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Fragrant basmati rice layered
-                            with tender chicken and aromatic spices.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹180
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Non-Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Chicken Biriyani"
-                        data-price="180"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- BEEF BIRIYANI -->
-
-            <article
-                class="menu-card"
-                data-category="biriyani"
-                data-name="beef biriyani"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Beef Biriyani
-                            </h4>
-
-                            <span class="food-type nonveg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Kerala-style biriyani with tender
-                            beef and fragrant spiced rice.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹200
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Non-Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Beef Biriyani"
-                        data-price="200"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- EGG BIRIYANI -->
-
-            <article
-                class="menu-card"
-                data-category="biriyani"
-                data-name="egg biriyani"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Egg Biriyani
-                            </h4>
-
-                            <span class="food-type nonveg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Aromatic biriyani rice served
-                            with perfectly cooked eggs.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹140
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Non-Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Egg Biriyani"
-                        data-price="140"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- CHICKEN CURRY -->
-
-            <article
-                class="menu-card"
-                data-category="main-course"
-                data-name="chicken curry"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Chicken Curry
-                            </h4>
-
-                            <span class="food-type nonveg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Tender chicken cooked in a rich
-                            traditional Kerala-style gravy.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹140
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Non-Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Chicken Curry"
-                        data-price="140"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- BEEF CURRY -->
-
-            <article
-                class="menu-card"
-                data-category="main-course"
-                data-name="beef curry"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Beef Curry
-                            </h4>
-
-                            <span class="food-type nonveg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Spicy Kerala-style beef curry
-                            cooked with roasted spices.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹160
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Non-Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Beef Curry"
-                        data-price="160"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- EGG CURRY -->
-
-            <article
-                class="menu-card"
-                data-category="main-course"
-                data-name="egg curry"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Egg Curry
-                            </h4>
-
-                            <span class="food-type nonveg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Boiled eggs simmered in a creamy
-                            spiced onion gravy.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹90
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Non-Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Egg Curry"
-                        data-price="90"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- CHICKEN FRIED RICE -->
-
-            <article
-                class="menu-card"
-                data-category="rice"
-                data-name="chicken fried rice"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Chicken Fried Rice
-                            </h4>
-
-                            <span class="food-type nonveg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Wok-fried rice with chicken,
-                            vegetables and Asian seasonings.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹160
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Non-Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Chicken Fried Rice"
-                        data-price="160"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- VEG FRIED RICE -->
-
-            <article
-                class="menu-card"
-                data-category="rice"
-                data-name="veg fried rice"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Veg Fried Rice
-                            </h4>
-
-                            <span class="food-type veg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Fragrant rice tossed with fresh
-                            vegetables and sauces.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹130
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Veg Fried Rice"
-                        data-price="130"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- CHICKEN NOODLES -->
-
-            <article
-                class="menu-card"
-                data-category="rice"
-                data-name="chicken noodles"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Chicken Noodles
-                            </h4>
-
-                            <span class="food-type nonveg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Stir-fried noodles with tender
-                            chicken and crunchy vegetables.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹160
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Non-Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Chicken Noodles"
-                        data-price="160"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- CHICKEN 65 -->
-
-            <article
-                class="menu-card"
-                data-category="sides"
-                data-name="chicken 65"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Chicken 65
-                            </h4>
-
-                            <span class="food-type nonveg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Crispy, spicy fried chicken pieces
-                            seasoned with aromatic spices.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹180
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Non-Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Chicken 65"
-                        data-price="180"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- CHICKEN FRY -->
-
-            <article
-                class="menu-card"
-                data-category="sides"
-                data-name="chicken fry"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Chicken Fry
-                            </h4>
-
-                            <span class="food-type nonveg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Kerala-style crispy chicken
-                            marinated with house spices.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹170
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Non-Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Chicken Fry"
-                        data-price="170"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- POROTTA -->
-
-            <article
-                class="menu-card"
-                data-category="sides"
-                data-name="porotta"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Porotta
-                            </h4>
-
-                            <span class="food-type veg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Soft, flaky Kerala layered
-                            flatbread.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹15
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Porotta"
-                        data-price="15"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- CHAPATHI -->
-
-            <article
-                class="menu-card"
-                data-category="sides"
-                data-name="chapathi"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Chapathi
-                            </h4>
-
-                            <span class="food-type veg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Soft whole-wheat Indian
-                            flatbread.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹12
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Chapathi"
-                        data-price="12"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- FRESH LIME -->
-
-            <article
-                class="menu-card"
-                data-category="drinks"
-                data-name="fresh lime"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Fresh Lime
-                            </h4>
-
-                            <span class="food-type veg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Freshly squeezed lime with a
-                            refreshing sweet and sour balance.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹40
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Fresh Lime"
-                        data-price="40"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- LIME SODA -->
-
-            <article
-                class="menu-card"
-                data-category="drinks"
-                data-name="lime soda"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Lime Soda
-                            </h4>
-
-                            <span class="food-type veg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Chilled soda with fresh lime,
-                            sweet or salted.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹50
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Lime Soda"
-                        data-price="50"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- TEA -->
-
-            <article
-                class="menu-card"
-                data-category="drinks"
-                data-name="tea"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Tea
-                            </h4>
-
-                            <span class="food-type veg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Hot, creamy Indian milk tea.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹20
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Tea"
-                        data-price="20"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- COFFEE -->
-
-            <article
-                class="menu-card"
-                data-category="drinks"
-                data-name="coffee"
-            >
-
-                <div class="menu-card-top">
-
-                    <div class="menu-info">
-
-                        <div class="item-title-row">
-
-                            <h4>
-                                Coffee
-                            </h4>
-
-                            <span class="food-type veg">
-                                <span></span>
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Freshly prepared hot
-                            South Indian coffee.
-                        </p>
-
-                    </div>
-
-                    <strong class="price">
-                        ₹30
-                    </strong>
-
-                </div>
-
-
-                <div class="menu-card-bottom">
-
-                    <span class="item-type">
-                        Veg
-                    </span>
-
-                    <button
-                        class="add-cart-btn"
-                        data-name="Coffee"
-                        data-price="30"
-                    >
-                        + Add
-                    </button>
-
-                </div>
-
-            </article>
-
-
-        </section>
-
-
-
-        <!-- EMPTY MENU -->
-
-        <div
-            class="empty-state"
-            id="emptyState"
-        >
-
-            <div class="empty-icon">
-                🍽
-            </div>
-
-            <h4>
-                No dishes found
-            </h4>
-
-            <p>
-                Try searching for another dish.
-            </p>
-
-        </div>
-
-
-
-        <!-- RESTAURANT INFO -->
-
-        <section class="restaurant-info">
-
-            <div class="info-item">
-
-                <span class="info-icon">
-                    ◷
-                </span>
-
-                <div>
-
-                    <strong>
-                        Open Daily
-                    </strong>
-
-                    <span>
-                        7:00 AM — 11:00 PM
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="info-item">
-
-                <span class="info-icon">
-                    ✦
-                </span>
-
-                <div>
-
-                    <strong>
-                        Freshly Prepared
-                    </strong>
-
-                    <span>
-                        Made to order
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="info-item">
-
-                <span class="info-icon">
-                    ☎
-                </span>
-
-                <div>
-
-                    <strong>
-                        Call Us
-                    </strong>
-
-                    <span>
-                        For orders & reservations
-                    </span>
-
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-
-    <!-- =================================
          FLOATING CART
     ================================== -->
 
     <button
+        type="button"
         class="cart-floating"
         id="cartButton"
         aria-label="Open order cart"
@@ -1373,6 +1550,7 @@
 
 
             <button
+                type="button"
                 class="cart-close"
                 id="cartClose"
                 aria-label="Close cart"
@@ -1434,11 +1612,12 @@
 
 
             <button
+                type="button"
                 class="place-order-btn"
                 id="placeOrder"
                 disabled
             >
-                Place Order
+                Confirm Order
             </button>
 
         </div>
@@ -1456,6 +1635,7 @@
         id="orderModal"
         role="dialog"
         aria-modal="true"
+        aria-labelledby="orderModalTitle"
     >
 
         <div class="order-modal-content">
@@ -1468,20 +1648,34 @@
                 PANKAJ RESTAURANT
             </span>
 
-            <h3>
+            <h3 id="orderModalTitle">
                 Order Confirmed
             </h3>
 
-            <p>
+            <p id="orderModalMessage">
                 The order has been placed successfully.
             </p>
 
+
+            <!-- ORDER ID -->
+
+            <div
+                class="confirmed-order-id"
+                id="confirmedOrderId"
+            >
+                Order #PK-000000
+            </div>
+
+
+            <!-- CONFIRMED ITEMS -->
 
             <div
                 class="confirmed-order"
                 id="confirmedOrder"
             ></div>
 
+
+            <!-- TOTAL -->
 
             <div class="confirmed-total">
 
@@ -1496,12 +1690,26 @@
             </div>
 
 
-            <button
-                class="new-order-btn"
-                id="newOrder"
-            >
-                New Order
-            </button>
+            <div class="confirmation-actions">
+
+                <button
+                    type="button"
+                    class="new-order-btn"
+                    id="newOrder"
+                >
+                    New Order
+                </button>
+
+
+                <button
+                    type="button"
+                    class="view-history-btn"
+                    id="viewHistoryFromModal"
+                >
+                    View History
+                </button>
+
+            </div>
 
         </div>
 
@@ -1509,7 +1717,110 @@
 
 
 
-    <!-- FOOTER -->
+    <!-- =================================
+         EDIT HISTORY ORDER MODAL
+    ================================== -->
+
+    <div
+        class="edit-order-modal"
+        id="editOrderModal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="editOrderTitle"
+    >
+
+        <div class="edit-order-content">
+
+            <div class="edit-order-header">
+
+                <div>
+
+                    <span class="cart-eyebrow">
+                        PANKAJ
+                    </span>
+
+                    <h3 id="editOrderTitle">
+                        Edit Order
+                    </h3>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="edit-close"
+                    id="editOrderClose"
+                    aria-label="Close edit order"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <p class="edit-order-note">
+                Modify quantities below and save the updated order.
+            </p>
+
+
+
+            <!-- EDIT ITEMS -->
+
+            <div
+                class="edit-order-items"
+                id="editOrderItems"
+            ></div>
+
+
+
+            <!-- EDIT TOTAL -->
+
+            <div class="edit-total-row">
+
+                <span>
+                    Updated Total
+                </span>
+
+                <strong id="editOrderTotal">
+                    ₹0
+                </strong>
+
+            </div>
+
+
+
+            <!-- EDIT ACTIONS -->
+
+            <div class="edit-order-actions">
+
+                <button
+                    type="button"
+                    class="cancel-edit-btn"
+                    id="cancelEditOrder"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    class="save-edit-btn"
+                    id="saveEditOrder"
+                >
+                    Save Changes
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================
+         FOOTER
+    ================================== -->
 
     <footer class="footer">
 
