@@ -1,303 +1,391 @@
 <!DOCTYPE html>
 
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#111111">
-    <title>PANKAJ — Waiter</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="PANKAJ Restaurant Waiter Ordering System">
+
+```
+<title>PANKAJ — Waiter</title>
+
+<link rel="stylesheet" href="style.css">
+```
+
 </head>
 
 <body>
 
-<div id="loginScreen" class="screen">
-
 ```
-<div class="login-card">
+<section id="loginScreen" class="login-screen">
 
-    <div class="logo">PK</div>
+    <div class="login-card">
 
-    <h1>PANKAJ</h1>
-    <p>Waiter Ordering System</p>
-
-    <form id="loginForm">
-
-        <label for="waiterId">Waiter ID</label>
-        <input
-            type="text"
-            id="waiterId"
-            placeholder="Enter waiter ID"
-            autocomplete="username"
-            required
-        >
-
-        <label for="waiterPassword">Password</label>
-        <input
-            type="password"
-            id="waiterPassword"
-            placeholder="Enter password"
-            autocomplete="current-password"
-            required
-        >
-
-        <div id="loginError" class="error"></div>
-
-        <button type="submit" class="primary-btn">
-            Login
-        </button>
-
-    </form>
-
-</div>
-```
-
-</div>
-
-<div id="app" class="app hidden">
-
-```
-<header class="topbar">
-
-    <div class="brand">
-        <strong>PANKAJ</strong>
-        <span>Restaurant</span>
-    </div>
-
-    <div class="user-area">
-
-        <div class="avatar" id="waiterAvatar">
-            W
+        <div class="brand-logo">
+            PK
         </div>
 
-        <div class="user-name">
-            <span>Waiter</span>
-            <strong id="waiterName">Waiter</strong>
-        </div>
+        <h1>PANKAJ</h1>
 
-        <button
-            type="button"
-            id="logoutBtn"
-            class="logout-btn"
-        >
-            Logout
-        </button>
+        <p>Waiter Ordering System</p>
 
-    </div>
+        <form id="loginForm">
 
-</header>
+            <div class="form-group">
 
-
-<main class="container">
-
-    <section class="page-title">
-
-        <div>
-            <h2>New Order</h2>
-            <p>Select table and add items</p>
-        </div>
-
-        <div
-            id="activeOrderCount"
-            class="order-counter"
-        >
-            0 Active
-        </div>
-
-    </section>
-
-
-    <section class="panel">
-
-        <div class="panel-title">
-            <h3>Select Table</h3>
-        </div>
-
-        <div
-            id="tableGrid"
-            class="table-grid"
-        ></div>
-
-    </section>
-
-
-    <section class="category-section">
-
-        <div
-            id="categories"
-            class="categories"
-        ></div>
-
-    </section>
-
-
-    <section class="order-layout">
-
-
-        <div class="menu-area">
-
-            <div
-                id="menuGrid"
-                class="menu-grid"
-            ></div>
-
-        </div>
-
-
-        <aside class="cart">
-
-            <div class="cart-header">
-
-                <div>
-                    <h3>Current Order</h3>
-
-                    <span
-                        id="cartTable"
-                        class="cart-table"
-                    >
-                        Select table
-                    </span>
-                </div>
-
-                <span
-                    id="cartCount"
-                    class="cart-count"
-                >
-                    0
-                </span>
-
-            </div>
-
-
-            <div
-                id="cartItems"
-                class="cart-items"
-            >
-
-                <div class="empty-cart">
-                    No items added
-                </div>
-
-            </div>
-
-
-            <div class="order-note">
-
-                <label for="orderNote">
-                    Special Instructions
+                <label for="waiterPassword">
+                    Password
                 </label>
 
-                <textarea
-                    id="orderNote"
-                    rows="3"
-                    placeholder="Less spicy, no onion, etc."
-                ></textarea>
-
-            </div>
-
-
-            <div class="cart-footer">
-
-                <div class="total-row">
-
-                    <span>Total</span>
-
-                    <strong id="total">
-                        ₹0
-                    </strong>
-
-                </div>
-
-                <button
-                    type="button"
-                    id="confirmOrderBtn"
-                    class="primary-btn confirm-btn"
-                    disabled
+                <input
+                    type="password"
+                    id="waiterPassword"
+                    placeholder="Enter password"
+                    autocomplete="current-password"
+                    required
                 >
-                    Confirm Order
-                </button>
 
             </div>
 
-        </aside>
+            <div
+                id="loginError"
+                class="login-error"
+            ></div>
 
-    </section>
+            <button
+                type="submit"
+                class="login-btn"
+            >
+                Login
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
 
 
-    <section class="active-orders">
+<section id="app" class="app hidden">
 
-        <div class="section-heading">
+    <header class="topbar">
 
-            <div>
-                <h3>Active Orders</h3>
-                <p>
-                    Orders placed by waiters
-                </p>
+        <div class="brand">
+
+            <div class="brand-mark">
+                PK
+            </div>
+
+            <div class="brand-text">
+                <strong>PANKAJ</strong>
+                <span>Restaurant</span>
             </div>
 
         </div>
 
-        <div
-            id="ordersList"
-            class="orders-list"
-        ></div>
 
-    </section>
+        <div class="waiter-section">
 
-</main>
-```
+            <div
+                id="waiterAvatar"
+                class="waiter-avatar"
+            >
+                W
+            </div>
 
-</div>
+            <div class="waiter-details">
+
+                <span>Logged in as</span>
+
+                <strong id="waiterName">
+                    Waiter
+                </strong>
+
+            </div>
+
+            <button
+                type="button"
+                id="logoutBtn"
+                class="logout-btn"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <main class="main-container">
+
+        <section class="page-header">
+
+            <div>
+
+                <h2>
+                    Take Order
+                </h2>
+
+                <p>
+                    Select items and confirm the order
+                </p>
+
+            </div>
+
+            <div
+                id="activeOrderCount"
+                class="active-count"
+            >
+                0 Active
+            </div>
+
+        </section>
+
+
+        <section class="category-section">
+
+            <div
+                id="categories"
+                class="categories"
+            ></div>
+
+        </section>
+
+
+        <section class="order-layout">
+
+
+            <div class="menu-section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h3>
+                            Menu
+                        </h3>
+
+                        <p>
+                            Choose items
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="menuGrid"
+                    class="menu-grid"
+                ></div>
+
+            </div>
+
+
+            <aside class="cart-panel">
+
+                <div class="cart-header">
+
+                    <div>
+
+                        <h3>
+                            Current Order
+                        </h3>
+
+                        <span>
+                            Review before confirming
+                        </span>
+
+                    </div>
+
+                    <div
+                        id="cartCount"
+                        class="cart-count"
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="cartItems"
+                    class="cart-items"
+                >
+
+                    <div class="empty-cart">
+
+                        <div class="empty-cart-icon">
+                            🛒
+                        </div>
+
+                        <strong>
+                            No items added
+                        </strong>
+
+                        <span>
+                            Select items from the menu
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="order-note">
+
+                    <label for="orderNote">
+                        Special Instructions
+                    </label>
+
+                    <textarea
+                        id="orderNote"
+                        rows="3"
+                        placeholder="Example: Less spicy, no onion..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="cart-summary">
+
+                    <div class="summary-row">
+
+                        <span>
+                            Items
+                        </span>
+
+                        <strong id="summaryItems">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-row total-row">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong id="total">
+                            ₹0
+                        </strong>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="confirmOrderBtn"
+                        class="confirm-btn"
+                        disabled
+                    >
+                        Confirm Order
+                    </button>
+
+                </div>
+
+            </aside>
+
+        </section>
+
+
+        <section class="active-orders-section">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h3>
+                        Active Orders
+                    </h3>
+
+                    <p>
+                        Confirmed orders
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="ordersList"
+                class="orders-list"
+            >
+
+                <div class="empty-orders">
+                    No active orders
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</section>
+
 
 <div
     id="mobileCartBar"
     class="mobile-cart-bar"
 >
 
-```
-<div>
+    <div class="mobile-cart-info">
 
-    <span>Cart</span>
+        <span>
+            Cart
+        </span>
 
-    <strong id="mobileCartTotal">
-        ₹0
-    </strong>
+        <strong id="mobileCartTotal">
+            ₹0
+        </strong>
+
+    </div>
+
+    <button
+        type="button"
+        id="mobileCartBtn"
+    >
+        View Cart
+    </button>
 
 </div>
 
-<button
-    type="button"
-    id="mobileCartBtn"
->
-    View Cart
-</button>
-```
-
-</div>
 
 <div
     id="toast"
     class="toast"
+    role="status"
+    aria-live="polite"
 ></div>
+
 
 <div
     id="loader"
     class="loader hidden"
 >
 
-```
-<div class="loader-box">
+    <div class="loader-box">
 
-    <div class="spinner"></div>
+        <div class="loader-spinner"></div>
 
-    <span>Loading...</span>
+        <span>
+            Please wait...
+        </span>
+
+    </div>
 
 </div>
-```
 
-</div>
 
 <script src="app.js"></script>
+```
 
 </body>
+
 </html>
