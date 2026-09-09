@@ -1,3808 +1,1062 @@
-// =====================================================
-// HOTEL PANKAJ - APP.JS
-// GOOGLE SHEETS + LOCAL STORAGE
-// =====================================================
+const API_URL = "";
 
-
-// =====================================================
-// GOOGLE SHEETS CONFIGURATION
-// =====================================================
-
-const GOOGLE_SCRIPT_URL =
-    "https://script.google.com/macros/s/AKfycbzn3PJ1U9gcvvq2T0fApBq5ah0--iu8_4PN7__FY1u_1jy-qKlFssAb0AlVhkeMXsRE/exec";
-
-
-// =====================================================
-// DEFAULT MENU
-// =====================================================
-
-const DEFAULT_MENU = [
-
-    {
-        id: 1,
-        name: "Chicken Biriyani",
-        category: "Biriyani",
-        price: 160
-    },
-
-    {
-        id: 2,
-        name: "Beef Biriyani",
-        category: "Biriyani",
-        price: 180
-    },
-
-    {
-        id: 3,
-        name: "Mutton Biriyani",
-        category: "Biriyani",
-        price: 220
-    },
-
-    {
-        id: 4,
-        name: "Chicken Fried Rice",
-        category: "Rice",
-        price: 150
-    },
-
-    {
-        id: 5,
-        name: "Chicken Noodles",
-        category: "Noodles",
-        price: 150
-    },
-
-    {
-        id: 6,
-        name: "Chicken 65",
-        category: "Starters",
-        price: 140
-    },
-
-    {
-        id: 7,
-        name: "Beef Fry",
-        category: "Starters",
-        price: 180
-    },
-
-    {
-        id: 8,
-        name: "Porotta",
-        category: "Breads",
-        price: 15
-    },
-
-    {
-        id: 9,
-        name: "Chapathi",
-        category: "Breads",
-        price: 15
-    },
-
-    {
-        id: 10,
-        name: "Chicken Curry",
-        category: "Curries",
-        price: 150
-    },
-
-    {
-        id: 11,
-        name: "Beef Curry",
-        category: "Curries",
-        price: 170
-    },
-
-    {
-        id: 12,
-        name: "Tea",
-        category: "Drinks",
-        price: 15
-    }
-
-];
-
-
-// =====================================================
-// LOCAL DATA
-// =====================================================
-
-let menu = JSON.parse(
-    localStorage.getItem(
-        "hotelPankajMenu"
-    ) || "null"
-);
-
-if (
-    !Array.isArray(menu) ||
-    menu.length === 0
-) {
-
-    menu = [
-        ...DEFAULT_MENU
-    ];
-
-    saveMenu();
-
-}
-
-
+let menu = [];
 let cart = [];
-
-let partyItems = [];
-
+let orders = [];
+let selectedTable = null;
 let selectedCategory = "All";
+let currentWaiter = null;
 
-let currentBill = null;
+const loginScreen = document.getElementById("loginScreen");
+const app = document.getElementById("app");
 
+document.addEventListener("DOMContentLoaded", () => {
+    initializeApp();
+});
 
-let orderNumber = Number(
-    localStorage.getItem(
-        "hotelPankajOrderNumber"
-    ) || 1
-);
+async function initializeApp() {
+    loadLocalData();
+    setupEvents();
 
-
-let history = JSON.parse(
-    localStorage.getItem(
-        "hotelPankajHistory"
-    ) || "[]"
-);
-
-
-let partyOrders = JSON.parse(
-    localStorage.getItem(
-        "hotelPankajPartyOrders"
-    ) || "[]"
-);
-
-
-// =====================================================
-// INITIALIZE APP
-// =====================================================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    async function() {
-
-        renderCategories();
-
-        renderMenu();
-
-        renderCart();
-
-        renderHistory();
-
-        renderPartyOrders();
-
-        updateOrderNumber();
-
-        await loadOrdersFromGoogleSheet();
-
+    if (currentWaiter) {
+        showApp();
+        await loadData();
+    } else {
+        showLogin();
     }
-);
+}
 
+function setupEvents() {
+    document.addEventListener("click", handleClick);
 
-// =====================================================
-// GOOGLE SHEETS - SAVE ORDER
-// =====================================================
+    const loginForm = document.getElementById("loginForm");
 
-async function saveOrderToGoogleSheet(order) {
-
-    try {
-
-        const response =
-            await fetch(
-                GOOGLE_SCRIPT_URL,
-                {
-
-                    method: "POST",
-
-                    body: JSON.stringify({
-
-                        action: "save",
-
-                        orderId:
-                            order.id,
-
-                        date:
-                            order.date,
-
-                        time:
-                            order.time,
-
-                        items:
-                            order.items,
-
-                        total:
-                            order.total,
-
-                        type:
-                            "normal"
-
-                    })
-
-                }
-            );
-
-
-        const result =
-            await response.json();
-
-
-        if (
-            result &&
-            result.success === true
-        ) {
-
-            console.log(
-                "Order synced to Google Sheets:",
-                order.number
-            );
-
-            return true;
-
-        }
-
-
-        console.error(
-            "Google Sheets save failed:",
-            result
-        );
-
-        return false;
-
-
-    } catch (error) {
-
-        console.error(
-            "Google Sheets sync failed:",
-            error
-        );
-
-        return false;
-
+    if (loginForm) {
+        loginForm.addEventListener("submit", handleLogin);
     }
 
-}
+    const logoutBtn = document.getElementById("logoutBtn");
 
-
-// =====================================================
-// GOOGLE SHEETS - DELETE ORDER
-// =====================================================
-
-async function deleteOrderFromGoogleSheet(
-    orderId
-) {
-
-    try {
-
-        const response =
-            await fetch(
-                GOOGLE_SCRIPT_URL,
-                {
-
-                    method: "POST",
-
-                    body: JSON.stringify({
-
-                        action: "delete",
-
-                        orderId:
-                            orderId
-
-                    })
-
-                }
-            );
-
-
-        const result =
-            await response.json();
-
-
-        if (
-            result &&
-            result.success === true
-        ) {
-
-            console.log(
-                "Order deleted from Google Sheets:",
-                orderId
-            );
-
-            return true;
-
-        }
-
-
-        console.error(
-            "Google Sheets delete failed:",
-            result
-        );
-
-        return false;
-
-
-    } catch (error) {
-
-        console.error(
-            "Google Sheets delete failed:",
-            error
-        );
-
-        return false;
-
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", logout);
     }
-
 }
 
+async function handleLogin(event) {
+    event.preventDefault();
 
-// =====================================================
-// GOOGLE SHEETS - LOAD ORDERS
-// =====================================================
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const errorBox = document.getElementById("loginError");
 
-async function loadOrdersFromGoogleSheet() {
+    const username = usernameInput ? usernameInput.value.trim() : "";
+    const password = passwordInput ? passwordInput.value : "";
 
-    try {
-
-        console.log(
-            "Loading orders from Google Sheets..."
-        );
-
-
-        const response =
-            await fetch(
-                GOOGLE_SCRIPT_URL,
-                {
-                    method: "GET",
-                    cache: "no-store"
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "HTTP error: " +
-                response.status
-            );
-
-        }
-
-
-        const result =
-            await response.json();
-
-
-        console.log(
-            "Google Sheets response:",
-            result
-        );
-
-
-        if (
-            !result ||
-            result.success !== true ||
-            !Array.isArray(result.orders)
-        ) {
-
-            console.error(
-                "Invalid Google Sheets response:",
-                result
-            );
-
-            return;
-
-        }
-
-
-        const cloudOrders =
-            result.orders.map(
-                function(row) {
-
-                    let parsedItems = [];
-
-
-                    try {
-
-                        const rawItems =
-                            row["Items"];
-
-
-                        if (
-                            Array.isArray(
-                                rawItems
-                            )
-                        ) {
-
-                            parsedItems =
-                                rawItems;
-
-                        } else if (
-                            rawItems
-                        ) {
-
-                            parsedItems =
-                                JSON.parse(
-                                    String(
-                                        rawItems
-                                    )
-                                );
-
-                        }
-
-                    } catch (error) {
-
-                        console.error(
-                            "Could not parse order items:",
-                            error
-                        );
-
-                        parsedItems = [];
-
-                    }
-
-
-                    const rawId =
-                        row["Order ID"];
-
-
-                    const id =
-                        Number(
-                            rawId
-                        );
-
-
-                    return {
-
-                        id: id,
-
-                        number:
-                            String(
-                                rawId
-                            ).padStart(
-                                3,
-                                "0"
-                            ),
-
-                        date:
-                            String(
-                                row["Date"] || ""
-                            ),
-
-                        time:
-                            String(
-                                row["Time"] || ""
-                            ),
-
-                        items:
-                            parsedItems,
-
-                        total:
-                            Number(
-                                row["Total"] || 0
-                            )
-
-                    };
-
-                }
-            );
-
-
-        const validOrders =
-            cloudOrders.filter(
-                function(order) {
-
-                    return (
-                        Number.isFinite(
-                            order.id
-                        )
-                    );
-
-                }
-            );
-
-
-        history =
-            validOrders;
-
-
-        saveHistory();
-
-        renderHistory();
-
-
-        // =============================================
-        // UPDATE NEXT ORDER NUMBER
-        // =============================================
-
-        if (
-            history.length > 0
-        ) {
-
-            const highestId =
-                Math.max(
-                    ...history.map(
-                        function(order) {
-
-                            return (
-                                Number(
-                                    order.id
-                                ) || 0
-                            );
-
-                        }
-                    )
-                );
-
-
-            if (
-                highestId >=
-                orderNumber
-            ) {
-
-                orderNumber =
-                    highestId + 1;
-
-
-                localStorage.setItem(
-                    "hotelPankajOrderNumber",
-                    orderNumber
-                );
-
-
-                updateOrderNumber();
-
-            }
-
-        }
-
-
-        console.log(
-            "Orders loaded from Google Sheets:",
-            history.length
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Could not load Google Sheets data:",
-            error
-        );
-
-    }
-
-}
-
-
-// =====================================================
-// LOCAL STORAGE - MENU
-// =====================================================
-
-function saveMenu() {
-
-    localStorage.setItem(
-        "hotelPankajMenu",
-        JSON.stringify(menu)
-    );
-
-}
-
-
-// =====================================================
-// LOCAL STORAGE - HISTORY
-// =====================================================
-
-function saveHistory() {
-
-    localStorage.setItem(
-        "hotelPankajHistory",
-        JSON.stringify(history)
-    );
-
-}
-
-
-// =====================================================
-// LOCAL STORAGE - PARTY ORDERS
-// =====================================================
-
-function savePartyOrders() {
-
-    localStorage.setItem(
-        "hotelPankajPartyOrders",
-        JSON.stringify(
-            partyOrders
-        )
-    );
-
-}
-
-
-// =====================================================
-// ORDER NUMBER
-// =====================================================
-
-function updateOrderNumber() {
-
-    const element =
-        document.getElementById(
-            "orderNumber"
-        );
-
-
-    if (element) {
-
-        element.textContent =
-            String(
-                orderNumber
-            ).padStart(
-                3,
-                "0"
-            );
-
-    }
-
-}
-
-
-// =====================================================
-// PAGE NAVIGATION
-// =====================================================
-
-function showPage(
-    pageId,
-    button
-) {
-
-    document
-        .querySelectorAll(".page")
-        .forEach(
-            function(page) {
-
-                page.classList.remove(
-                    "active"
-                );
-
-            }
-        );
-
-
-    const page =
-        document.getElementById(
-            pageId
-        );
-
-
-    if (page) {
-
-        page.classList.add(
-            "active"
-        );
-
-    }
-
-
-    document
-        .querySelectorAll(".nav-btn")
-        .forEach(
-            function(btn) {
-
-                btn.classList.remove(
-                    "active"
-                );
-
-            }
-        );
-
-
-    if (button) {
-
-        button.classList.add(
-            "active"
-        );
-
-    }
-
-
-    window.scrollTo({
-
-        top: 0,
-
-        behavior: "smooth"
-
-    });
-
-}
-
-
-// =====================================================
-// CATEGORIES
-// =====================================================
-
-function renderCategories() {
-
-    const container =
-        document.getElementById(
-            "categories"
-        );
-
-
-    if (!container) {
-
+    if (!username || !password) {
+        showLoginError("Enter username and password.");
         return;
-
     }
 
+    if (API_URL) {
+        try {
+            showLoader(true);
 
-    const categories = [
+            const result = await apiRequest("login", {
+                username,
+                password
+            });
 
-        "All",
+            if (!result.success) {
+                showLoginError(result.message || "Invalid credentials.");
+                return;
+            }
 
-        ...new Set(
-            menu.map(
-                function(item) {
+            currentWaiter = result.user;
 
-                    return item.category;
+        } catch (error) {
+            showLoginError("Unable to connect to server.");
+            return;
+        } finally {
+            showLoader(false);
+        }
+    } else {
+        currentWaiter = {
+            username,
+            name: username,
+            role: "waiter"
+        };
+    }
 
-                }
-            )
-        )
+    localStorage.setItem(
+        "pankaj_waiter",
+        JSON.stringify(currentWaiter)
+    );
 
-    ];
-
-
-    container.innerHTML =
-        categories
-            .map(
-                function(category) {
-
-                    return `
-
-                        <button
-                            class="category-btn ${
-                                category ===
-                                selectedCategory
-                                    ? "active"
-                                    : ""
-                            }"
-                            onclick="selectCategory('${escapeAttribute(category)}')"
-                        >
-
-                            ${escapeHTML(
-                                category
-                            )}
-
-                        </button>
-
-                    `;
-
-                }
-            )
-            .join("");
-
+    showApp();
+    await loadData();
 }
 
+function showLogin() {
+    if (loginScreen) {
+        loginScreen.style.display = "flex";
+    }
 
-// =====================================================
-// SELECT CATEGORY
-// =====================================================
+    if (app) {
+        app.style.display = "none";
+    }
+}
 
-function selectCategory(
-    category
-) {
+function showApp() {
+    if (loginScreen) {
+        loginScreen.style.display = "none";
+    }
 
-    selectedCategory =
-        category;
+    if (app) {
+        app.style.display = "block";
+    }
+
+    updateWaiterUI();
+}
+
+function updateWaiterUI() {
+    if (!currentWaiter) return;
+
+    const name =
+        currentWaiter.name ||
+        currentWaiter.username ||
+        "Waiter";
+
+    const nameElement = document.getElementById("waiterName");
+    const avatarElement = document.getElementById("waiterAvatar");
+
+    if (nameElement) {
+        nameElement.textContent = name;
+    }
+
+    if (avatarElement) {
+        avatarElement.textContent =
+            name.charAt(0).toUpperCase();
+    }
+}
+
+function logout() {
+    currentWaiter = null;
+    cart = [];
+    selectedTable = null;
+
+    localStorage.removeItem("pankaj_waiter");
+
+    showLogin();
+}
+
+async function loadData() {
+    if (API_URL) {
+        try {
+            showLoader(true);
+
+            const result = await apiRequest("getData");
+
+            if (result.success) {
+                menu = Array.isArray(result.menu)
+                    ? result.menu
+                    : [];
+
+                orders = Array.isArray(result.orders)
+                    ? result.orders
+                    : [];
+            }
+        } catch (error) {
+            showToast("Failed to load restaurant data.");
+        } finally {
+            showLoader(false);
+        }
+    }
+
+    if (!menu.length) {
+        menu = getDefaultMenu();
+    }
 
     renderCategories();
-
     renderMenu();
-
+    renderTables();
+    renderOrders();
+    renderCart();
 }
 
+function getDefaultMenu() {
+    return [
+        {
+            id: "M001",
+            name: "Chicken Biriyani",
+            category: "Biriyani",
+            price: 160,
+            description: "Traditional chicken biriyani",
+            image: "",
+            available: true
+        },
+        {
+            id: "M002",
+            name: "Beef Biriyani",
+            category: "Biriyani",
+            price: 180,
+            description: "Malabar style beef biriyani",
+            image: "",
+            available: true
+        },
+        {
+            id: "M003",
+            name: "Mutton Biriyani",
+            category: "Biriyani",
+            price: 220,
+            description: "Tender mutton biriyani",
+            image: "",
+            available: true
+        },
+        {
+            id: "M004",
+            name: "Chicken Fried Rice",
+            category: "Rice",
+            price: 140,
+            description: "Chicken fried rice",
+            image: "",
+            available: true
+        },
+        {
+            id: "M005",
+            name: "Chicken Noodles",
+            category: "Noodles",
+            price: 140,
+            description: "Spicy chicken noodles",
+            image: "",
+            available: true
+        },
+        {
+            id: "M006",
+            name: "Chicken 65",
+            category: "Starters",
+            price: 150,
+            description: "Crispy spicy chicken",
+            image: "",
+            available: true
+        },
+        {
+            id: "M007",
+            name: "Porotta",
+            category: "Breads",
+            price: 15,
+            description: "Kerala layered flatbread",
+            image: "",
+            available: true
+        },
+        {
+            id: "M008",
+            name: "Chicken Curry",
+            category: "Curries",
+            price: 130,
+            description: "Kerala style chicken curry",
+            image: "",
+            available: true
+        }
+    ];
+}
 
-// =====================================================
-// MENU
-// =====================================================
+function renderCategories() {
+    const container =
+        document.querySelector(".categories");
+
+    if (!container) return;
+
+    const categories = [
+        "All",
+        ...new Set(
+            menu
+                .map(item => item.category)
+                .filter(Boolean)
+        )
+    ];
+
+    container.innerHTML = categories
+        .map(category => `
+            <button
+                class="category-btn ${category === selectedCategory ? "active" : ""}"
+                data-category="${escapeHTML(category)}"
+            >
+                ${escapeHTML(category)}
+            </button>
+        `)
+        .join("");
+}
 
 function renderMenu() {
+    const container =
+        document.querySelector(".menu-grid");
 
-    const grid =
-        document.getElementById(
-            "menuGrid"
-        );
-
-
-    const count =
-        document.getElementById(
-            "menuCount"
-        );
-
-
-    if (!grid) {
-
-        return;
-
-    }
-
+    if (!container) return;
 
     const filteredMenu =
         selectedCategory === "All"
-
             ? menu
-
             : menu.filter(
-                function(item) {
-
-                    return (
-                        item.category ===
-                        selectedCategory
-                    );
-
-                }
+                item =>
+                    item.category === selectedCategory
             );
 
-
-    if (count) {
-
-        count.textContent =
-            filteredMenu.length +
-            (
-                filteredMenu.length === 1
-                    ? " item"
-                    : " items"
-            );
-
-    }
-
-
-    if (
-        filteredMenu.length === 0
-    ) {
-
-        grid.innerHTML = `
-
-            <div class="empty-state">
-
-                <div class="empty-icon">
-                    🍽️
-                </div>
-
-                <h3>
-                    No items found
-                </h3>
-
-                <p>
-                    Add items from the Admin Panel.
-                </p>
-
+    if (!filteredMenu.length) {
+        container.innerHTML = `
+            <div style="grid-column:1/-1;padding:40px;text-align:center;color:#999;">
+                No items available
             </div>
-
         `;
-
         return;
-
     }
 
+    container.innerHTML = filteredMenu
+        .map(item => {
+            const unavailable =
+                item.available === false;
 
-    grid.innerHTML =
-        filteredMenu
-            .map(
-                function(item) {
+            return `
+                <div class="menu-item ${unavailable ? "item-unavailable" : ""}">
+                    <div class="item-image">
+                        ${
+                            item.image
+                                ? `<img src="${escapeAttribute(item.image)}" alt="${escapeAttribute(item.name)}">`
+                                : "🍽️"
+                        }
+                    </div>
 
-                    return `
-
-                        <div class="menu-card">
-
-                            <div class="menu-card-info">
-
-                                <h3>
-                                    ${escapeHTML(
-                                        item.name
-                                    )}
-                                </h3>
-
-                                <span>
-                                    ${escapeHTML(
-                                        item.category
-                                    )}
-                                </span>
-
-                            </div>
-
-
-                            <div class="menu-card-bottom">
-
-                                <strong>
-                                    ₹${formatMoney(
-                                        item.price
-                                    )}
-                                </strong>
-
-
-                                <button
-                                    class="add-btn"
-                                    onclick="addToCart(${item.id})"
-                                >
-                                    +
-                                </button>
-
-                            </div>
-
+                    <div class="item-info">
+                        <div class="item-name">
+                            ${escapeHTML(item.name)}
                         </div>
 
-                    `;
-
-                }
-            )
-            .join("");
-
-}
-
-
-// =====================================================
-// ADD TO CART
-// =====================================================
-
-function addToCart(id) {
-
-    const item =
-        menu.find(
-            function(menuItem) {
-
-                return (
-                    Number(menuItem.id) ===
-                    Number(id)
-                );
-
-            }
-        );
-
-
-    if (!item) {
-
-        return;
-
-    }
-
-
-    const existing =
-        cart.find(
-            function(cartItem) {
-
-                return (
-                    Number(cartItem.id) ===
-                    Number(id)
-                );
-
-            }
-        );
-
-
-    if (existing) {
-
-        existing.quantity += 1;
-
-    } else {
-
-        cart.push({
-
-            id:
-                Number(item.id),
-
-            name:
-                item.name,
-
-            price:
-                Number(item.price),
-
-            quantity:
-                1
-
-        });
-
-    }
-
-
-    renderCart();
-
-}
-
-
-// =====================================================
-// CHANGE QUANTITY
-// =====================================================
-
-function changeQuantity(
-    id,
-    amount
-) {
-
-    const item =
-        cart.find(
-            function(cartItem) {
-
-                return (
-                    Number(cartItem.id) ===
-                    Number(id)
-                );
-
-            }
-        );
-
-
-    if (!item) {
-
-        return;
-
-    }
-
-
-    item.quantity +=
-        Number(amount);
-
-
-    if (
-        item.quantity <= 0
-    ) {
-
-        cart =
-            cart.filter(
-                function(cartItem) {
-
-                    return (
-                        Number(
-                            cartItem.id
-                        ) !==
-                        Number(id)
-                    );
-
-                }
-            );
-
-    }
-
-
-    renderCart();
-
-}
-
-
-// =====================================================
-// CLEAR CART
-// =====================================================
-
-function clearCart() {
-
-    if (
-        cart.length === 0
-    ) {
-
-        return;
-
-    }
-
-
-    cart = [];
-
-    renderCart();
-
-}
-
-
-// =====================================================
-// CART TOTAL
-// =====================================================
-
-function getCartTotal() {
-
-    return cart.reduce(
-
-        function(
-            total,
-            item
-        ) {
-
-            return (
-                total +
-                Number(item.price) *
-                Number(item.quantity)
-            );
-
-        },
-
-        0
-
-    );
-
-}
-
-
-// =====================================================
-// CART ITEM COUNT
-// =====================================================
-
-function getCartItemCount() {
-
-    return cart.reduce(
-
-        function(
-            total,
-            item
-        ) {
-
-            return (
-                total +
-                Number(
-                    item.quantity
-                )
-            );
-
-        },
-
-        0
-
-    );
-
-}
-
-
-// =====================================================
-// RENDER CART
-// =====================================================
-
-function renderCart() {
-
-    const container =
-        document.getElementById(
-            "cartItems"
-        );
-
-
-    const itemCount =
-        document.getElementById(
-            "cartCount"
-        );
-
-
-    const subtotal =
-        document.getElementById(
-            "subtotal"
-        );
-
-
-    const grandTotal =
-        document.getElementById(
-            "total"
-        );
-
-
-    const mobileCount =
-        document.getElementById(
-            "mobileCount"
-        );
-
-
-    const mobileTotal =
-        document.getElementById(
-            "mobileTotal"
-        );
-
-
-    const totalItems =
-        getCartItemCount();
-
-
-    const total =
-        getCartTotal();
-
-
-    if (itemCount) {
-
-        itemCount.textContent =
-            totalItems +
-            (
-                totalItems === 1
-                    ? " item"
-                    : " items"
-            );
-
-    }
-
-
-    if (subtotal) {
-
-        subtotal.textContent =
-            "₹" +
-            formatMoney(total);
-
-    }
-
-
-    if (grandTotal) {
-
-        grandTotal.textContent =
-            "₹" +
-            formatMoney(total);
-
-    }
-
-
-    if (mobileCount) {
-
-        mobileCount.textContent =
-            totalItems +
-            (
-                totalItems === 1
-                    ? " item"
-                    : " items"
-            );
-
-    }
-
-
-    if (mobileTotal) {
-
-        mobileTotal.textContent =
-            "₹" +
-            formatMoney(total);
-
-    }
-
-
-    if (!container) {
-
-        return;
-
-    }
-
-
-    if (
-        cart.length === 0
-    ) {
-
-        container.innerHTML = `
-
-            <div class="empty-cart">
-
-                <div class="empty-icon">
-                    🛒
-                </div>
-
-                <h3>
-                    Your cart is empty
-                </h3>
-
-                <p>
-                    Tap a menu item to add it to the order.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    container.innerHTML =
-        cart
-            .map(
-                function(item) {
-
-                    const itemTotal =
-                        Number(item.price) *
-                        Number(item.quantity);
-
-
-                    return `
-
-                        <div class="cart-item">
-
-                            <div class="cart-item-info">
-
-                                <h4>
-                                    ${escapeHTML(
-                                        item.name
-                                    )}
-                                </h4>
-
-                                <small>
-                                    ₹${formatMoney(
-                                        item.price
-                                    )}
-                                    each
-                                </small>
-
-
-                                <div class="quantity-control">
-
+                        <div class="item-description">
+                            ${escapeHTML(item.description || "")}
+                        </div>
+
+                        <div class="item-bottom">
+                            <div>
+                                ${
+                                    unavailable
+                                        ? `<span class="unavailable-label">Unavailable</span>`
+                                        : `<span class="item-price">₹${formatMoney(item.price)}</span>`
+                                }
+                            </div>
+
+                            ${
+                                unavailable
+                                    ? ""
+                                    : `
                                     <button
-                                        onclick="changeQuantity(${item.id}, -1)"
-                                    >
-                                        −
-                                    </button>
-
-
-                                    <span>
-                                        ${item.quantity}
-                                    </span>
-
-
-                                    <button
-                                        onclick="changeQuantity(${item.id}, 1)"
+                                        class="add-btn"
+                                        data-add-item="${escapeAttribute(item.id)}"
                                     >
                                         +
                                     </button>
-
-                                </div>
-
-                            </div>
-
-
-                            <strong>
-                                ₹${formatMoney(
-                                    itemTotal
-                                )}
-                            </strong>
-
+                                    `
+                            }
                         </div>
-
-                    `;
-
-                }
-            )
-            .join("");
-
-}
-
-
-// =====================================================
-// MOBILE CART
-// =====================================================
-
-function toggleMobileCart() {
-
-    const cartPanel =
-        document.getElementById(
-            "cartPanel"
-        );
-
-
-    if (!cartPanel) {
-
-        return;
-
-    }
-
-
-    cartPanel.classList.toggle(
-        "mobile-open"
-    );
-
-}
-
-
-// =====================================================
-// CONFIRM ORDER
-// =====================================================
-
-function confirmOrder() {
-
-    if (
-        cart.length === 0
-    ) {
-
-        alert(
-            "Please add at least one item to the order."
-        );
-
-        return;
-
-    }
-
-
-    const now =
-        new Date();
-
-
-    const order = {
-
-        id:
-            orderNumber,
-
-        number:
-            String(
-                orderNumber
-            ).padStart(
-                3,
-                "0"
-            ),
-
-        date:
-            now.toLocaleDateString(
-                "en-IN"
-            ),
-
-        time:
-            now.toLocaleTimeString(
-                "en-IN",
-                {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                }
-            ),
-
-        items:
-            cart.map(
-                function(item) {
-
-                    return {
-
-                        id:
-                            item.id,
-
-                        name:
-                            item.name,
-
-                        price:
-                            Number(
-                                item.price
-                            ),
-
-                        quantity:
-                            Number(
-                                item.quantity
-                            )
-
-                    };
-
-                }
-            ),
-
-        total:
-            getCartTotal()
-
-    };
-
-
-    // =============================================
-    // SAVE LOCALLY
-    // =============================================
-
-    history.unshift(
-        order
-    );
-
-    saveHistory();
-
-
-    // =============================================
-    // SAVE TO GOOGLE SHEETS
-    // =============================================
-
-    saveOrderToGoogleSheet(
-        order
-    );
-
-
-    currentBill =
-        order;
-
-
-    orderNumber += 1;
-
-
-    localStorage.setItem(
-        "hotelPankajOrderNumber",
-        orderNumber
-    );
-
-
-    cart = [];
-
-
-    renderCart();
-
-    renderHistory();
-
-    updateOrderNumber();
-
-
-    showBill(
-        order
-    );
-
-}
-
-
-// =====================================================
-// SHOW BILL
-// =====================================================
-
-function showBill(
-    order
-) {
-
-    const modal =
-        document.getElementById(
-            "billModal"
-        );
-
-
-    const content =
-        document.getElementById(
-            "billContent"
-        );
-
-
-    if (
-        !modal ||
-        !content
-    ) {
-
-        return;
-
-    }
-
-
-    const itemRows =
-        order.items
-            .map(
-                function(item) {
-
-                    return `
-
-                        <div class="bill-row">
-
-                            <span>
-
-                                ${escapeHTML(
-                                    item.name
-                                )}
-
-                                ×
-                                ${item.quantity}
-
-                            </span>
-
-
-                            <strong>
-
-                                ₹${formatMoney(
-                                    Number(
-                                        item.price
-                                    ) *
-                                    Number(
-                                        item.quantity
-                                    )
-                                )}
-
-                            </strong>
-
-                        </div>
-
-                    `;
-
-                }
-            )
-            .join("");
-
-
-    content.innerHTML = `
-
-        <div class="bill-heading">
-
-            <h2>
-                Hotel Pankaj
-            </h2>
-
-            <p>
-                Restaurant Order
-            </p>
-
-        </div>
-
-
-        <div class="bill-row">
-
-            <span>
-                Order No.
-            </span>
-
-            <strong>
-                #${escapeHTML(
-                    order.number
-                )}
-            </strong>
-
-        </div>
-
-
-        <div class="bill-row">
-
-            <span>
-                Date
-            </span>
-
-            <strong>
-                ${escapeHTML(
-                    order.date
-                )}
-            </strong>
-
-        </div>
-
-
-        <div class="bill-row">
-
-            <span>
-                Time
-            </span>
-
-            <strong>
-                ${escapeHTML(
-                    order.time
-                )}
-            </strong>
-
-        </div>
-
-
-        <div class="bill-divider"></div>
-
-
-        ${itemRows}
-
-
-        <div class="bill-divider"></div>
-
-
-        <div class="bill-total">
-
-            <span>
-                TOTAL
-            </span>
-
-            <strong>
-                ₹${formatMoney(
-                    order.total
-                )}
-            </strong>
-
-        </div>
-
-    `;
-
-
-    modal.classList.add(
-        "active"
-    );
-
-}
-
-
-// =====================================================
-// CLOSE BILL
-// =====================================================
-
-function closeBill() {
-
-    const modal =
-        document.getElementById(
-            "billModal"
-        );
-
-
-    if (modal) {
-
-        modal.classList.remove(
-            "active"
-        );
-
-    }
-
-}
-
-
-// =====================================================
-// PRINT BILL
-// =====================================================
-
-function printBill() {
-
-    if (!currentBill) {
-
-        return;
-
-    }
-
-
-    window.print();
-
-}
-
-
-// =====================================================
-// HISTORY
-// =====================================================
-
-function renderHistory() {
-
-    const container =
-        document.getElementById(
-            "history"
-        );
-
-
-    if (!container) {
-
-        return;
-
-    }
-
-
-    if (
-        history.length === 0
-    ) {
-
-        container.innerHTML = `
-
-            <div class="empty-state">
-
-                <div class="empty-icon">
-                    📋
+                    </div>
                 </div>
+            `;
+        })
+        .join("");
+}
 
-                <h3>
-                    No orders yet
-                </h3>
+function renderTables() {
+    const container =
+        document.querySelector(".table-grid");
 
-                <p>
-                    Confirmed orders will appear here.
-                </p>
+    if (!container) return;
 
+    const tables = Array.from(
+        { length: 20 },
+        (_, index) => index + 1
+    );
+
+    container.innerHTML = tables
+        .map(table => `
+            <button
+                class="table-btn ${selectedTable === table ? "active" : ""}"
+                data-table="${table}"
+            >
+                T${table}
+            </button>
+        `)
+        .join("");
+
+    updateCartTable();
+}
+
+function renderCart() {
+    const container =
+        document.querySelector(".cart-items");
+
+    if (!container) return;
+
+    if (!cart.length) {
+        container.innerHTML = `
+            <div class="empty-cart">
+                Select items from the menu
             </div>
-
         `;
-
-        return;
-
-    }
-
-
-    container.innerHTML =
-        history
-            .map(
-                function(order) {
-
-                    return `
-
-                        <div class="history-card">
-
-                            <div
-                                class="history-info"
-                                onclick="viewHistoryOrder(${order.id})"
-                            >
-
-                                <h3>
-                                    Order #${escapeHTML(
-                                        order.number
-                                    )}
-                                </h3>
-
-
-                                <p>
-
-                                    ${escapeHTML(
-                                        order.date
-                                    )}
-
-                                    •
-
-                                    ${escapeHTML(
-                                        order.time
-                                    )}
-
-                                    •
-
-                                    ${order.items.length}
-
-                                    item${
-                                        order.items.length === 1
-                                            ? ""
-                                            : "s"
-                                    }
-
-                                </p>
-
-                            </div>
-
-
-                            <div class="history-right">
-
-                                <strong>
-                                    ₹${formatMoney(
-                                        order.total
-                                    )}
-                                </strong>
-
-
-                                <button
-                                    class="delete-history-btn"
-                                    onclick="deleteHistoryOrder(${order.id}, event)"
-                                >
-                                    Delete
-                                </button>
-
-                            </div>
-
+    } else {
+        container.innerHTML = cart
+            .map(item => `
+                <div class="cart-item">
+                    <div class="cart-item-top">
+                        <div class="cart-item-name">
+                            ${escapeHTML(item.name)}
                         </div>
 
-                    `;
-
-                }
-            )
-            .join("");
-
-}
-
-
-// =====================================================
-// VIEW HISTORY ORDER
-// =====================================================
-
-function viewHistoryOrder(
-    id
-) {
-
-    const order =
-        history.find(
-            function(item) {
-
-                return (
-                    Number(item.id) ===
-                    Number(id)
-                );
-
-            }
-        );
-
-
-    if (!order) {
-
-        return;
-
-    }
-
-
-    currentBill =
-        order;
-
-
-    showBill(
-        order
-    );
-
-}
-
-
-// =====================================================
-// DELETE HISTORY ORDER
-// =====================================================
-
-async function deleteHistoryOrder(
-    id,
-    event
-) {
-
-    if (event) {
-
-        event.stopPropagation();
-
-    }
-
-
-    const order =
-        history.find(
-            function(item) {
-
-                return (
-                    Number(item.id) ===
-                    Number(id)
-                );
-
-            }
-        );
-
-
-    if (!order) {
-
-        return;
-
-    }
-
-
-    const confirmed =
-        confirm(
-            "Delete Order #" +
-            order.number +
-            " from history?"
-        );
-
-
-    if (!confirmed) {
-
-        return;
-
-    }
-
-
-    // =============================================
-    // DELETE LOCALLY
-    // =============================================
-
-    history =
-        history.filter(
-            function(item) {
-
-                return (
-                    Number(item.id) !==
-                    Number(id)
-                );
-
-            }
-        );
-
-
-    saveHistory();
-
-    renderHistory();
-
-
-    // =============================================
-    // DELETE FROM GOOGLE SHEETS
-    // =============================================
-
-    await deleteOrderFromGoogleSheet(
-        id
-    );
-
-
-    if (
-        currentBill &&
-        Number(currentBill.id) ===
-        Number(id)
-    ) {
-
-        currentBill = null;
-
-        closeBill();
-
-    }
-
-}
-
-
-// =====================================================
-// PARTY ORDER MODAL
-// =====================================================
-
-function openPartyModal() {
-
-    const modal =
-        document.getElementById(
-            "partyModal"
-        );
-
-
-    if (!modal) {
-
-        return;
-
-    }
-
-
-    const fields = [
-
-        "partyName",
-        "partyPhone",
-        "partyDate",
-        "partyPeople",
-        "partyNotes",
-        "partyAdvance"
-
-    ];
-
-
-    fields.forEach(
-        function(id) {
-
-            const element =
-                document.getElementById(
-                    id
-                );
-
-            if (element) {
-
-                element.value = "";
-
-            }
-
-        }
-    );
-
-
-    partyItems = [];
-
-
-    renderPartyItems();
-
-    updatePartyTotal();
-
-
-    modal.classList.add(
-        "active"
-    );
-
-}
-
-
-// =====================================================
-// CLOSE PARTY MODAL
-// =====================================================
-
-function closePartyModal() {
-
-    const modal =
-        document.getElementById(
-            "partyModal"
-        );
-
-
-    if (modal) {
-
-        modal.classList.remove(
-            "active"
-        );
-
-    }
-
-}
-
-
-// =====================================================
-// ADD PARTY ITEM
-// =====================================================
-
-function addPartyItem() {
-
-    if (
-        menu.length === 0
-    ) {
-
-        alert(
-            "No menu items available."
-        );
-
-        return;
-
-    }
-
-
-    partyItems.push({
-
-        id:
-            menu[0].id,
-
-        quantity:
-            1
-
-    });
-
-
-    renderPartyItems();
-
-    updatePartyTotal();
-
-}
-
-
-// =====================================================
-// REMOVE PARTY ITEM
-// =====================================================
-
-function removePartyItem(
-    index
-) {
-
-    partyItems.splice(
-        index,
-        1
-    );
-
-
-    renderPartyItems();
-
-    updatePartyTotal();
-
-}
-
-
-// =====================================================
-// UPDATE PARTY ITEM
-// =====================================================
-
-function updatePartyItem(
-    index,
-    value
-) {
-
-    const id =
-        Number(value);
-
-
-    if (!partyItems[index]) {
-
-        return;
-
-    }
-
-
-    partyItems[index].id =
-        id;
-
-
-    updatePartyTotal();
-
-}
-
-
-// =====================================================
-// UPDATE PARTY QUANTITY
-// =====================================================
-
-function updatePartyQuantity(
-    index,
-    value
-) {
-
-    const quantity =
-        Math.max(
-            1,
-            Number(value) || 1
-        );
-
-
-    if (!partyItems[index]) {
-
-        return;
-
-    }
-
-
-    partyItems[index].quantity =
-        quantity;
-
-
-    updatePartyTotal();
-
-}
-
-
-// =====================================================
-// RENDER PARTY ITEMS
-// =====================================================
-
-function renderPartyItems() {
-
-    const container =
-        document.getElementById(
-            "partyItems"
-        );
-
-
-    if (!container) {
-
-        return;
-
-    }
-
-
-    if (
-        partyItems.length === 0
-    ) {
-
-        container.innerHTML = `
-
-            <div class="empty-state">
-
-                <p>
-                    No items added.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    container.innerHTML =
-        partyItems
-            .map(
-                function(
-                    item,
-                    index
-                ) {
-
-                    return `
-
-                        <div class="party-item-row">
-
-                            <select
-                                class="party-item-select"
-                                onchange="updatePartyItem(${index}, this.value)"
-                            >
-
-                                ${
-                                    menu
-                                        .map(
-                                            function(
-                                                menuItem
-                                            ) {
-
-                                                return `
-
-                                                    <option
-                                                        value="${menuItem.id}"
-                                                        ${
-                                                            Number(
-                                                                menuItem.id
-                                                            ) ===
-                                                            Number(
-                                                                item.id
-                                                            )
-                                                                ? "selected"
-                                                                : ""
-                                                        }
-                                                    >
-
-                                                        ${escapeHTML(
-                                                            menuItem.name
-                                                        )}
-
-                                                        -
-
-                                                        ₹${formatMoney(
-                                                            menuItem.price
-                                                        )}
-
-                                                    </option>
-
-                                                `;
-
-                                            }
-                                        )
-                                        .join("")
-                                }
-
-                            </select>
-
-
-                            <input
-                                class="party-item-qty"
-                                type="number"
-                                min="1"
-                                value="${item.quantity}"
-                                onchange="updatePartyQuantity(${index}, this.value)"
-                            >
-
-
+                        <div class="cart-item-price">
+                            ₹${formatMoney(item.price * item.qty)}
+                        </div>
+                    </div>
+
+                    <div class="cart-controls">
+                        <div class="qty-controls">
                             <button
-                                class="remove-party-btn"
-                                onclick="removePartyItem(${index})"
+                                class="qty-btn"
+                                data-qty-minus="${escapeAttribute(item.id)}"
                             >
-                                ×
+                                −
                             </button>
 
+                            <span class="qty">
+                                ${item.qty}
+                            </span>
+
+                            <button
+                                class="qty-btn"
+                                data-qty-plus="${escapeAttribute(item.id)}"
+                            >
+                                +
+                            </button>
                         </div>
 
-                    `;
-
-                }
-            )
-            .join("");
-
-}
-
-
-// =====================================================
-// PARTY TOTAL
-// =====================================================
-
-function getPartyTotal() {
-
-    return partyItems.reduce(
-
-        function(
-            total,
-            partyItem
-        ) {
-
-            const item =
-                menu.find(
-                    function(menuItem) {
-
-                        return (
-                            Number(
-                                menuItem.id
-                            ) ===
-                            Number(
-                                partyItem.id
-                            )
-                        );
-
-                    }
-                );
-
-
-            if (!item) {
-
-                return total;
-
-            }
-
-
-            return (
-                total +
-                Number(item.price) *
-                Number(partyItem.quantity)
-            );
-
-        },
-
-        0
-
-    );
-
-}
-
-
-// =====================================================
-// UPDATE PARTY TOTAL
-// =====================================================
-
-function updatePartyTotal() {
-
-    const totalElement =
-        document.getElementById(
-            "partyTotal"
-        );
-
-
-    if (totalElement) {
-
-        totalElement.textContent =
-            "₹" +
-            formatMoney(
-                getPartyTotal()
-            );
-
-    }
-
-}
-
-
-// =====================================================
-// SAVE PARTY ORDER
-// =====================================================
-
-function savePartyOrder() {
-
-    const nameElement =
-        document.getElementById(
-            "partyName"
-        );
-
-
-    const phoneElement =
-        document.getElementById(
-            "partyPhone"
-        );
-
-
-    const dateElement =
-        document.getElementById(
-            "partyDate"
-        );
-
-
-    const peopleElement =
-        document.getElementById(
-            "partyPeople"
-        );
-
-
-    const notesElement =
-        document.getElementById(
-            "partyNotes"
-        );
-
-
-    const advanceElement =
-        document.getElementById(
-            "partyAdvance"
-        );
-
-
-    if (
-        !nameElement ||
-        !phoneElement ||
-        !dateElement ||
-        !peopleElement ||
-        !notesElement ||
-        !advanceElement
-    ) {
-
-        return;
-
-    }
-
-
-    const name =
-        nameElement.value.trim();
-
-
-    const phone =
-        phoneElement.value.trim();
-
-
-    const date =
-        dateElement.value;
-
-
-    const people =
-        Number(
-            peopleElement.value
-        ) || 0;
-
-
-    const notes =
-        notesElement.value.trim();
-
-
-    const advance =
-        Number(
-            advanceElement.value
-        ) || 0;
-
-
-    if (!name) {
-
-        alert(
-            "Please enter customer / party name."
-        );
-
-        return;
-
-    }
-
-
-    if (!date) {
-
-        alert(
-            "Please select event date."
-        );
-
-        return;
-
-    }
-
-
-    if (
-        people <= 0
-    ) {
-
-        alert(
-            "Please enter number of people."
-        );
-
-        return;
-
-    }
-
-
-    if (
-        partyItems.length === 0
-    ) {
-
-        alert(
-            "Please add at least one item."
-        );
-
-        return;
-
-    }
-
-
-    const total =
-        getPartyTotal();
-
-
-    if (
-        advance > total
-    ) {
-
-        alert(
-            "Advance cannot be greater than total amount."
-        );
-
-        return;
-
-    }
-
-
-    const partyOrder = {
-
-        id:
-            Date.now(),
-
-        name:
-            name,
-
-        phone:
-            phone,
-
-        date:
-            date,
-
-        people:
-            people,
-
-        notes:
-            notes,
-
-        advance:
-            advance,
-
-        balance:
-            total - advance,
-
-        total:
-            total,
-
-
-        items:
-            partyItems.map(
-                function(partyItem) {
-
-                    const menuItem =
-                        menu.find(
-                            function(item) {
-
-                                return (
-                                    Number(
-                                        item.id
-                                    ) ===
-                                    Number(
-                                        partyItem.id
-                                    )
-                                );
-
-                            }
-                        );
-
-
-                    return {
-
-                        id:
-                            partyItem.id,
-
-                        name:
-                            menuItem
-                                ? menuItem.name
-                                : "Unknown Item",
-
-                        price:
-                            menuItem
-                                ? menuItem.price
-                                : 0,
-
-                        quantity:
-                            partyItem.quantity
-
-                    };
-
-                }
-            )
-
-    };
-
-
-    partyOrders.unshift(
-        partyOrder
-    );
-
-
-    savePartyOrders();
-
-    renderPartyOrders();
-
-    closePartyModal();
-
-
-    alert(
-        "Party order saved successfully."
-    );
-
-}
-
-
-// =====================================================
-// PARTY ORDERS
-// =====================================================
-
-function renderPartyOrders() {
-
-    const container =
-        document.getElementById(
-            "partyOrders"
-        );
-
-
-    if (!container) {
-
-        return;
-
-    }
-
-
-    if (
-        partyOrders.length === 0
-    ) {
-
-        container.innerHTML = `
-
-            <div class="empty-state">
-
-                <div class="empty-icon">
-                    🎉
+                        <button
+                            class="remove-btn"
+                            data-remove-item="${escapeAttribute(item.id)}"
+                        >
+                            Remove
+                        </button>
+                    </div>
                 </div>
-
-                <h3>
-                    No party orders
-                </h3>
-
-                <p>
-                    Create a new party or catering order.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    container.innerHTML =
-        partyOrders
-            .map(
-                function(order) {
-
-                    return `
-
-                        <div class="party-card">
-
-                            <div class="party-card-main">
-
-                                <h3>
-                                    ${escapeHTML(
-                                        order.name
-                                    )}
-                                </h3>
-
-
-                                <p>
-
-                                    📅
-
-                                    ${escapeHTML(
-                                        formatDate(
-                                            order.date
-                                        )
-                                    )}
-
-                                </p>
-
-
-                                <p>
-
-                                    👥
-
-                                    ${order.people}
-
-                                    people
-
-                                </p>
-
-
-                                ${
-                                    order.phone
-                                        ? `
-
-                                            <p>
-
-                                                📞
-
-                                                ${escapeHTML(
-                                                    order.phone
-                                                )}
-
-                                            </p>
-
-                                        `
-                                        : ""
-                                }
-
-
-                                ${
-                                    order.notes
-                                        ? `
-
-                                            <p>
-
-                                                📝
-
-                                                ${escapeHTML(
-                                                    order.notes
-                                                )}
-
-                                            </p>
-
-                                        `
-                                        : ""
-                                }
-
-                            </div>
-
-
-                            <div class="party-card-money">
-
-                                <span>
-                                    Total
-                                </span>
-
-
-                                <strong>
-                                    ₹${formatMoney(
-                                        order.total
-                                    )}
-                                </strong>
-
-
-                                <small>
-
-                                    Advance:
-
-                                    ₹${formatMoney(
-                                        order.advance
-                                    )}
-
-                                </small>
-
-
-                                <small>
-
-                                    Balance:
-
-                                    ₹${formatMoney(
-                                        order.balance
-                                    )}
-
-                                </small>
-
-                            </div>
-
-                        </div>
-
-                    `;
-
-                }
-            )
+            `)
             .join("");
-
-}
-
-
-// =====================================================
-// ADMIN
-// =====================================================
-
-function openAdmin() {
-
-    window.location.href =
-        "admin.html";
-
-}
-
-
-// =====================================================
-// CLOSE ADMIN
-// =====================================================
-
-function closeAdmin() {
-
-    const modal =
-        document.getElementById(
-            "adminModal"
-        );
-
-
-    if (modal) {
-
-        modal.classList.remove(
-            "active"
-        );
-
     }
 
+    updateCartSummary();
+    updateMobileCart();
 }
 
-
-// =====================================================
-// ADMIN SECTION
-// =====================================================
-
-function showAdminSection(
-    section,
-    button
-) {
-
-    document
-        .querySelectorAll(
-            ".admin-tab"
-        )
-        .forEach(
-            function(tab) {
-
-                tab.classList.remove(
-                    "active"
-                );
-
-            }
-        );
-
-
-    if (button) {
-
-        button.classList.add(
-            "active"
-        );
-
-    }
-
-
-    renderAdminSection(
-        section
+function addToCart(itemId) {
+    const item = menu.find(
+        menuItem =>
+            String(menuItem.id) === String(itemId)
     );
 
-}
-
-
-// =====================================================
-// RENDER ADMIN SECTION
-// =====================================================
-
-function renderAdminSection(
-    section
-) {
-
-    const container =
-        document.getElementById(
-            "adminContent"
-        );
-
-
-    if (!container) {
-
+    if (!item || item.available === false) {
         return;
-
     }
 
-
-    if (
-        section === "items"
-    ) {
-
-        renderAdminItems(
-            container
+    const existing =
+        cart.find(
+            cartItem =>
+                String(cartItem.id) === String(itemId)
         );
 
-        return;
-
+    if (existing) {
+        existing.qty += 1;
+    } else {
+        cart.push({
+            id: item.id,
+            name: item.name,
+            price: Number(item.price) || 0,
+            qty: 1
+        });
     }
-
-
-    if (
-        section === "add"
-    ) {
-
-        renderAdminAdd(
-            container
-        );
-
-        return;
-
-    }
-
-
-    if (
-        section === "settings"
-    ) {
-
-        renderAdminSettings(
-            container
-        );
-
-    }
-
-}
-
-
-// =====================================================
-// ADMIN ITEMS
-// =====================================================
-
-function renderAdminItems(
-    container
-) {
-
-    if (
-        menu.length === 0
-    ) {
-
-        container.innerHTML = `
-
-            <div class="empty-state">
-
-                <h3>
-                    No menu items
-                </h3>
-
-                <p>
-                    Add your first menu item.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    container.innerHTML = `
-
-        <div class="admin-items-list">
-
-            ${
-                menu
-                    .map(
-                        function(item) {
-
-                            return `
-
-                                <div class="admin-item">
-
-                                    <div>
-
-                                        <h3>
-                                            ${escapeHTML(
-                                                item.name
-                                            )}
-                                        </h3>
-
-                                        <p>
-                                            ${escapeHTML(
-                                                item.category
-                                            )}
-                                        </p>
-
-                                    </div>
-
-
-                                    <strong>
-                                        ₹${formatMoney(
-                                            item.price
-                                        )}
-                                    </strong>
-
-
-                                    <button
-                                        class="secondary-btn"
-                                        onclick="editMenuItem(${item.id})"
-                                    >
-                                        Edit
-                                    </button>
-
-
-                                    <button
-                                        class="clear-btn"
-                                        onclick="deleteMenuItem(${item.id})"
-                                    >
-                                        Delete
-                                    </button>
-
-                                </div>
-
-                            `;
-
-                        }
-                    )
-                    .join("")
-            }
-
-        </div>
-
-    `;
-
-}
-
-
-// =====================================================
-// ADMIN ADD ITEM
-// =====================================================
-
-function renderAdminAdd(
-    container
-) {
-
-    container.innerHTML = `
-
-        <div class="admin-form">
-
-            <div class="form-group">
-
-                <label>
-                    Item Name
-                </label>
-
-                <input
-                    id="adminItemName"
-                    type="text"
-                    placeholder="Chicken Biriyani"
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Category
-                </label>
-
-                <input
-                    id="adminItemCategory"
-                    type="text"
-                    placeholder="Biriyani"
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Price
-                </label>
-
-                <input
-                    id="adminItemPrice"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="160"
-                >
-
-            </div>
-
-
-            <button
-                class="primary-btn"
-                onclick="addMenuItem()"
-            >
-                Add Menu Item
-            </button>
-
-        </div>
-
-    `;
-
-}
-
-
-// =====================================================
-// ADMIN SETTINGS
-// =====================================================
-
-function renderAdminSettings(
-    container
-) {
-
-    const savedName =
-        localStorage.getItem(
-            "hotelPankajRestaurantName"
-        ) ||
-        "Hotel Pankaj";
-
-
-    container.innerHTML = `
-
-        <div class="admin-form">
-
-            <h3>
-                Restaurant Settings
-            </h3>
-
-
-            <div class="form-group">
-
-                <label>
-                    Restaurant Name
-                </label>
-
-
-                <input
-                    id="restaurantNameSetting"
-                    type="text"
-                    value="${escapeAttribute(
-                        savedName
-                    )}"
-                >
-
-            </div>
-
-
-            <button
-                class="primary-btn"
-                onclick="saveRestaurantSettings()"
-            >
-                Save Settings
-            </button>
-
-
-            <button
-                class="secondary-btn"
-                onclick="resetAllData()"
-                style="margin-top:10px;"
-            >
-                Reset All Data
-            </button>
-
-        </div>
-
-    `;
-
-}
-
-
-// =====================================================
-// ADD MENU ITEM
-// =====================================================
-
-function addMenuItem() {
-
-    const nameElement =
-        document.getElementById(
-            "adminItemName"
-        );
-
-
-    const categoryElement =
-        document.getElementById(
-            "adminItemCategory"
-        );
-
-
-    const priceElement =
-        document.getElementById(
-            "adminItemPrice"
-        );
-
-
-    if (
-        !nameElement ||
-        !categoryElement ||
-        !priceElement
-    ) {
-
-        return;
-
-    }
-
-
-    const name =
-        nameElement.value.trim();
-
-
-    const category =
-        categoryElement.value.trim();
-
-
-    const price =
-        Number(
-            priceElement.value
-        );
-
-
-    if (!name) {
-
-        alert(
-            "Please enter item name."
-        );
-
-        return;
-
-    }
-
-
-    if (!category) {
-
-        alert(
-            "Please enter category."
-        );
-
-        return;
-
-    }
-
-
-    if (
-        !Number.isFinite(price) ||
-        price < 0
-    ) {
-
-        alert(
-            "Please enter a valid price."
-        );
-
-        return;
-
-    }
-
-
-    const newId =
-        menu.length > 0
-
-            ? Math.max(
-                ...menu.map(
-                    function(item) {
-
-                        return Number(
-                            item.id
-                        );
-
-                    }
-                )
-            ) + 1
-
-            : 1;
-
-
-    menu.push({
-
-        id:
-            newId,
-
-        name:
-            name,
-
-        category:
-            category,
-
-        price:
-            price
-
-    });
-
-
-    saveMenu();
-
-    renderCategories();
-
-    renderMenu();
-
-
-    alert(
-        "Menu item added."
-    );
-
-
-    nameElement.value = "";
-
-    categoryElement.value = "";
-
-    priceElement.value = "";
-
-}
-
-
-// =====================================================
-// EDIT MENU ITEM
-// =====================================================
-
-function editMenuItem(
-    id
-) {
-
-    const item =
-        menu.find(
-            function(menuItem) {
-
-                return (
-                    Number(
-                        menuItem.id
-                    ) ===
-                    Number(id)
-                );
-
-            }
-        );
-
-
-    if (!item) {
-
-        return;
-
-    }
-
-
-    const newName =
-        prompt(
-            "Item name:",
-            item.name
-        );
-
-
-    if (
-        newName === null
-    ) {
-
-        return;
-
-    }
-
-
-    const newCategory =
-        prompt(
-            "Category:",
-            item.category
-        );
-
-
-    if (
-        newCategory === null
-    ) {
-
-        return;
-
-    }
-
-
-    const newPrice =
-        prompt(
-            "Price:",
-            item.price
-        );
-
-
-    if (
-        newPrice === null
-    ) {
-
-        return;
-
-    }
-
-
-    const price =
-        Number(
-            newPrice
-        );
-
-
-    if (
-        !newName.trim() ||
-        !newCategory.trim() ||
-        !Number.isFinite(price) ||
-        price < 0
-    ) {
-
-        alert(
-            "Invalid item details."
-        );
-
-        return;
-
-    }
-
-
-    item.name =
-        newName.trim();
-
-
-    item.category =
-        newCategory.trim();
-
-
-    item.price =
-        price;
-
-
-    saveMenu();
-
-    renderCategories();
-
-    renderMenu();
-
-    renderAdminSection(
-        "items"
-    );
-
-}
-
-
-// =====================================================
-// DELETE MENU ITEM
-// =====================================================
-
-function deleteMenuItem(
-    id
-) {
-
-    const item =
-        menu.find(
-            function(menuItem) {
-
-                return (
-                    Number(
-                        menuItem.id
-                    ) ===
-                    Number(id)
-                );
-
-            }
-        );
-
-
-    if (!item) {
-
-        return;
-
-    }
-
-
-    const confirmed =
-        confirm(
-            "Delete " +
-            item.name +
-            "?"
-        );
-
-
-    if (!confirmed) {
-
-        return;
-
-    }
-
-
-    menu =
-        menu.filter(
-            function(menuItem) {
-
-                return (
-                    Number(
-                        menuItem.id
-                    ) !==
-                    Number(id)
-                );
-
-            }
-        );
-
-
-    saveMenu();
-
-    renderCategories();
-
-    renderMenu();
-
-    renderAdminSection(
-        "items"
-    );
-
-}
-
-
-// =====================================================
-// RESTAURANT SETTINGS
-// =====================================================
-
-function saveRestaurantSettings() {
-
-    const input =
-        document.getElementById(
-            "restaurantNameSetting"
-        );
-
-
-    if (!input) {
-
-        return;
-
-    }
-
-
-    const name =
-        input.value.trim();
-
-
-    if (!name) {
-
-        alert(
-            "Please enter restaurant name."
-        );
-
-        return;
-
-    }
-
-
-    localStorage.setItem(
-        "hotelPankajRestaurantName",
-        name
-    );
-
-
-    alert(
-        "Settings saved."
-    );
-
-}
-
-
-// =====================================================
-// RESET ALL DATA
-// =====================================================
-
-function resetAllData() {
-
-    const confirmed =
-        confirm(
-            "This will delete menu, orders and party orders. Continue?"
-        );
-
-
-    if (!confirmed) {
-
-        return;
-
-    }
-
-
-    localStorage.removeItem(
-        "hotelPankajMenu"
-    );
-
-
-    localStorage.removeItem(
-        "hotelPankajHistory"
-    );
-
-
-    localStorage.removeItem(
-        "hotelPankajPartyOrders"
-    );
-
-
-    localStorage.removeItem(
-        "hotelPankajOrderNumber"
-    );
-
-
-    menu =
-        [
-            ...DEFAULT_MENU
-        ];
-
-
-    history = [];
-
-    partyOrders = [];
-
-    cart = [];
-
-    partyItems = [];
-
-    orderNumber = 1;
-
-
-    saveMenu();
-
-    saveHistory();
-
-    savePartyOrders();
-
-
-    renderCategories();
-
-    renderMenu();
 
     renderCart();
-
-    renderHistory();
-
-    renderPartyOrders();
-
-    updateOrderNumber();
-
-
-    alert(
-        "All data has been reset."
-    );
-
+    showToast(`${item.name} added`);
 }
 
-
-// =====================================================
-// FORMAT MONEY
-// =====================================================
-
-function formatMoney(
-    value
-) {
-
-    return Number(
-        value || 0
-    )
-        .toLocaleString(
-            "en-IN",
-            {
-                maximumFractionDigits: 2
-            }
+function changeQuantity(itemId, amount) {
+    const item =
+        cart.find(
+            cartItem =>
+                String(cartItem.id) === String(itemId)
         );
 
-}
+    if (!item) return;
 
+    item.qty += amount;
 
-// =====================================================
-// FORMAT DATE
-// =====================================================
-
-function formatDate(
-    dateString
-) {
-
-    if (!dateString) {
-
-        return "";
-
+    if (item.qty <= 0) {
+        cart = cart.filter(
+            cartItem =>
+                String(cartItem.id) !== String(itemId)
+        );
     }
 
+    renderCart();
+}
 
-    const date =
-        new Date(
-            dateString +
-            "T00:00:00"
+function removeFromCart(itemId) {
+    cart = cart.filter(
+        item =>
+            String(item.id) !== String(itemId)
+    );
+
+    renderCart();
+}
+
+function updateCartSummary() {
+    const subtotal =
+        cart.reduce(
+            (total, item) =>
+                total + item.price * item.qty,
+            0
         );
 
+    const itemCount =
+        cart.reduce(
+            (total, item) =>
+                total + item.qty,
+            0
+        );
+
+    const subtotalElement =
+        document.getElementById("subtotal");
+
+    const totalElement =
+        document.getElementById("total");
+
+    const countElement =
+        document.getElementById("cartCount");
+
+    const confirmButton =
+        document.getElementById("confirmOrderBtn");
+
+    if (subtotalElement) {
+        subtotalElement.textContent =
+            `₹${formatMoney(subtotal)}`;
+    }
+
+    if (totalElement) {
+        totalElement.textContent =
+            `₹${formatMoney(subtotal)}`;
+    }
+
+    if (countElement) {
+        countElement.textContent =
+            itemCount;
+    }
+
+    if (confirmButton) {
+        confirmButton.disabled =
+            !selectedTable ||
+            cart.length === 0;
+    }
+}
+
+function updateCartTable() {
+    const element =
+        document.querySelector(".cart-table");
+
+    if (!element) return;
+
+    element.textContent =
+        selectedTable
+            ? `Table ${selectedTable}`
+            : "No table";
+}
+
+function updateMobileCart() {
+    const bar =
+        document.querySelector(".mobile-cart-bar");
+
+    if (!bar) return;
+
+    const itemCount =
+        cart.reduce(
+            (total, item) =>
+                total + item.qty,
+            0
+        );
+
+    const total =
+        cart.reduce(
+            (sum, item) =>
+                sum + item.price * item.qty,
+            0
+        );
+
+    const info =
+        bar.querySelector(".mobile-cart-info");
+
+    if (info) {
+        info.innerHTML = `
+            <span>${itemCount} item${itemCount === 1 ? "" : "s"}</span>
+            <strong>₹${formatMoney(total)}</strong>
+        `;
+    }
+}
+
+function selectTable(table) {
+    selectedTable = Number(table);
+
+    renderTables();
+    updateCartSummary();
+
+    showToast(`Table ${selectedTable} selected`);
+}
+
+function selectCategory(category) {
+    selectedCategory = category;
+
+    renderCategories();
+    renderMenu();
+}
+
+async function confirmOrder() {
+    if (!selectedTable) {
+        showToast("Select a table first.");
+        return;
+    }
+
+    if (!cart.length) {
+        showToast("Add at least one item.");
+        return;
+    }
+
+    const noteElement =
+        document.getElementById("orderNote");
+
+    const note =
+        noteElement
+            ? noteElement.value.trim()
+            : "";
+
+    const order = {
+        id: generateOrderId(),
+        table: selectedTable,
+        waiter:
+            currentWaiter?.name ||
+            currentWaiter?.username ||
+            "Waiter",
+        items: cart.map(item => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            qty: item.qty
+        })),
+        note,
+        total: cart.reduce(
+            (sum, item) =>
+                sum + item.price * item.qty,
+            0
+        ),
+        status: "Pending",
+        createdAt: new Date().toISOString()
+    };
+
+    try {
+        showLoader(true);
+
+        if (API_URL) {
+            const result =
+                await apiRequest(
+                    "createOrder",
+                    order
+                );
+
+            if (!result.success) {
+                showToast(
+                    result.message ||
+                    "Order failed."
+                );
+                return;
+            }
+
+            if (result.order) {
+                orders.unshift(result.order);
+            } else {
+                orders.unshift(order);
+            }
+        } else {
+            orders.unshift(order);
+            saveLocalOrders();
+        }
+
+        cart = [];
+
+        if (noteElement) {
+            noteElement.value = "";
+        }
+
+        renderCart();
+        renderOrders();
+
+        showToast(
+            `Order ${order.id} confirmed`
+        );
+
+    } catch (error) {
+        showToast("Unable to place order.");
+    } finally {
+        showLoader(false);
+    }
+}
+
+function renderOrders() {
+    const container =
+        document.querySelector(".orders-list");
+
+    if (!container) return;
+
+    if (!orders.length) {
+        container.innerHTML = `
+            <div style="padding:30px;text-align:center;color:#999;background:#fff;border:1px solid #eee;border-radius:14px;">
+                No orders yet
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = orders
+        .slice(0, 20)
+        .map(order => `
+            <div class="order-card">
+                <div class="order-card-header">
+                    <div class="order-number">
+                        ${escapeHTML(order.id)}
+                        · T${escapeHTML(String(order.table))}
+                    </div>
+
+                    <div class="status">
+                        ${escapeHTML(order.status || "Pending")}
+                    </div>
+                </div>
+
+                <div class="order-items">
+                    ${
+                        Array.isArray(order.items)
+                            ? order.items
+                                .map(
+                                    item =>
+                                        `${escapeHTML(item.name)} × ${item.qty}`
+                                )
+                                .join("<br>")
+                            : ""
+                    }
+                </div>
+
+                <div class="order-total">
+                    <span>Total</span>
+                    <span>
+                        ₹${formatMoney(order.total)}
+                    </span>
+                </div>
+
+                ${
+                    order.status !== "Completed"
+                        ? `
+                        <button
+                            class="edit-order-btn"
+                            data-edit-order="${escapeAttribute(order.id)}"
+                        >
+                            Edit Order
+                        </button>
+                        `
+                        : ""
+                }
+            </div>
+        `)
+        .join("");
+
+    updateOrderCount();
+}
+
+function updateOrderCount() {
+    const element =
+        document.querySelector(".order-count");
+
+    if (!element) return;
+
+    const activeOrders =
+        orders.filter(
+            order =>
+                order.status !== "Completed"
+        ).length;
+
+    element.textContent =
+        `${activeOrders} Active`;
+}
+
+function editOrder(orderId) {
+    const order =
+        orders.find(
+            item =>
+                String(item.id) ===
+                String(orderId)
+        );
+
+    if (!order) return;
+
+    selectedTable =
+        Number(order.table);
+
+    cart =
+        Array.isArray(order.items)
+            ? order.items.map(item => ({
+                id: item.id,
+                name: item.name,
+                price: Number(item.price) || 0,
+                qty: Number(item.qty) || 1
+            }))
+            : [];
+
+    renderTables();
+    renderCart();
+
+    const noteElement =
+        document.getElementById("orderNote");
+
+    if (noteElement) {
+        noteElement.value =
+            order.note || "";
+    }
+
+    showToast(
+        `${order.id} loaded for editing`
+    );
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+function handleClick(event) {
+    const target =
+        event.target.closest("button");
+
+    if (!target) return;
+
+    if (target.dataset.category) {
+        selectCategory(
+            target.dataset.category
+        );
+        return;
+    }
+
+    if (target.dataset.table) {
+        selectTable(
+            target.dataset.table
+        );
+        return;
+    }
+
+    if (target.dataset.addItem) {
+        addToCart(
+            target.dataset.addItem
+        );
+        return;
+    }
+
+    if (target.dataset.qtyPlus) {
+        changeQuantity(
+            target.dataset.qtyPlus,
+            1
+        );
+        return;
+    }
+
+    if (target.dataset.qtyMinus) {
+        changeQuantity(
+            target.dataset.qtyMinus,
+            -1
+        );
+        return;
+    }
+
+    if (target.dataset.removeItem) {
+        removeFromCart(
+            target.dataset.removeItem
+        );
+        return;
+    }
+
+    if (target.dataset.editOrder) {
+        editOrder(
+            target.dataset.editOrder
+        );
+        return;
+    }
 
     if (
-        Number.isNaN(
-            date.getTime()
-        )
+        target.id ===
+        "confirmOrderBtn"
     ) {
-
-        return dateString;
-
+        confirmOrder();
+        return;
     }
 
+    if (
+        target.id ===
+        "mobileCartBtn"
+    ) {
+        toggleMobileCart();
+        return;
+    }
+}
 
-    return date.toLocaleDateString(
-        "en-IN",
-        {
+function toggleMobileCart() {
+    const cartElement =
+        document.querySelector(".cart");
 
-            day: "2-digit",
+    if (!cartElement) return;
 
-            month: "short",
+    cartElement.classList.toggle(
+        "mobile-open"
+    );
+}
 
-            year: "numeric"
+async function apiRequest(action, data = {}) {
+    if (!API_URL) {
+        return {
+            success: false,
+            message: "API URL not configured."
+        };
+    }
 
+    const response =
+        await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type":
+                    "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify({
+                action,
+                ...data
+            })
+        });
+
+    return await response.json();
+}
+
+function loadLocalData() {
+    try {
+        const waiter =
+            localStorage.getItem(
+                "pankaj_waiter"
+            );
+
+        if (waiter) {
+            currentWaiter =
+                JSON.parse(waiter);
         }
+
+        const savedOrders =
+            localStorage.getItem(
+                "pankaj_orders"
+            );
+
+        if (savedOrders) {
+            orders =
+                JSON.parse(savedOrders);
+        }
+    } catch (error) {
+        currentWaiter = null;
+        orders = [];
+    }
+}
+
+function saveLocalOrders() {
+    localStorage.setItem(
+        "pankaj_orders",
+        JSON.stringify(orders)
+    );
+}
+
+function generateOrderId() {
+    const date =
+        new Date();
+
+    const datePart =
+        date
+            .toISOString()
+            .slice(0, 10)
+            .replaceAll("-", "");
+
+    const random =
+        Math.floor(
+            1000 +
+            Math.random() * 9000
+        );
+
+    return `PK-${datePart}-${random}`;
+}
+
+function formatMoney(value) {
+    return Number(value || 0)
+        .toLocaleString("en-IN", {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        });
+}
+
+function showToast(message) {
+    const toast =
+        document.getElementById("toast");
+
+    if (!toast) return;
+
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(
+        showToast.timeout
     );
 
+    showToast.timeout =
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 2200);
 }
 
+function showLoader(show) {
+    const loader =
+        document.getElementById("loader");
 
-// =====================================================
-// ESCAPE HTML
-// =====================================================
+    if (!loader) return;
 
-function escapeHTML(
-    value
-) {
-
-    return String(
-        value
-    )
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
+    loader.style.display =
+        show ? "flex" : "none";
 }
 
+function showLoginError(message) {
+    const errorBox =
+        document.getElementById("loginError");
 
-// =====================================================
-// ESCAPE ATTRIBUTE
-// =====================================================
+    if (!errorBox) return;
 
-function escapeAttribute(
-    value
-) {
+    errorBox.textContent = message;
+    errorBox.style.display = "block";
+}
 
-    return String(
-        value
-    )
-        .replace(
-            /\\/g,
-            "\\\\"
-        )
-        .replace(
-            /'/g,
-            "\\'"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        );
+function escapeHTML(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
 
+function escapeAttribute(value) {
+    return escapeHTML(value);
 }
