@@ -1,192 +1,174 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#111111">
-    <meta name="description" content="PANKAJ Restaurant Waiter Ordering System">
 
-```
-<title>PANKAJ — Waiter</title>
+    <title>PANKAJ — Waiter</title>
 
-<link rel="stylesheet" href="style.css">
-```
-
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-```
-<section id="loginScreen" class="login-screen">
+    <!-- LOGIN -->
 
-    <div class="login-card">
+    <section id="loginScreen" class="login-screen">
 
-        <div class="brand-logo">
-            PK
-        </div>
+        <div class="login-card">
 
-        <h1>PANKAJ</h1>
-
-        <p>Waiter Ordering System</p>
-
-        <form id="loginForm">
-
-            <div class="form-group">
-
-                <label for="waiterPassword">
-                    Password
-                </label>
-
-                <input
-                    type="password"
-                    id="waiterPassword"
-                    placeholder="Enter password"
-                    autocomplete="current-password"
-                    required
-                >
-
-            </div>
-
-            <div
-                id="loginError"
-                class="login-error"
-            ></div>
-
-            <button
-                type="submit"
-                class="login-btn"
-            >
-                Login
-            </button>
-
-        </form>
-
-    </div>
-
-</section>
-
-
-<section id="app" class="app hidden">
-
-    <header class="topbar">
-
-        <div class="brand">
-
-            <div class="brand-mark">
+            <div class="logo">
                 PK
             </div>
 
-            <div class="brand-text">
-                <strong>PANKAJ</strong>
-                <span>Restaurant</span>
-            </div>
+            <h1>PANKAJ</h1>
+
+            <p>Waiter Ordering System</p>
+
+            <form id="loginForm">
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter password"
+                        required
+                    >
+
+                </div>
+
+                <p
+                    id="loginError"
+                    class="login-error"
+                ></p>
+
+                <button
+                    type="submit"
+                    class="login-button"
+                >
+                    Login
+                </button>
+
+            </form>
 
         </div>
 
+    </section>
 
-        <div class="waiter-section">
 
-            <div
-                id="waiterAvatar"
-                class="waiter-avatar"
-            >
-                W
+    <!-- WAITER APP -->
+
+    <section id="app" class="app">
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            <div class="header-brand">
+
+                <div class="brand-logo">
+                    PK
+                </div>
+
+                <div>
+                    <h1>PANKAJ</h1>
+                    <span>Restaurant</span>
+                </div>
+
             </div>
 
-            <div class="waiter-details">
 
-                <span>Logged in as</span>
+            <div class="header-actions">
 
-                <strong id="waiterName">
+                <span id="waiterName">
                     Waiter
-                </strong>
+                </span>
+
+                <button
+                    id="logoutButton"
+                    type="button"
+                >
+                    Logout
+                </button>
 
             </div>
 
-            <button
-                type="button"
-                id="logoutBtn"
-                class="logout-btn"
-            >
-                Logout
-            </button>
-
-        </div>
-
-    </header>
+        </header>
 
 
-    <main class="main-container">
+        <!-- MAIN -->
 
-        <section class="page-header">
-
-            <div>
-
-                <h2>
-                    Take Order
-                </h2>
-
-                <p>
-                    Select items and confirm the order
-                </p>
-
-            </div>
-
-            <div
-                id="activeOrderCount"
-                class="active-count"
-            >
-                0 Active
-            </div>
-
-        </section>
+        <main class="main">
 
 
-        <section class="category-section">
+            <!-- PAGE TITLE -->
 
-            <div
-                id="categories"
-                class="categories"
-            ></div>
+            <section class="page-header">
 
-        </section>
+                <div>
+
+                    <h2>
+                        New Order
+                    </h2>
+
+                    <p>
+                        Select items from the menu
+                    </p>
+
+                </div>
+
+            </section>
 
 
-        <section class="order-layout">
+            <!-- MENU -->
 
-
-            <div class="menu-section">
+            <section class="menu-section">
 
                 <div class="section-header">
 
-                    <div>
-
-                        <h3>
-                            Menu
-                        </h3>
-
-                        <p>
-                            Choose items
-                        </p>
-
-                    </div>
+                    <h3>
+                        Menu
+                    </h3>
 
                 </div>
 
 
+                <!-- CATEGORIES -->
+
+                <nav
+                    id="categories"
+                    class="categories"
+                >
+
+                    <!-- Categories will come here -->
+
+                </nav>
+
+
+                <!-- MENU ITEMS -->
+
                 <div
                     id="menuGrid"
                     class="menu-grid"
-                ></div>
+                >
 
-            </div>
+                    <!-- Menu items will come here -->
+
+                </div>
+
+            </section>
 
 
-            <aside class="cart-panel">
+            <!-- CURRENT ORDER -->
 
-                <div class="cart-header">
+            <section class="order-section">
+
+                <div class="section-header">
 
                     <div>
 
@@ -194,32 +176,32 @@
                             Current Order
                         </h3>
 
-                        <span>
-                            Review before confirming
-                        </span>
+                        <p>
+                            Review items before confirming
+                        </p>
 
                     </div>
 
-                    <div
+                    <span
                         id="cartCount"
                         class="cart-count"
                     >
                         0
-                    </div>
+                    </span>
 
                 </div>
 
+
+                <!-- CART -->
 
                 <div
                     id="cartItems"
                     class="cart-items"
                 >
 
-                    <div class="empty-cart">
+                    <!-- Cart items will come here -->
 
-                        <div class="empty-cart-icon">
-                            🛒
-                        </div>
+                    <div class="empty-cart">
 
                         <strong>
                             No items added
@@ -233,6 +215,8 @@
 
                 </div>
 
+
+                <!-- NOTE -->
 
                 <div class="order-note">
 
@@ -249,7 +233,9 @@
                 </div>
 
 
-                <div class="cart-summary">
+                <!-- SUMMARY -->
+
+                <div class="order-summary">
 
                     <div class="summary-row">
 
@@ -264,13 +250,13 @@
                     </div>
 
 
-                    <div class="summary-row total-row">
+                    <div class="summary-row total">
 
                         <span>
                             Total
                         </span>
 
-                        <strong id="total">
+                        <strong id="summaryTotal">
                             ₹0
                         </strong>
 
@@ -278,9 +264,8 @@
 
 
                     <button
+                        id="confirmOrderButton"
                         type="button"
-                        id="confirmOrderBtn"
-                        class="confirm-btn"
                         disabled
                     >
                         Confirm Order
@@ -288,104 +273,96 @@
 
                 </div>
 
-            </aside>
-
-        </section>
+            </section>
 
 
-        <section class="active-orders-section">
+            <!-- ACTIVE ORDERS -->
 
-            <div class="section-header">
+            <section class="active-orders-section">
 
-                <div>
+                <div class="section-header">
 
-                    <h3>
-                        Active Orders
-                    </h3>
+                    <div>
 
-                    <p>
-                        Confirmed orders
-                    </p>
+                        <h3>
+                            Active Orders
+                        </h3>
+
+                        <p>
+                            Confirmed orders
+                        </p>
+
+                    </div>
+
+                    <span
+                        id="activeOrderCount"
+                    >
+                        0 Active
+                    </span>
 
                 </div>
 
+
+                <div
+                    id="ordersList"
+                    class="orders-list"
+                >
+
+                    <!-- Orders will come here -->
+
+                    <div class="empty-orders">
+
+                        No active orders
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <!-- MOBILE CART -->
+
+        <div
+            id="mobileCart"
+            class="mobile-cart"
+        >
+
+            <div>
+
+                <span>
+                    Current Order
+                </span>
+
+                <strong id="mobileCartTotal">
+                    ₹0
+                </strong>
+
             </div>
 
-
-            <div
-                id="ordersList"
-                class="orders-list"
+            <button
+                id="mobileCartButton"
+                type="button"
             >
+                View Order
+            </button>
 
-                <div class="empty-orders">
-                    No active orders
-                </div>
+        </div>
 
-            </div>
-
-        </section>
-
-    </main>
-
-</section>
+    </section>
 
 
-<div
-    id="mobileCartBar"
-    class="mobile-cart-bar"
->
+    <!-- TOAST -->
 
-    <div class="mobile-cart-info">
-
-        <span>
-            Cart
-        </span>
-
-        <strong id="mobileCartTotal">
-            ₹0
-        </strong>
-
-    </div>
-
-    <button
-        type="button"
-        id="mobileCartBtn"
-    >
-        View Cart
-    </button>
-
-</div>
+    <div
+        id="toast"
+        class="toast"
+    ></div>
 
 
-<div
-    id="toast"
-    class="toast"
-    role="status"
-    aria-live="polite"
-></div>
-
-
-<div
-    id="loader"
-    class="loader hidden"
->
-
-    <div class="loader-box">
-
-        <div class="loader-spinner"></div>
-
-        <span>
-            Please wait...
-        </span>
-
-    </div>
-
-</div>
-
-
-<script src="app.js"></script>
-```
+    <script src="app.js"></script>
 
 </body>
-
 </html>
