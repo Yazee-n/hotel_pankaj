@@ -1,86 +1,133 @@
+// =====================================================
+// HOTEL PANKAJ - APP.JS
+// GOOGLE SHEETS + LOCAL STORAGE
+// =====================================================
+
+
+// =====================================================
+// GOOGLE SHEETS CONFIGURATION
+// =====================================================
+
+const GOOGLE_SCRIPT_URL =
+    "https://script.google.com/macros/s/AKfycbzn3PJ1U9gcvvq2T0fApBq5ah0--iu8_4PN7__FY1u_1jy-qKlFssAb0AlVhkeMXsRE/exec";
+
+
+// =====================================================
+// DEFAULT MENU
+// =====================================================
+
 const DEFAULT_MENU = [
+
     {
         id: 1,
         name: "Chicken Biriyani",
         category: "Biriyani",
         price: 160
     },
+
     {
         id: 2,
         name: "Beef Biriyani",
         category: "Biriyani",
         price: 180
     },
+
     {
         id: 3,
         name: "Mutton Biriyani",
         category: "Biriyani",
         price: 220
     },
+
     {
         id: 4,
         name: "Chicken Fried Rice",
         category: "Rice",
         price: 150
     },
+
     {
         id: 5,
         name: "Chicken Noodles",
         category: "Noodles",
         price: 150
     },
+
     {
         id: 6,
         name: "Chicken 65",
         category: "Starters",
         price: 140
     },
+
     {
         id: 7,
         name: "Beef Fry",
         category: "Starters",
         price: 180
     },
+
     {
         id: 8,
         name: "Porotta",
         category: "Breads",
         price: 15
     },
+
     {
         id: 9,
         name: "Chapathi",
         category: "Breads",
         price: 15
     },
+
     {
         id: 10,
         name: "Chicken Curry",
         category: "Curries",
         price: 150
     },
+
     {
         id: 11,
         name: "Beef Curry",
         category: "Curries",
         price: 170
     },
+
     {
         id: 12,
         name: "Tea",
         category: "Drinks",
         price: 15
     }
+
 ];
 
+
+// =====================================================
+// LOCAL DATA
+// =====================================================
+
 let menu = JSON.parse(
-    localStorage.getItem("hotelPankajMenu") || "null"
+    localStorage.getItem(
+        "hotelPankajMenu"
+    ) || "null"
 );
 
-if (!Array.isArray(menu) || menu.length === 0) {
-    menu = [...DEFAULT_MENU];
+if (
+    !Array.isArray(menu) ||
+    menu.length === 0
+) {
+
+    menu = [
+        ...DEFAULT_MENU
+    ];
+
     saveMenu();
+
 }
+
 
 let cart = [];
 
@@ -90,46 +137,451 @@ let selectedCategory = "All";
 
 let currentBill = null;
 
+
 let orderNumber = Number(
-    localStorage.getItem("hotelPankajOrderNumber") || 1
+    localStorage.getItem(
+        "hotelPankajOrderNumber"
+    ) || 1
 );
+
 
 let history = JSON.parse(
-    localStorage.getItem("hotelPankajHistory") || "[]"
+    localStorage.getItem(
+        "hotelPankajHistory"
+    ) || "[]"
 );
+
 
 let partyOrders = JSON.parse(
-    localStorage.getItem("hotelPankajPartyOrders") || "[]"
+    localStorage.getItem(
+        "hotelPankajPartyOrders"
+    ) || "[]"
 );
 
 
-document.addEventListener("DOMContentLoaded", function () {
+// =====================================================
+// INITIALIZE APP
+// =====================================================
 
-    renderCategories();
+document.addEventListener(
+    "DOMContentLoaded",
+    async function() {
 
-    renderMenu();
+        renderCategories();
 
-    renderCart();
+        renderMenu();
 
-    renderHistory();
+        renderCart();
 
-    renderPartyOrders();
+        renderHistory();
 
-    updateOrderNumber();
+        renderPartyOrders();
 
-    document.addEventListener("click", function (event) {
+        updateOrderNumber();
+
+        await loadOrdersFromGoogleSheet();
+
+    }
+);
+
+
+// =====================================================
+// GOOGLE SHEETS - SAVE ORDER
+// =====================================================
+
+async function saveOrderToGoogleSheet(order) {
+
+    try {
+
+        const response =
+            await fetch(
+                GOOGLE_SCRIPT_URL,
+                {
+
+                    method: "POST",
+
+                    body: JSON.stringify({
+
+                        action: "save",
+
+                        orderId:
+                            order.id,
+
+                        date:
+                            order.date,
+
+                        time:
+                            order.time,
+
+                        items:
+                            order.items,
+
+                        total:
+                            order.total,
+
+                        type:
+                            "normal"
+
+                    })
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
 
         if (
-            event.target.classList.contains("modal") &&
-            event.target.id !== "adminModal"
+            result &&
+            result.success === true
         ) {
-            event.target.classList.remove("active");
+
+            console.log(
+                "Order synced to Google Sheets:",
+                order.number
+            );
+
+            return true;
+
         }
 
-    });
 
-});
+        console.error(
+            "Google Sheets save failed:",
+            result
+        );
 
+        return false;
+
+
+    } catch (error) {
+
+        console.error(
+            "Google Sheets sync failed:",
+            error
+        );
+
+        return false;
+
+    }
+
+}
+
+
+// =====================================================
+// GOOGLE SHEETS - DELETE ORDER
+// =====================================================
+
+async function deleteOrderFromGoogleSheet(
+    orderId
+) {
+
+    try {
+
+        const response =
+            await fetch(
+                GOOGLE_SCRIPT_URL,
+                {
+
+                    method: "POST",
+
+                    body: JSON.stringify({
+
+                        action: "delete",
+
+                        orderId:
+                            orderId
+
+                    })
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            result &&
+            result.success === true
+        ) {
+
+            console.log(
+                "Order deleted from Google Sheets:",
+                orderId
+            );
+
+            return true;
+
+        }
+
+
+        console.error(
+            "Google Sheets delete failed:",
+            result
+        );
+
+        return false;
+
+
+    } catch (error) {
+
+        console.error(
+            "Google Sheets delete failed:",
+            error
+        );
+
+        return false;
+
+    }
+
+}
+
+
+// =====================================================
+// GOOGLE SHEETS - LOAD ORDERS
+// =====================================================
+
+async function loadOrdersFromGoogleSheet() {
+
+    try {
+
+        console.log(
+            "Loading orders from Google Sheets..."
+        );
+
+
+        const response =
+            await fetch(
+                GOOGLE_SCRIPT_URL,
+                {
+                    method: "GET",
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP error: " +
+                response.status
+            );
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "Google Sheets response:",
+            result
+        );
+
+
+        if (
+            !result ||
+            result.success !== true ||
+            !Array.isArray(result.orders)
+        ) {
+
+            console.error(
+                "Invalid Google Sheets response:",
+                result
+            );
+
+            return;
+
+        }
+
+
+        const cloudOrders =
+            result.orders.map(
+                function(row) {
+
+                    let parsedItems = [];
+
+
+                    try {
+
+                        const rawItems =
+                            row["Items"];
+
+
+                        if (
+                            Array.isArray(
+                                rawItems
+                            )
+                        ) {
+
+                            parsedItems =
+                                rawItems;
+
+                        } else if (
+                            rawItems
+                        ) {
+
+                            parsedItems =
+                                JSON.parse(
+                                    String(
+                                        rawItems
+                                    )
+                                );
+
+                        }
+
+                    } catch (error) {
+
+                        console.error(
+                            "Could not parse order items:",
+                            error
+                        );
+
+                        parsedItems = [];
+
+                    }
+
+
+                    const rawId =
+                        row["Order ID"];
+
+
+                    const id =
+                        Number(
+                            rawId
+                        );
+
+
+                    return {
+
+                        id: id,
+
+                        number:
+                            String(
+                                rawId
+                            ).padStart(
+                                3,
+                                "0"
+                            ),
+
+                        date:
+                            String(
+                                row["Date"] || ""
+                            ),
+
+                        time:
+                            String(
+                                row["Time"] || ""
+                            ),
+
+                        items:
+                            parsedItems,
+
+                        total:
+                            Number(
+                                row["Total"] || 0
+                            )
+
+                    };
+
+                }
+            );
+
+
+        const validOrders =
+            cloudOrders.filter(
+                function(order) {
+
+                    return (
+                        Number.isFinite(
+                            order.id
+                        )
+                    );
+
+                }
+            );
+
+
+        history =
+            validOrders;
+
+
+        saveHistory();
+
+        renderHistory();
+
+
+        // =============================================
+        // UPDATE NEXT ORDER NUMBER
+        // =============================================
+
+        if (
+            history.length > 0
+        ) {
+
+            const highestId =
+                Math.max(
+                    ...history.map(
+                        function(order) {
+
+                            return (
+                                Number(
+                                    order.id
+                                ) || 0
+                            );
+
+                        }
+                    )
+                );
+
+
+            if (
+                highestId >=
+                orderNumber
+            ) {
+
+                orderNumber =
+                    highestId + 1;
+
+
+                localStorage.setItem(
+                    "hotelPankajOrderNumber",
+                    orderNumber
+                );
+
+
+                updateOrderNumber();
+
+            }
+
+        }
+
+
+        console.log(
+            "Orders loaded from Google Sheets:",
+            history.length
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Could not load Google Sheets data:",
+            error
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// LOCAL STORAGE - MENU
+// =====================================================
 
 function saveMenu() {
 
@@ -141,6 +593,10 @@ function saveMenu() {
 }
 
 
+// =====================================================
+// LOCAL STORAGE - HISTORY
+// =====================================================
+
 function saveHistory() {
 
     localStorage.setItem(
@@ -151,116 +607,197 @@ function saveHistory() {
 }
 
 
+// =====================================================
+// LOCAL STORAGE - PARTY ORDERS
+// =====================================================
+
 function savePartyOrders() {
 
     localStorage.setItem(
         "hotelPankajPartyOrders",
-        JSON.stringify(partyOrders)
+        JSON.stringify(
+            partyOrders
+        )
     );
 
 }
 
 
+// =====================================================
+// ORDER NUMBER
+// =====================================================
+
 function updateOrderNumber() {
 
     const element =
-        document.getElementById("orderNumber");
+        document.getElementById(
+            "orderNumber"
+        );
+
 
     if (element) {
 
         element.textContent =
-            String(orderNumber).padStart(3, "0");
+            String(
+                orderNumber
+            ).padStart(
+                3,
+                "0"
+            );
 
     }
 
 }
 
 
-function showPage(pageId, button) {
+// =====================================================
+// PAGE NAVIGATION
+// =====================================================
+
+function showPage(
+    pageId,
+    button
+) {
 
     document
         .querySelectorAll(".page")
-        .forEach(function (page) {
+        .forEach(
+            function(page) {
 
-            page.classList.remove("active");
+                page.classList.remove(
+                    "active"
+                );
 
-        });
+            }
+        );
+
 
     const page =
-        document.getElementById(pageId);
+        document.getElementById(
+            pageId
+        );
+
 
     if (page) {
 
-        page.classList.add("active");
+        page.classList.add(
+            "active"
+        );
 
     }
+
 
     document
         .querySelectorAll(".nav-btn")
-        .forEach(function (btn) {
+        .forEach(
+            function(btn) {
 
-            btn.classList.remove("active");
+                btn.classList.remove(
+                    "active"
+                );
 
-        });
+            }
+        );
+
 
     if (button) {
 
-        button.classList.add("active");
+        button.classList.add(
+            "active"
+        );
 
     }
 
+
     window.scrollTo({
+
         top: 0,
+
         behavior: "smooth"
+
     });
 
 }
 
 
+// =====================================================
+// CATEGORIES
+// =====================================================
+
 function renderCategories() {
 
     const container =
-        document.getElementById("categories");
+        document.getElementById(
+            "categories"
+        );
+
 
     if (!container) {
+
         return;
+
     }
 
+
     const categories = [
+
         "All",
+
         ...new Set(
-            menu.map(function (item) {
-                return item.category;
-            })
+            menu.map(
+                function(item) {
+
+                    return item.category;
+
+                }
+            )
         )
+
     ];
+
 
     container.innerHTML =
         categories
-            .map(function (category) {
+            .map(
+                function(category) {
 
-                return `
-                    <button
-                        class="category-btn ${
-                            category === selectedCategory
-                                ? "active"
-                                : ""
-                        }"
-                        onclick="selectCategory('${escapeAttribute(category)}')"
-                    >
-                        ${escapeHTML(category)}
-                    </button>
-                `;
+                    return `
 
-            })
+                        <button
+                            class="category-btn ${
+                                category ===
+                                selectedCategory
+                                    ? "active"
+                                    : ""
+                            }"
+                            onclick="selectCategory('${escapeAttribute(category)}')"
+                        >
+
+                            ${escapeHTML(
+                                category
+                            )}
+
+                        </button>
+
+                    `;
+
+                }
+            )
             .join("");
 
 }
 
 
-function selectCategory(category) {
+// =====================================================
+// SELECT CATEGORY
+// =====================================================
 
-    selectedCategory = category;
+function selectCategory(
+    category
+) {
+
+    selectedCategory =
+        category;
 
     renderCategories();
 
@@ -269,26 +806,47 @@ function selectCategory(category) {
 }
 
 
+// =====================================================
+// MENU
+// =====================================================
+
 function renderMenu() {
 
     const grid =
-        document.getElementById("menuGrid");
+        document.getElementById(
+            "menuGrid"
+        );
+
 
     const count =
-        document.getElementById("menuCount");
+        document.getElementById(
+            "menuCount"
+        );
+
 
     if (!grid) {
+
         return;
+
     }
+
 
     const filteredMenu =
         selectedCategory === "All"
+
             ? menu
-            : menu.filter(function (item) {
 
-                return item.category === selectedCategory;
+            : menu.filter(
+                function(item) {
 
-            });
+                    return (
+                        item.category ===
+                        selectedCategory
+                    );
+
+                }
+            );
+
 
     if (count) {
 
@@ -302,9 +860,13 @@ function renderMenu() {
 
     }
 
-    if (filteredMenu.length === 0) {
+
+    if (
+        filteredMenu.length === 0
+    ) {
 
         grid.innerHTML = `
+
             <div class="empty-state">
 
                 <div class="empty-icon">
@@ -320,73 +882,107 @@ function renderMenu() {
                 </p>
 
             </div>
+
         `;
 
         return;
+
     }
+
 
     grid.innerHTML =
         filteredMenu
-            .map(function (item) {
+            .map(
+                function(item) {
 
-                return `
-                    <div class="menu-card">
+                    return `
 
-                        <div class="menu-card-info">
+                        <div class="menu-card">
 
-                            <h3>
-                                ${escapeHTML(item.name)}
-                            </h3>
+                            <div class="menu-card-info">
 
-                            <span>
-                                ${escapeHTML(item.category)}
-                            </span>
+                                <h3>
+                                    ${escapeHTML(
+                                        item.name
+                                    )}
+                                </h3>
+
+                                <span>
+                                    ${escapeHTML(
+                                        item.category
+                                    )}
+                                </span>
+
+                            </div>
+
+
+                            <div class="menu-card-bottom">
+
+                                <strong>
+                                    ₹${formatMoney(
+                                        item.price
+                                    )}
+                                </strong>
+
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart(${item.id})"
+                                >
+                                    +
+                                </button>
+
+                            </div>
 
                         </div>
 
-                        <div class="menu-card-bottom">
+                    `;
 
-                            <strong>
-                                ₹${formatMoney(item.price)}
-                            </strong>
-
-                            <button
-                                class="add-btn"
-                                onclick="addToCart(${item.id})"
-                            >
-                                +
-                            </button>
-
-                        </div>
-
-                    </div>
-                `;
-
-            })
+                }
+            )
             .join("");
 
 }
 
 
+// =====================================================
+// ADD TO CART
+// =====================================================
+
 function addToCart(id) {
 
     const item =
-        menu.find(function (menuItem) {
+        menu.find(
+            function(menuItem) {
 
-            return menuItem.id === id;
+                return (
+                    Number(menuItem.id) ===
+                    Number(id)
+                );
 
-        });
+            }
+        );
+
 
     if (!item) {
+
         return;
+
     }
 
+
     const existing =
-        cart.find(function (cartItem) {
+        cart.find(
+            function(cartItem) {
 
-            return cartItem.id === id;
+                return (
+                    Number(cartItem.id) ===
+                    Number(id)
+                );
 
-        });
+            }
+        );
+
 
     if (existing) {
 
@@ -395,55 +991,102 @@ function addToCart(id) {
     } else {
 
         cart.push({
-            id: item.id,
-            name: item.name,
-            price: Number(item.price),
-            quantity: 1
+
+            id:
+                Number(item.id),
+
+            name:
+                item.name,
+
+            price:
+                Number(item.price),
+
+            quantity:
+                1
+
         });
 
     }
+
 
     renderCart();
 
 }
 
 
-function changeQuantity(id, amount) {
+// =====================================================
+// CHANGE QUANTITY
+// =====================================================
+
+function changeQuantity(
+    id,
+    amount
+) {
 
     const item =
-        cart.find(function (cartItem) {
+        cart.find(
+            function(cartItem) {
 
-            return cartItem.id === id;
+                return (
+                    Number(cartItem.id) ===
+                    Number(id)
+                );
 
-        });
+            }
+        );
+
 
     if (!item) {
+
         return;
+
     }
 
-    item.quantity += amount;
 
-    if (item.quantity <= 0) {
+    item.quantity +=
+        Number(amount);
+
+
+    if (
+        item.quantity <= 0
+    ) {
 
         cart =
-            cart.filter(function (cartItem) {
+            cart.filter(
+                function(cartItem) {
 
-                return cartItem.id !== id;
+                    return (
+                        Number(
+                            cartItem.id
+                        ) !==
+                        Number(id)
+                    );
 
-            });
+                }
+            );
 
     }
+
 
     renderCart();
 
 }
 
+
+// =====================================================
+// CLEAR CART
+// =====================================================
 
 function clearCart() {
 
-    if (cart.length === 0) {
+    if (
+        cart.length === 0
+    ) {
+
         return;
+
     }
+
 
     cart = [];
 
@@ -452,54 +1095,112 @@ function clearCart() {
 }
 
 
+// =====================================================
+// CART TOTAL
+// =====================================================
+
 function getCartTotal() {
 
-    return cart.reduce(function (total, item) {
+    return cart.reduce(
 
-        return total +
-            item.price * item.quantity;
+        function(
+            total,
+            item
+        ) {
 
-    }, 0);
+            return (
+                total +
+                Number(item.price) *
+                Number(item.quantity)
+            );
+
+        },
+
+        0
+
+    );
 
 }
 
+
+// =====================================================
+// CART ITEM COUNT
+// =====================================================
 
 function getCartItemCount() {
 
-    return cart.reduce(function (total, item) {
+    return cart.reduce(
 
-        return total + item.quantity;
+        function(
+            total,
+            item
+        ) {
 
-    }, 0);
+            return (
+                total +
+                Number(
+                    item.quantity
+                )
+            );
+
+        },
+
+        0
+
+    );
 
 }
 
+
+// =====================================================
+// RENDER CART
+// =====================================================
 
 function renderCart() {
 
     const container =
-        document.getElementById("cartItems");
+        document.getElementById(
+            "cartItems"
+        );
+
 
     const itemCount =
-        document.getElementById("cartCount");
+        document.getElementById(
+            "cartCount"
+        );
+
 
     const subtotal =
-        document.getElementById("subtotal");
+        document.getElementById(
+            "subtotal"
+        );
+
 
     const grandTotal =
-        document.getElementById("total");
+        document.getElementById(
+            "total"
+        );
+
 
     const mobileCount =
-        document.getElementById("mobileCount");
+        document.getElementById(
+            "mobileCount"
+        );
+
 
     const mobileTotal =
-        document.getElementById("mobileTotal");
+        document.getElementById(
+            "mobileTotal"
+        );
+
 
     const totalItems =
         getCartItemCount();
 
+
     const total =
         getCartTotal();
+
 
     if (itemCount) {
 
@@ -513,19 +1214,24 @@ function renderCart() {
 
     }
 
+
     if (subtotal) {
 
         subtotal.textContent =
-            "₹" + formatMoney(total);
+            "₹" +
+            formatMoney(total);
 
     }
+
 
     if (grandTotal) {
 
         grandTotal.textContent =
-            "₹" + formatMoney(total);
+            "₹" +
+            formatMoney(total);
 
     }
+
 
     if (mobileCount) {
 
@@ -539,20 +1245,29 @@ function renderCart() {
 
     }
 
+
     if (mobileTotal) {
 
         mobileTotal.textContent =
-            "₹" + formatMoney(total);
+            "₹" +
+            formatMoney(total);
 
     }
+
 
     if (!container) {
+
         return;
+
     }
 
-    if (cart.length === 0) {
+
+    if (
+        cart.length === 0
+    ) {
 
         container.innerHTML = `
+
             <div class="empty-cart">
 
                 <div class="empty-icon">
@@ -568,141 +1283,230 @@ function renderCart() {
                 </p>
 
             </div>
+
         `;
 
         return;
+
     }
+
 
     container.innerHTML =
         cart
-            .map(function (item) {
+            .map(
+                function(item) {
 
-                const itemTotal =
-                    item.price * item.quantity;
+                    const itemTotal =
+                        Number(item.price) *
+                        Number(item.quantity);
 
-                return `
-                    <div class="cart-item">
 
-                        <div class="cart-item-info">
+                    return `
 
-                            <h4>
-                                ${escapeHTML(item.name)}
-                            </h4>
+                        <div class="cart-item">
 
-                            <small>
-                                ₹${formatMoney(item.price)} each
-                            </small>
+                            <div class="cart-item-info">
 
-                            <div class="quantity-control">
+                                <h4>
+                                    ${escapeHTML(
+                                        item.name
+                                    )}
+                                </h4>
 
-                                <button
-                                    onclick="changeQuantity(${item.id}, -1)"
-                                >
-                                    −
-                                </button>
+                                <small>
+                                    ₹${formatMoney(
+                                        item.price
+                                    )}
+                                    each
+                                </small>
 
-                                <span>
-                                    ${item.quantity}
-                                </span>
 
-                                <button
-                                    onclick="changeQuantity(${item.id}, 1)"
-                                >
-                                    +
-                                </button>
+                                <div class="quantity-control">
+
+                                    <button
+                                        onclick="changeQuantity(${item.id}, -1)"
+                                    >
+                                        −
+                                    </button>
+
+
+                                    <span>
+                                        ${item.quantity}
+                                    </span>
+
+
+                                    <button
+                                        onclick="changeQuantity(${item.id}, 1)"
+                                    >
+                                        +
+                                    </button>
+
+                                </div>
 
                             </div>
 
+
+                            <strong>
+                                ₹${formatMoney(
+                                    itemTotal
+                                )}
+                            </strong>
+
                         </div>
 
-                        <strong>
-                            ₹${formatMoney(itemTotal)}
-                        </strong>
+                    `;
 
-                    </div>
-                `;
-
-            })
+                }
+            )
             .join("");
 
 }
 
 
+// =====================================================
+// MOBILE CART
+// =====================================================
+
 function toggleMobileCart() {
 
     const cartPanel =
-        document.getElementById("cartPanel");
+        document.getElementById(
+            "cartPanel"
+        );
+
 
     if (!cartPanel) {
+
         return;
+
     }
 
-    cartPanel.classList.toggle("mobile-open");
+
+    cartPanel.classList.toggle(
+        "mobile-open"
+    );
 
 }
 
 
+// =====================================================
+// CONFIRM ORDER
+// =====================================================
+
 function confirmOrder() {
 
-    if (cart.length === 0) {
+    if (
+        cart.length === 0
+    ) {
 
         alert(
             "Please add at least one item to the order."
         );
 
         return;
+
     }
+
 
     const now =
         new Date();
 
+
     const order = {
 
-        id: orderNumber,
+        id:
+            orderNumber,
 
         number:
-            String(orderNumber).padStart(3, "0"),
+            String(
+                orderNumber
+            ).padStart(
+                3,
+                "0"
+            ),
 
         date:
-            now.toLocaleDateString("en-IN"),
+            now.toLocaleDateString(
+                "en-IN"
+            ),
 
         time:
-            now.toLocaleTimeString("en-IN", {
-                hour: "2-digit",
-                minute: "2-digit"
-            }),
+            now.toLocaleTimeString(
+                "en-IN",
+                {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                }
+            ),
 
         items:
-            cart.map(function (item) {
+            cart.map(
+                function(item) {
 
-                return {
-                    id: item.id,
-                    name: item.name,
-                    price: item.price,
-                    quantity: item.quantity
-                };
+                    return {
 
-            }),
+                        id:
+                            item.id,
+
+                        name:
+                            item.name,
+
+                        price:
+                            Number(
+                                item.price
+                            ),
+
+                        quantity:
+                            Number(
+                                item.quantity
+                            )
+
+                    };
+
+                }
+            ),
 
         total:
             getCartTotal()
 
     };
 
-    history.unshift(order);
+
+    // =============================================
+    // SAVE LOCALLY
+    // =============================================
+
+    history.unshift(
+        order
+    );
 
     saveHistory();
 
-    currentBill = order;
+
+    // =============================================
+    // SAVE TO GOOGLE SHEETS
+    // =============================================
+
+    saveOrderToGoogleSheet(
+        order
+    );
+
+
+    currentBill =
+        order;
+
 
     orderNumber += 1;
+
 
     localStorage.setItem(
         "hotelPankajOrderNumber",
         orderNumber
     );
 
+
     cart = [];
+
 
     renderCart();
 
@@ -710,46 +1514,86 @@ function confirmOrder() {
 
     updateOrderNumber();
 
-    showBill(order);
+
+    showBill(
+        order
+    );
 
 }
 
 
-function showBill(order) {
+// =====================================================
+// SHOW BILL
+// =====================================================
+
+function showBill(
+    order
+) {
 
     const modal =
-        document.getElementById("billModal");
+        document.getElementById(
+            "billModal"
+        );
+
 
     const content =
-        document.getElementById("billContent");
+        document.getElementById(
+            "billContent"
+        );
 
-    if (!modal || !content) {
+
+    if (
+        !modal ||
+        !content
+    ) {
+
         return;
+
     }
+
 
     const itemRows =
         order.items
-            .map(function (item) {
+            .map(
+                function(item) {
 
-                return `
-                    <div class="bill-row">
+                    return `
 
-                        <span>
-                            ${escapeHTML(item.name)}
-                            × ${item.quantity}
-                        </span>
+                        <div class="bill-row">
 
-                        <strong>
-                            ₹${formatMoney(
-                                item.price * item.quantity
-                            )}
-                        </strong>
+                            <span>
 
-                    </div>
-                `;
+                                ${escapeHTML(
+                                    item.name
+                                )}
 
-            })
+                                ×
+                                ${item.quantity}
+
+                            </span>
+
+
+                            <strong>
+
+                                ₹${formatMoney(
+                                    Number(
+                                        item.price
+                                    ) *
+                                    Number(
+                                        item.quantity
+                                    )
+                                )}
+
+                            </strong>
+
+                        </div>
+
+                    `;
+
+                }
+            )
             .join("");
+
 
     content.innerHTML = `
 
@@ -765,6 +1609,7 @@ function showBill(order) {
 
         </div>
 
+
         <div class="bill-row">
 
             <span>
@@ -772,10 +1617,13 @@ function showBill(order) {
             </span>
 
             <strong>
-                #${escapeHTML(order.number)}
+                #${escapeHTML(
+                    order.number
+                )}
             </strong>
 
         </div>
+
 
         <div class="bill-row">
 
@@ -784,10 +1632,13 @@ function showBill(order) {
             </span>
 
             <strong>
-                ${escapeHTML(order.date)}
+                ${escapeHTML(
+                    order.date
+                )}
             </strong>
 
         </div>
+
 
         <div class="bill-row">
 
@@ -796,16 +1647,22 @@ function showBill(order) {
             </span>
 
             <strong>
-                ${escapeHTML(order.time)}
+                ${escapeHTML(
+                    order.time
+                )}
             </strong>
 
         </div>
 
+
         <div class="bill-divider"></div>
+
 
         ${itemRows}
 
+
         <div class="bill-divider"></div>
+
 
         <div class="bill-total">
 
@@ -814,55 +1671,89 @@ function showBill(order) {
             </span>
 
             <strong>
-                ₹${formatMoney(order.total)}
+                ₹${formatMoney(
+                    order.total
+                )}
             </strong>
 
         </div>
 
     `;
 
-    modal.classList.add("active");
+
+    modal.classList.add(
+        "active"
+    );
 
 }
 
+
+// =====================================================
+// CLOSE BILL
+// =====================================================
 
 function closeBill() {
 
     const modal =
-        document.getElementById("billModal");
+        document.getElementById(
+            "billModal"
+        );
+
 
     if (modal) {
 
-        modal.classList.remove("active");
+        modal.classList.remove(
+            "active"
+        );
 
     }
 
 }
 
 
+// =====================================================
+// PRINT BILL
+// =====================================================
+
 function printBill() {
 
     if (!currentBill) {
+
         return;
+
     }
+
 
     window.print();
 
 }
 
 
+// =====================================================
+// HISTORY
+// =====================================================
+
 function renderHistory() {
 
     const container =
-        document.getElementById("history");
+        document.getElementById(
+            "history"
+        );
+
 
     if (!container) {
+
         return;
+
     }
 
-    if (history.length === 0) {
+
+    if (
+        history.length === 0
+    ) {
 
         container.innerHTML = `
+
             <div class="empty-state">
 
                 <div class="empty-icon">
@@ -878,83 +1769,138 @@ function renderHistory() {
                 </p>
 
             </div>
+
         `;
 
         return;
+
     }
+
 
     container.innerHTML =
         history
-            .map(function (order) {
+            .map(
+                function(order) {
 
-                return `
-                    <div class="history-card">
+                    return `
 
-                        <div
-                            class="history-info"
-                            onclick="viewHistoryOrder(${order.id})"
-                        >
+                        <div class="history-card">
 
-                            <h3>
-                                Order #${escapeHTML(order.number)}
-                            </h3>
-
-                            <p>
-                                ${escapeHTML(order.date)}
-                                •
-                                ${escapeHTML(order.time)}
-                                •
-                                ${order.items.length}
-                                item${order.items.length === 1 ? "" : "s"}
-                            </p>
-
-                        </div>
-
-                        <div class="history-right">
-
-                            <strong>
-                                ₹${formatMoney(order.total)}
-                            </strong>
-
-                            <button
-                                class="delete-history-btn"
-                                onclick="deleteHistoryOrder(${order.id}, event)"
+                            <div
+                                class="history-info"
+                                onclick="viewHistoryOrder(${order.id})"
                             >
-                                Delete
-                            </button>
+
+                                <h3>
+                                    Order #${escapeHTML(
+                                        order.number
+                                    )}
+                                </h3>
+
+
+                                <p>
+
+                                    ${escapeHTML(
+                                        order.date
+                                    )}
+
+                                    •
+
+                                    ${escapeHTML(
+                                        order.time
+                                    )}
+
+                                    •
+
+                                    ${order.items.length}
+
+                                    item${
+                                        order.items.length === 1
+                                            ? ""
+                                            : "s"
+                                    }
+
+                                </p>
+
+                            </div>
+
+
+                            <div class="history-right">
+
+                                <strong>
+                                    ₹${formatMoney(
+                                        order.total
+                                    )}
+                                </strong>
+
+
+                                <button
+                                    class="delete-history-btn"
+                                    onclick="deleteHistoryOrder(${order.id}, event)"
+                                >
+                                    Delete
+                                </button>
+
+                            </div>
 
                         </div>
 
-                    </div>
-                `;
+                    `;
 
-            })
+                }
+            )
             .join("");
 
 }
 
 
-function viewHistoryOrder(id) {
+// =====================================================
+// VIEW HISTORY ORDER
+// =====================================================
+
+function viewHistoryOrder(
+    id
+) {
 
     const order =
-        history.find(function (item) {
+        history.find(
+            function(item) {
 
-            return item.id === id;
+                return (
+                    Number(item.id) ===
+                    Number(id)
+                );
 
-        });
+            }
+        );
+
 
     if (!order) {
+
         return;
+
     }
 
-    currentBill = order;
 
-    showBill(order);
+    currentBill =
+        order;
+
+
+    showBill(
+        order
+    );
 
 }
 
 
-function deleteHistoryOrder(id, event) {
+// =====================================================
+// DELETE HISTORY ORDER
+// =====================================================
+
+async function deleteHistoryOrder(
+    id,
+    event
+) {
 
     if (event) {
 
@@ -962,16 +1908,26 @@ function deleteHistoryOrder(id, event) {
 
     }
 
+
     const order =
-        history.find(function (item) {
+        history.find(
+            function(item) {
 
-            return item.id === id;
+                return (
+                    Number(item.id) ===
+                    Number(id)
+                );
 
-        });
+            }
+        );
+
 
     if (!order) {
+
         return;
+
     }
+
 
     const confirmed =
         confirm(
@@ -980,22 +1936,49 @@ function deleteHistoryOrder(id, event) {
             " from history?"
         );
 
+
     if (!confirmed) {
+
         return;
+
     }
 
+
+    // =============================================
+    // DELETE LOCALLY
+    // =============================================
+
     history =
-        history.filter(function (item) {
+        history.filter(
+            function(item) {
 
-            return item.id !== id;
+                return (
+                    Number(item.id) !==
+                    Number(id)
+                );
 
-        });
+            }
+        );
+
 
     saveHistory();
 
+    renderHistory();
+
+
+    // =============================================
+    // DELETE FROM GOOGLE SHEETS
+    // =============================================
+
+    await deleteOrderFromGoogleSheet(
+        id
+    );
+
+
     if (
         currentBill &&
-        currentBill.id === id
+        Number(currentBill.id) ===
+        Number(id)
     ) {
 
         currentBill = null;
@@ -1004,86 +1987,125 @@ function deleteHistoryOrder(id, event) {
 
     }
 
-    renderHistory();
-
 }
 
+
+// =====================================================
+// PARTY ORDER MODAL
+// =====================================================
 
 function openPartyModal() {
 
     const modal =
-        document.getElementById("partyModal");
+        document.getElementById(
+            "partyModal"
+        );
+
 
     if (!modal) {
+
         return;
+
     }
 
-    document.getElementById("partyName").value = "";
 
-    document.getElementById("partyPhone").value = "";
+    const fields = [
 
-    document.getElementById("partyDate").value = "";
+        "partyName",
+        "partyPhone",
+        "partyDate",
+        "partyPeople",
+        "partyNotes",
+        "partyAdvance"
 
-    document.getElementById("partyPeople").value = "";
+    ];
 
-    document.getElementById("partyNotes").value = "";
 
-    document.getElementById("partyAdvance").value = "";
+    fields.forEach(
+        function(id) {
+
+            const element =
+                document.getElementById(
+                    id
+                );
+
+            if (element) {
+
+                element.value = "";
+
+            }
+
+        }
+    );
+
 
     partyItems = [];
+
 
     renderPartyItems();
 
     updatePartyTotal();
 
-    modal.classList.add("active");
+
+    modal.classList.add(
+        "active"
+    );
 
 }
 
 
+// =====================================================
+// CLOSE PARTY MODAL
+// =====================================================
+
 function closePartyModal() {
 
     const modal =
-        document.getElementById("partyModal");
+        document.getElementById(
+            "partyModal"
+        );
+
 
     if (modal) {
 
-        modal.classList.remove("active");
+        modal.classList.remove(
+            "active"
+        );
 
     }
 
 }
 
 
+// =====================================================
+// ADD PARTY ITEM
+// =====================================================
+
 function addPartyItem() {
 
-    if (menu.length === 0) {
+    if (
+        menu.length === 0
+    ) {
 
         alert(
             "No menu items available."
         );
 
         return;
+
     }
+
 
     partyItems.push({
 
-        id: menu[0].id,
+        id:
+            menu[0].id,
 
-        quantity: 1
+        quantity:
+            1
 
     });
 
-    renderPartyItems();
-
-    updatePartyTotal();
-
-}
-
-
-function removePartyItem(index) {
-
-    partyItems.splice(index, 1);
 
     renderPartyItems();
 
@@ -1092,23 +2114,64 @@ function removePartyItem(index) {
 }
 
 
-function updatePartyItem(index, value) {
+// =====================================================
+// REMOVE PARTY ITEM
+// =====================================================
+
+function removePartyItem(
+    index
+) {
+
+    partyItems.splice(
+        index,
+        1
+    );
+
+
+    renderPartyItems();
+
+    updatePartyTotal();
+
+}
+
+
+// =====================================================
+// UPDATE PARTY ITEM
+// =====================================================
+
+function updatePartyItem(
+    index,
+    value
+) {
 
     const id =
         Number(value);
 
+
     if (!partyItems[index]) {
+
         return;
+
     }
 
-    partyItems[index].id = id;
+
+    partyItems[index].id =
+        id;
+
 
     updatePartyTotal();
 
 }
 
 
-function updatePartyQuantity(index, value) {
+// =====================================================
+// UPDATE PARTY QUANTITY
+// =====================================================
+
+function updatePartyQuantity(
+    index,
+    value
+) {
 
     const quantity =
         Math.max(
@@ -1116,30 +2179,48 @@ function updatePartyQuantity(index, value) {
             Number(value) || 1
         );
 
+
     if (!partyItems[index]) {
+
         return;
+
     }
+
 
     partyItems[index].quantity =
         quantity;
+
 
     updatePartyTotal();
 
 }
 
 
+// =====================================================
+// RENDER PARTY ITEMS
+// =====================================================
+
 function renderPartyItems() {
 
     const container =
-        document.getElementById("partyItems");
+        document.getElementById(
+            "partyItems"
+        );
+
 
     if (!container) {
+
         return;
+
     }
 
-    if (partyItems.length === 0) {
+
+    if (
+        partyItems.length === 0
+    ) {
 
         container.innerHTML = `
+
             <div class="empty-state">
 
                 <p>
@@ -1147,111 +2228,166 @@ function renderPartyItems() {
                 </p>
 
             </div>
+
         `;
 
         return;
+
     }
+
 
     container.innerHTML =
         partyItems
-            .map(function (item, index) {
+            .map(
+                function(
+                    item,
+                    index
+                ) {
 
-                return `
-                    <div class="party-item-row">
+                    return `
 
-                        <select
-                            class="party-item-select"
-                            onchange="updatePartyItem(
-                                ${index},
-                                this.value
-                            )"
-                        >
+                        <div class="party-item-row">
 
-                            ${menu
-                                .map(function (menuItem) {
+                            <select
+                                class="party-item-select"
+                                onchange="updatePartyItem(${index}, this.value)"
+                            >
 
-                                    return `
-                                        <option
-                                            value="${menuItem.id}"
-                                            ${
-                                                menuItem.id === item.id
-                                                    ? "selected"
-                                                    : ""
+                                ${
+                                    menu
+                                        .map(
+                                            function(
+                                                menuItem
+                                            ) {
+
+                                                return `
+
+                                                    <option
+                                                        value="${menuItem.id}"
+                                                        ${
+                                                            Number(
+                                                                menuItem.id
+                                                            ) ===
+                                                            Number(
+                                                                item.id
+                                                            )
+                                                                ? "selected"
+                                                                : ""
+                                                        }
+                                                    >
+
+                                                        ${escapeHTML(
+                                                            menuItem.name
+                                                        )}
+
+                                                        -
+
+                                                        ₹${formatMoney(
+                                                            menuItem.price
+                                                        )}
+
+                                                    </option>
+
+                                                `;
+
                                             }
-                                        >
-                                            ${escapeHTML(
-                                                menuItem.name
-                                            )}
-                                            -
-                                            ₹${formatMoney(
-                                                menuItem.price
-                                            )}
-                                        </option>
-                                    `;
+                                        )
+                                        .join("")
+                                }
 
-                                })
-                                .join("")}
+                            </select>
 
-                        </select>
 
-                        <input
-                            class="party-item-qty"
-                            type="number"
-                            min="1"
-                            value="${item.quantity}"
-                            onchange="updatePartyQuantity(
-                                ${index},
-                                this.value
-                            )"
-                        >
+                            <input
+                                class="party-item-qty"
+                                type="number"
+                                min="1"
+                                value="${item.quantity}"
+                                onchange="updatePartyQuantity(${index}, this.value)"
+                            >
 
-                        <button
-                            class="remove-party-btn"
-                            onclick="removePartyItem(${index})"
-                        >
-                            ×
-                        </button>
 
-                    </div>
-                `;
+                            <button
+                                class="remove-party-btn"
+                                onclick="removePartyItem(${index})"
+                            >
+                                ×
+                            </button>
 
-            })
+                        </div>
+
+                    `;
+
+                }
+            )
             .join("");
 
 }
 
 
+// =====================================================
+// PARTY TOTAL
+// =====================================================
+
 function getPartyTotal() {
 
     return partyItems.reduce(
-        function (total, partyItem) {
+
+        function(
+            total,
+            partyItem
+        ) {
 
             const item =
-                menu.find(function (menuItem) {
+                menu.find(
+                    function(menuItem) {
 
-                    return menuItem.id === partyItem.id;
+                        return (
+                            Number(
+                                menuItem.id
+                            ) ===
+                            Number(
+                                partyItem.id
+                            )
+                        );
 
-                });
+                    }
+                );
+
 
             if (!item) {
+
                 return total;
+
             }
 
-            return total +
+
+            return (
+                total +
                 Number(item.price) *
-                Number(partyItem.quantity);
+                Number(partyItem.quantity)
+            );
 
         },
+
         0
+
     );
 
 }
 
 
+// =====================================================
+// UPDATE PARTY TOTAL
+// =====================================================
+
 function updatePartyTotal() {
 
     const totalElement =
-        document.getElementById("partyTotal");
+        document.getElementById(
+            "partyTotal"
+        );
+
 
     if (totalElement) {
 
@@ -1266,44 +2402,89 @@ function updatePartyTotal() {
 }
 
 
+// =====================================================
+// SAVE PARTY ORDER
+// =====================================================
+
 function savePartyOrder() {
 
+    const nameElement =
+        document.getElementById(
+            "partyName"
+        );
+
+
+    const phoneElement =
+        document.getElementById(
+            "partyPhone"
+        );
+
+
+    const dateElement =
+        document.getElementById(
+            "partyDate"
+        );
+
+
+    const peopleElement =
+        document.getElementById(
+            "partyPeople"
+        );
+
+
+    const notesElement =
+        document.getElementById(
+            "partyNotes"
+        );
+
+
+    const advanceElement =
+        document.getElementById(
+            "partyAdvance"
+        );
+
+
+    if (
+        !nameElement ||
+        !phoneElement ||
+        !dateElement ||
+        !peopleElement ||
+        !notesElement ||
+        !advanceElement
+    ) {
+
+        return;
+
+    }
+
+
     const name =
-        document
-            .getElementById("partyName")
-            .value
-            .trim();
+        nameElement.value.trim();
+
 
     const phone =
-        document
-            .getElementById("partyPhone")
-            .value
-            .trim();
+        phoneElement.value.trim();
+
 
     const date =
-        document
-            .getElementById("partyDate")
-            .value;
+        dateElement.value;
+
 
     const people =
         Number(
-            document
-                .getElementById("partyPeople")
-                .value
+            peopleElement.value
         ) || 0;
 
+
     const notes =
-        document
-            .getElementById("partyNotes")
-            .value
-            .trim();
+        notesElement.value.trim();
+
 
     const advance =
         Number(
-            document
-                .getElementById("partyAdvance")
-                .value
+            advanceElement.value
         ) || 0;
+
 
     if (!name) {
 
@@ -1312,7 +2493,9 @@ function savePartyOrder() {
         );
 
         return;
+
     }
+
 
     if (!date) {
 
@@ -1321,99 +2504,141 @@ function savePartyOrder() {
         );
 
         return;
+
     }
 
-    if (people <= 0) {
+
+    if (
+        people <= 0
+    ) {
 
         alert(
             "Please enter number of people."
         );
 
         return;
+
     }
 
-    if (partyItems.length === 0) {
+
+    if (
+        partyItems.length === 0
+    ) {
 
         alert(
             "Please add at least one item."
         );
 
         return;
+
     }
+
 
     const total =
         getPartyTotal();
 
-    if (advance > total) {
+
+    if (
+        advance > total
+    ) {
 
         alert(
             "Advance cannot be greater than total amount."
         );
 
         return;
+
     }
+
 
     const partyOrder = {
 
-        id: Date.now(),
+        id:
+            Date.now(),
 
-        name: name,
+        name:
+            name,
 
-        phone: phone,
+        phone:
+            phone,
 
-        date: date,
+        date:
+            date,
 
-        people: people,
+        people:
+            people,
 
-        notes: notes,
+        notes:
+            notes,
 
-        advance: advance,
+        advance:
+            advance,
 
         balance:
             total - advance,
 
-        total: total,
+        total:
+            total,
+
 
         items:
-            partyItems.map(function (partyItem) {
+            partyItems.map(
+                function(partyItem) {
 
-                const menuItem =
-                    menu.find(function (item) {
+                    const menuItem =
+                        menu.find(
+                            function(item) {
 
-                        return item.id === partyItem.id;
+                                return (
+                                    Number(
+                                        item.id
+                                    ) ===
+                                    Number(
+                                        partyItem.id
+                                    )
+                                );
 
-                    });
+                            }
+                        );
 
-                return {
 
-                    id: partyItem.id,
+                    return {
 
-                    name:
-                        menuItem
-                            ? menuItem.name
-                            : "Unknown Item",
+                        id:
+                            partyItem.id,
 
-                    price:
-                        menuItem
-                            ? menuItem.price
-                            : 0,
+                        name:
+                            menuItem
+                                ? menuItem.name
+                                : "Unknown Item",
 
-                    quantity:
-                        partyItem.quantity
+                        price:
+                            menuItem
+                                ? menuItem.price
+                                : 0,
 
-                };
+                        quantity:
+                            partyItem.quantity
 
-            })
+                    };
+
+                }
+            )
 
     };
 
-    partyOrders.unshift(partyOrder);
+
+    partyOrders.unshift(
+        partyOrder
+    );
+
 
     savePartyOrders();
 
     renderPartyOrders();
 
     closePartyModal();
+
 
     alert(
         "Party order saved successfully."
@@ -1422,18 +2647,31 @@ function savePartyOrder() {
 }
 
 
+// =====================================================
+// PARTY ORDERS
+// =====================================================
+
 function renderPartyOrders() {
 
     const container =
-        document.getElementById("partyOrders");
+        document.getElementById(
+            "partyOrders"
+        );
+
 
     if (!container) {
+
         return;
+
     }
 
-    if (partyOrders.length === 0) {
+
+    if (
+        partyOrders.length === 0
+    ) {
 
         container.innerHTML = `
+
             <div class="empty-state">
 
                 <div class="empty-icon">
@@ -1449,95 +2687,147 @@ function renderPartyOrders() {
                 </p>
 
             </div>
+
         `;
 
         return;
+
     }
+
 
     container.innerHTML =
         partyOrders
-            .map(function (order) {
+            .map(
+                function(order) {
 
-                return `
-                    <div class="party-card">
+                    return `
 
-                        <div class="party-card-main">
+                        <div class="party-card">
 
-                            <h3>
-                                ${escapeHTML(order.name)}
-                            </h3>
+                            <div class="party-card-main">
 
-                            <p>
-                                📅
-                                ${escapeHTML(
-                                    formatDate(order.date)
-                                )}
-                            </p>
+                                <h3>
+                                    ${escapeHTML(
+                                        order.name
+                                    )}
+                                </h3>
 
-                            <p>
-                                👥
-                                ${order.people}
-                                people
-                            </p>
 
-                            ${
-                                order.phone
-                                    ? `
-                                        <p>
-                                            📞
-                                            ${escapeHTML(
-                                                order.phone
-                                            )}
-                                        </p>
-                                    `
-                                    : ""
-                            }
+                                <p>
 
-                            ${
-                                order.notes
-                                    ? `
-                                        <p>
-                                            📝
-                                            ${escapeHTML(
-                                                order.notes
-                                            )}
-                                        </p>
-                                    `
-                                    : ""
-                            }
+                                    📅
+
+                                    ${escapeHTML(
+                                        formatDate(
+                                            order.date
+                                        )
+                                    )}
+
+                                </p>
+
+
+                                <p>
+
+                                    👥
+
+                                    ${order.people}
+
+                                    people
+
+                                </p>
+
+
+                                ${
+                                    order.phone
+                                        ? `
+
+                                            <p>
+
+                                                📞
+
+                                                ${escapeHTML(
+                                                    order.phone
+                                                )}
+
+                                            </p>
+
+                                        `
+                                        : ""
+                                }
+
+
+                                ${
+                                    order.notes
+                                        ? `
+
+                                            <p>
+
+                                                📝
+
+                                                ${escapeHTML(
+                                                    order.notes
+                                                )}
+
+                                            </p>
+
+                                        `
+                                        : ""
+                                }
+
+                            </div>
+
+
+                            <div class="party-card-money">
+
+                                <span>
+                                    Total
+                                </span>
+
+
+                                <strong>
+                                    ₹${formatMoney(
+                                        order.total
+                                    )}
+                                </strong>
+
+
+                                <small>
+
+                                    Advance:
+
+                                    ₹${formatMoney(
+                                        order.advance
+                                    )}
+
+                                </small>
+
+
+                                <small>
+
+                                    Balance:
+
+                                    ₹${formatMoney(
+                                        order.balance
+                                    )}
+
+                                </small>
+
+                            </div>
 
                         </div>
 
-                        <div class="party-card-money">
+                    `;
 
-                            <span>
-                                Total
-                            </span>
-
-                            <strong>
-                                ₹${formatMoney(order.total)}
-                            </strong>
-
-                            <small>
-                                Advance:
-                                ₹${formatMoney(order.advance)}
-                            </small>
-
-                            <small>
-                                Balance:
-                                ₹${formatMoney(order.balance)}
-                            </small>
-
-                        </div>
-
-                    </div>
-                `;
-
-            })
+                }
+            )
             .join("");
 
 }
 
+
+// =====================================================
+// ADMIN
+// =====================================================
 
 function openAdmin() {
 
@@ -1547,80 +2837,143 @@ function openAdmin() {
 }
 
 
+// =====================================================
+// CLOSE ADMIN
+// =====================================================
+
 function closeAdmin() {
 
     const modal =
-        document.getElementById("adminModal");
+        document.getElementById(
+            "adminModal"
+        );
+
 
     if (modal) {
 
-        modal.classList.remove("active");
+        modal.classList.remove(
+            "active"
+        );
 
     }
 
 }
 
 
-function showAdminSection(section, button) {
+// =====================================================
+// ADMIN SECTION
+// =====================================================
+
+function showAdminSection(
+    section,
+    button
+) {
 
     document
-        .querySelectorAll(".admin-tab")
-        .forEach(function (tab) {
+        .querySelectorAll(
+            ".admin-tab"
+        )
+        .forEach(
+            function(tab) {
 
-            tab.classList.remove("active");
+                tab.classList.remove(
+                    "active"
+                );
 
-        });
+            }
+        );
+
 
     if (button) {
 
-        button.classList.add("active");
+        button.classList.add(
+            "active"
+        );
 
     }
 
-    renderAdminSection(section);
+
+    renderAdminSection(
+        section
+    );
 
 }
 
 
-function renderAdminSection(section) {
+// =====================================================
+// RENDER ADMIN SECTION
+// =====================================================
+
+function renderAdminSection(
+    section
+) {
 
     const container =
-        document.getElementById("adminContent");
+        document.getElementById(
+            "adminContent"
+        );
+
 
     if (!container) {
-        return;
-    }
-
-    if (section === "items") {
-
-        renderAdminItems(container);
 
         return;
 
     }
 
-    if (section === "add") {
 
-        renderAdminAdd(container);
+    if (
+        section === "items"
+    ) {
+
+        renderAdminItems(
+            container
+        );
 
         return;
 
     }
 
-    if (section === "settings") {
 
-        renderAdminSettings(container);
+    if (
+        section === "add"
+    ) {
+
+        renderAdminAdd(
+            container
+        );
+
+        return;
+
+    }
+
+
+    if (
+        section === "settings"
+    ) {
+
+        renderAdminSettings(
+            container
+        );
 
     }
 
 }
 
 
-function renderAdminItems(container) {
+// =====================================================
+// ADMIN ITEMS
+// =====================================================
 
-    if (menu.length === 0) {
+function renderAdminItems(
+    container
+) {
+
+    if (
+        menu.length === 0
+    ) {
 
         container.innerHTML = `
+
             <div class="empty-state">
 
                 <h3>
@@ -1632,10 +2985,13 @@ function renderAdminItems(container) {
                 </p>
 
             </div>
+
         `;
 
         return;
+
     }
+
 
     container.innerHTML = `
 
@@ -1643,49 +2999,58 @@ function renderAdminItems(container) {
 
             ${
                 menu
-                    .map(function (item) {
+                    .map(
+                        function(item) {
 
-                        return `
-                            <div class="admin-item">
+                            return `
 
-                                <div>
+                                <div class="admin-item">
 
-                                    <h3>
-                                        ${escapeHTML(item.name)}
-                                    </h3>
+                                    <div>
 
-                                    <p>
-                                        ${escapeHTML(
-                                            item.category
+                                        <h3>
+                                            ${escapeHTML(
+                                                item.name
+                                            )}
+                                        </h3>
+
+                                        <p>
+                                            ${escapeHTML(
+                                                item.category
+                                            )}
+                                        </p>
+
+                                    </div>
+
+
+                                    <strong>
+                                        ₹${formatMoney(
+                                            item.price
                                         )}
-                                    </p>
+                                    </strong>
+
+
+                                    <button
+                                        class="secondary-btn"
+                                        onclick="editMenuItem(${item.id})"
+                                    >
+                                        Edit
+                                    </button>
+
+
+                                    <button
+                                        class="clear-btn"
+                                        onclick="deleteMenuItem(${item.id})"
+                                    >
+                                        Delete
+                                    </button>
 
                                 </div>
 
-                                <strong>
-                                    ₹${formatMoney(
-                                        item.price
-                                    )}
-                                </strong>
+                            `;
 
-                                <button
-                                    class="secondary-btn"
-                                    onclick="editMenuItem(${item.id})"
-                                >
-                                    Edit
-                                </button>
-
-                                <button
-                                    class="clear-btn"
-                                    onclick="deleteMenuItem(${item.id})"
-                                >
-                                    Delete
-                                </button>
-
-                            </div>
-                        `;
-
-                    })
+                        }
+                    )
                     .join("")
             }
 
@@ -1696,7 +3061,13 @@ function renderAdminItems(container) {
 }
 
 
-function renderAdminAdd(container) {
+// =====================================================
+// ADMIN ADD ITEM
+// =====================================================
+
+function renderAdminAdd(
+    container
+) {
 
     container.innerHTML = `
 
@@ -1716,6 +3087,7 @@ function renderAdminAdd(container) {
 
             </div>
 
+
             <div class="form-group">
 
                 <label>
@@ -1729,6 +3101,7 @@ function renderAdminAdd(container) {
                 >
 
             </div>
+
 
             <div class="form-group">
 
@@ -1746,6 +3119,7 @@ function renderAdminAdd(container) {
 
             </div>
 
+
             <button
                 class="primary-btn"
                 onclick="addMenuItem()"
@@ -1760,7 +3134,20 @@ function renderAdminAdd(container) {
 }
 
 
-function renderAdminSettings(container) {
+// =====================================================
+// ADMIN SETTINGS
+// =====================================================
+
+function renderAdminSettings(
+    container
+) {
+
+    const savedName =
+        localStorage.getItem(
+            "hotelPankajRestaurantName"
+        ) ||
+        "Hotel Pankaj";
+
 
     container.innerHTML = `
 
@@ -1770,19 +3157,24 @@ function renderAdminSettings(container) {
                 Restaurant Settings
             </h3>
 
+
             <div class="form-group">
 
                 <label>
                     Restaurant Name
                 </label>
 
+
                 <input
                     id="restaurantNameSetting"
                     type="text"
-                    value="Hotel Pankaj"
+                    value="${escapeAttribute(
+                        savedName
+                    )}"
                 >
 
             </div>
+
 
             <button
                 class="primary-btn"
@@ -1790,6 +3182,7 @@ function renderAdminSettings(container) {
             >
                 Save Settings
             </button>
+
 
             <button
                 class="secondary-btn"
@@ -1806,6 +3199,10 @@ function renderAdminSettings(container) {
 }
 
 
+// =====================================================
+// ADD MENU ITEM
+// =====================================================
+
 function addMenuItem() {
 
     const nameElement =
@@ -1813,15 +3210,18 @@ function addMenuItem() {
             "adminItemName"
         );
 
+
     const categoryElement =
         document.getElementById(
             "adminItemCategory"
         );
 
+
     const priceElement =
         document.getElementById(
             "adminItemPrice"
         );
+
 
     if (
         !nameElement ||
@@ -1833,14 +3233,20 @@ function addMenuItem() {
 
     }
 
+
     const name =
         nameElement.value.trim();
+
 
     const category =
         categoryElement.value.trim();
 
+
     const price =
-        Number(priceElement.value);
+        Number(
+            priceElement.value
+        );
+
 
     if (!name) {
 
@@ -1849,7 +3255,9 @@ function addMenuItem() {
         );
 
         return;
+
     }
+
 
     if (!category) {
 
@@ -1858,7 +3266,9 @@ function addMenuItem() {
         );
 
         return;
+
     }
+
 
     if (
         !Number.isFinite(price) ||
@@ -1870,28 +3280,44 @@ function addMenuItem() {
         );
 
         return;
+
     }
+
 
     const newId =
         menu.length > 0
+
             ? Math.max(
-                ...menu.map(function (item) {
-                    return Number(item.id);
-                })
+                ...menu.map(
+                    function(item) {
+
+                        return Number(
+                            item.id
+                        );
+
+                    }
+                )
             ) + 1
+
             : 1;
+
 
     menu.push({
 
-        id: newId,
+        id:
+            newId,
 
-        name: name,
+        name:
+            name,
 
-        category: category,
+        category:
+            category,
 
-        price: price
+        price:
+            price
 
     });
+
 
     saveMenu();
 
@@ -1899,9 +3325,11 @@ function addMenuItem() {
 
     renderMenu();
 
+
     alert(
         "Menu item added."
     );
+
 
     nameElement.value = "";
 
@@ -1912,18 +3340,35 @@ function addMenuItem() {
 }
 
 
-function editMenuItem(id) {
+// =====================================================
+// EDIT MENU ITEM
+// =====================================================
+
+function editMenuItem(
+    id
+) {
 
     const item =
-        menu.find(function (menuItem) {
+        menu.find(
+            function(menuItem) {
 
-            return menuItem.id === id;
+                return (
+                    Number(
+                        menuItem.id
+                    ) ===
+                    Number(id)
+                );
 
-        });
+            }
+        );
+
 
     if (!item) {
+
         return;
+
     }
+
 
     const newName =
         prompt(
@@ -1931,9 +3376,15 @@ function editMenuItem(id) {
             item.name
         );
 
-    if (newName === null) {
+
+    if (
+        newName === null
+    ) {
+
         return;
+
     }
+
 
     const newCategory =
         prompt(
@@ -1941,9 +3392,15 @@ function editMenuItem(id) {
             item.category
         );
 
-    if (newCategory === null) {
+
+    if (
+        newCategory === null
+    ) {
+
         return;
+
     }
+
 
     const newPrice =
         prompt(
@@ -1951,12 +3408,21 @@ function editMenuItem(id) {
             item.price
         );
 
-    if (newPrice === null) {
+
+    if (
+        newPrice === null
+    ) {
+
         return;
+
     }
 
+
     const price =
-        Number(newPrice);
+        Number(
+            newPrice
+        );
+
 
     if (
         !newName.trim() ||
@@ -1970,16 +3436,21 @@ function editMenuItem(id) {
         );
 
         return;
+
     }
+
 
     item.name =
         newName.trim();
 
+
     item.category =
         newCategory.trim();
 
+
     item.price =
         price;
+
 
     saveMenu();
 
@@ -1987,23 +3458,42 @@ function editMenuItem(id) {
 
     renderMenu();
 
-    renderAdminSection("items");
+    renderAdminSection(
+        "items"
+    );
 
 }
 
 
-function deleteMenuItem(id) {
+// =====================================================
+// DELETE MENU ITEM
+// =====================================================
+
+function deleteMenuItem(
+    id
+) {
 
     const item =
-        menu.find(function (menuItem) {
+        menu.find(
+            function(menuItem) {
 
-            return menuItem.id === id;
+                return (
+                    Number(
+                        menuItem.id
+                    ) ===
+                    Number(id)
+                );
 
-        });
+            }
+        );
+
 
     if (!item) {
+
         return;
+
     }
+
 
     const confirmed =
         confirm(
@@ -2012,16 +3502,28 @@ function deleteMenuItem(id) {
             "?"
         );
 
+
     if (!confirmed) {
+
         return;
+
     }
 
+
     menu =
-        menu.filter(function (menuItem) {
+        menu.filter(
+            function(menuItem) {
 
-            return menuItem.id !== id;
+                return (
+                    Number(
+                        menuItem.id
+                    ) !==
+                    Number(id)
+                );
 
-        });
+            }
+        );
+
 
     saveMenu();
 
@@ -2029,10 +3531,16 @@ function deleteMenuItem(id) {
 
     renderMenu();
 
-    renderAdminSection("items");
+    renderAdminSection(
+        "items"
+    );
 
 }
 
+
+// =====================================================
+// RESTAURANT SETTINGS
+// =====================================================
 
 function saveRestaurantSettings() {
 
@@ -2041,12 +3549,17 @@ function saveRestaurantSettings() {
             "restaurantNameSetting"
         );
 
+
     if (!input) {
+
         return;
+
     }
+
 
     const name =
         input.value.trim();
+
 
     if (!name) {
 
@@ -2055,12 +3568,15 @@ function saveRestaurantSettings() {
         );
 
         return;
+
     }
+
 
     localStorage.setItem(
         "hotelPankajRestaurantName",
         name
     );
+
 
     alert(
         "Settings saved."
@@ -2069,6 +3585,10 @@ function saveRestaurantSettings() {
 }
 
 
+// =====================================================
+// RESET ALL DATA
+// =====================================================
+
 function resetAllData() {
 
     const confirmed =
@@ -2076,27 +3596,39 @@ function resetAllData() {
             "This will delete menu, orders and party orders. Continue?"
         );
 
+
     if (!confirmed) {
+
         return;
+
     }
+
 
     localStorage.removeItem(
         "hotelPankajMenu"
     );
 
+
     localStorage.removeItem(
         "hotelPankajHistory"
     );
+
 
     localStorage.removeItem(
         "hotelPankajPartyOrders"
     );
 
+
     localStorage.removeItem(
         "hotelPankajOrderNumber"
     );
 
-    menu = [...DEFAULT_MENU];
+
+    menu =
+        [
+            ...DEFAULT_MENU
+        ];
+
 
     history = [];
 
@@ -2108,11 +3640,13 @@ function resetAllData() {
 
     orderNumber = 1;
 
+
     saveMenu();
 
     saveHistory();
 
     savePartyOrders();
+
 
     renderCategories();
 
@@ -2126,6 +3660,7 @@ function resetAllData() {
 
     updateOrderNumber();
 
+
     alert(
         "All data has been reset."
     );
@@ -2133,9 +3668,17 @@ function resetAllData() {
 }
 
 
-function formatMoney(value) {
+// =====================================================
+// FORMAT MONEY
+// =====================================================
 
-    return Number(value || 0)
+function formatMoney(
+    value
+) {
+
+    return Number(
+        value || 0
+    )
         .toLocaleString(
             "en-IN",
             {
@@ -2146,16 +3689,27 @@ function formatMoney(value) {
 }
 
 
-function formatDate(dateString) {
+// =====================================================
+// FORMAT DATE
+// =====================================================
+
+function formatDate(
+    dateString
+) {
 
     if (!dateString) {
+
         return "";
+
     }
+
 
     const date =
         new Date(
-            dateString + "T00:00:00"
+            dateString +
+            "T00:00:00"
         );
+
 
     if (
         Number.isNaN(
@@ -2167,21 +3721,34 @@ function formatDate(dateString) {
 
     }
 
+
     return date.toLocaleDateString(
         "en-IN",
         {
+
             day: "2-digit",
+
             month: "short",
+
             year: "numeric"
+
         }
     );
 
 }
 
 
-function escapeHTML(value) {
+// =====================================================
+// ESCAPE HTML
+// =====================================================
 
-    return String(value)
+function escapeHTML(
+    value
+) {
+
+    return String(
+        value
+    )
         .replace(
             /&/g,
             "&amp;"
@@ -2206,9 +3773,17 @@ function escapeHTML(value) {
 }
 
 
-function escapeAttribute(value) {
+// =====================================================
+// ESCAPE ATTRIBUTE
+// =====================================================
 
-    return String(value)
+function escapeAttribute(
+    value
+) {
+
+    return String(
+        value
+    )
         .replace(
             /\\/g,
             "\\\\"
@@ -2216,6 +3791,18 @@ function escapeAttribute(value) {
         .replace(
             /'/g,
             "\\'"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
         );
 
 }
