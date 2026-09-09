@@ -1,17 +1,9 @@
 const API_URL = "";
 
-const DEFAULT_WAITER_ID = "waiter01";
-const DEFAULT_WAITER_PASSWORD = "1234";
-
 let menu = [];
 let cart = [];
 let orders = [];
-let selectedTable = null;
 let selectedCategory = "All";
-let currentWaiter = null;
-
-const loginScreen = document.getElementById("loginScreen");
-const app = document.getElementById("app");
 
 document.addEventListener("DOMContentLoaded", initializeApp);
 
@@ -19,165 +11,38 @@ async function initializeApp() {
     loadLocalData();
     setupEvents();
 
-    if (currentWaiter) {
-        showApp();
-        await loadData();
-    } else {
-        showLogin();
-    }
+    document.getElementById("app").style.display = "block";
+
+    await loadData();
 }
 
 function setupEvents() {
     document.addEventListener("click", handleClick);
 
-    const loginForm = document.getElementById("loginForm");
+    const confirmButton =
+        document.getElementById("confirmOrderButton");
 
-    if (loginForm) {
-        loginForm.addEventListener("submit", handleLogin);
+    if (confirmButton) {
+        confirmButton.addEventListener(
+            "click",
+            confirmOrder
+        );
     }
 
-    const logoutBtn = document.getElementById("logoutBtn");
+    const mobileCartButton =
+        document.getElementById("mobileCartButton");
 
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", logout);
+    if (mobileCartButton) {
+        mobileCartButton.addEventListener(
+            "click",
+            toggleMobileCart
+        );
     }
-}
-
-async function handleLogin(event) {
-    event.preventDefault();
-
-    const usernameInput = document.getElementById("username");
-    const passwordInput = document.getElementById("password");
-
-    const username = usernameInput
-        ? usernameInput.value.trim()
-        : "";
-
-    const password = passwordInput
-        ? passwordInput.value
-        : "";
-
-    if (!username || !password) {
-        showLoginError("Enter waiter ID and password.");
-        return;
-    }
-
-    if (API_URL) {
-        try {
-            showLoader(true);
-
-            const result = await apiRequest("login", {
-                username,
-                password
-            });
-
-            if (!result.success) {
-                showLoginError(
-                    result.message || "Invalid credentials."
-                );
-                return;
-            }
-
-            currentWaiter = result.user;
-
-        } catch (error) {
-            showLoginError(
-                "Unable to connect to server."
-            );
-            return;
-
-        } finally {
-            showLoader(false);
-        }
-
-    } else {
-        if (
-            username !== DEFAULT_WAITER_ID ||
-            password !== DEFAULT_WAITER_PASSWORD
-        ) {
-            showLoginError(
-                "Invalid waiter ID or password."
-            );
-            return;
-        }
-
-        currentWaiter = {
-            username: DEFAULT_WAITER_ID,
-            name: "Waiter 01",
-            role: "waiter"
-        };
-    }
-
-    localStorage.setItem(
-        "pankaj_waiter",
-        JSON.stringify(currentWaiter)
-    );
-
-    showApp();
-    await loadData();
-}
-
-function showLogin() {
-    if (loginScreen) {
-        loginScreen.style.display = "flex";
-    }
-
-    if (app) {
-        app.style.display = "none";
-    }
-}
-
-function showApp() {
-    if (loginScreen) {
-        loginScreen.style.display = "none";
-    }
-
-    if (app) {
-        app.style.display = "block";
-    }
-
-    updateWaiterUI();
-}
-
-function updateWaiterUI() {
-    if (!currentWaiter) return;
-
-    const name =
-        currentWaiter.name ||
-        currentWaiter.username ||
-        "Waiter";
-
-    const nameElement =
-        document.getElementById("waiterName");
-
-    const avatarElement =
-        document.getElementById("waiterAvatar");
-
-    if (nameElement) {
-        nameElement.textContent = name;
-    }
-
-    if (avatarElement) {
-        avatarElement.textContent =
-            name.charAt(0).toUpperCase();
-    }
-}
-
-function logout() {
-    currentWaiter = null;
-    cart = [];
-    selectedTable = null;
-
-    localStorage.removeItem("pankaj_waiter");
-
-    showLogin();
 }
 
 async function loadData() {
     if (API_URL) {
         try {
-            showLoader(true);
-
             const result =
                 await apiRequest("getData");
 
@@ -190,14 +55,10 @@ async function loadData() {
                     ? result.orders
                     : [];
             }
-
         } catch (error) {
             showToast(
                 "Failed to load restaurant data."
             );
-
-        } finally {
-            showLoader(false);
         }
     }
 
@@ -207,7 +68,6 @@ async function loadData() {
 
     renderCategories();
     renderMenu();
-    renderTables();
     renderOrders();
     renderCart();
 }
@@ -291,7 +151,7 @@ function getDefaultMenu() {
 
 function renderCategories() {
     const container =
-        document.querySelector(".categories");
+        document.getElementById("categories");
 
     if (!container) return;
 
@@ -307,6 +167,7 @@ function renderCategories() {
     container.innerHTML =
         categories.map(category => `
             <button
+                type="button"
                 class="category-btn ${
                     category === selectedCategory
                         ? "active"
@@ -321,7 +182,7 @@ function renderCategories() {
 
 function renderMenu() {
     const container =
-        document.querySelector(".menu-grid");
+        document.getElementById("menuGrid");
 
     if (!container) return;
 
@@ -335,16 +196,10 @@ function renderMenu() {
 
     if (!filteredMenu.length) {
         container.innerHTML = `
-            <div style="
-                grid-column:1/-1;
-                padding:40px;
-                text-align:center;
-                color:#999;
-            ">
+            <div class="empty-cart">
                 No items available
             </div>
         `;
-
         return;
     }
 
@@ -354,11 +209,13 @@ function renderMenu() {
                 item.available === false;
 
             return `
-                <div class="menu-item ${
-                    unavailable
-                        ? "item-unavailable"
-                        : ""
-                }">
+                <article
+                    class="menu-item ${
+                        unavailable
+                            ? "item-unavailable"
+                            : ""
+                    }"
+                >
 
                     <div class="item-image">
                         ${
@@ -387,29 +244,23 @@ function renderMenu() {
 
                         <div class="item-bottom">
 
-                            <div>
-                                ${
-                                    unavailable
-                                        ? `
-                                            <span class="unavailable-label">
-                                                Unavailable
-                                            </span>
-                                        `
-                                        : `
-                                            <span class="item-price">
-                                                ₹${formatMoney(item.price)}
-                                            </span>
-                                        `
-                                }
-                            </div>
+                            <span class="item-price">
+                                ₹${formatMoney(item.price)}
+                            </span>
 
                             ${
                                 unavailable
-                                    ? ""
+                                    ? `
+                                        <span class="unavailable-label">
+                                            Unavailable
+                                        </span>
+                                    `
                                     : `
                                         <button
+                                            type="button"
                                             class="add-btn"
                                             data-add-item="${escapeAttribute(item.id)}"
+                                            aria-label="Add ${escapeAttribute(item.name)}"
                                         >
                                             +
                                         </button>
@@ -420,52 +271,24 @@ function renderMenu() {
 
                     </div>
 
-                </div>
+                </article>
             `;
         }).join("");
 }
 
-function renderTables() {
-    const container =
-        document.querySelector(".table-grid");
-
-    if (!container) return;
-
-    const tables = Array.from(
-        { length: 20 },
-        (_, index) => index + 1
-    );
-
-    container.innerHTML =
-        tables.map(table => `
-            <button
-                class="table-btn ${
-                    selectedTable === table
-                        ? "active"
-                        : ""
-                }"
-                data-table="${table}"
-            >
-                T${table}
-            </button>
-        `).join("");
-
-    updateCartTable();
-}
-
 function renderCart() {
     const container =
-        document.querySelector(".cart-items");
+        document.getElementById("cartItems");
 
     if (!container) return;
 
     if (!cart.length) {
         container.innerHTML = `
             <div class="empty-cart">
-                Select items from the menu
+                <strong>No items added</strong>
+                <span>Select items from the menu</span>
             </div>
         `;
-
     } else {
         container.innerHTML =
             cart.map(item => `
@@ -490,6 +313,7 @@ function renderCart() {
                         <div class="qty-controls">
 
                             <button
+                                type="button"
                                 class="qty-btn"
                                 data-qty-minus="${escapeAttribute(item.id)}"
                             >
@@ -501,6 +325,7 @@ function renderCart() {
                             </span>
 
                             <button
+                                type="button"
                                 class="qty-btn"
                                 data-qty-plus="${escapeAttribute(item.id)}"
                             >
@@ -510,6 +335,7 @@ function renderCart() {
                         </div>
 
                         <button
+                            type="button"
                             class="remove-btn"
                             data-remove-item="${escapeAttribute(item.id)}"
                         >
@@ -523,7 +349,6 @@ function renderCart() {
     }
 
     updateCartSummary();
-    updateMobileCart();
 }
 
 function addToCart(itemId) {
@@ -599,84 +424,6 @@ function removeFromCart(itemId) {
 }
 
 function updateCartSummary() {
-    const subtotal =
-        cart.reduce(
-            (total, item) =>
-                total +
-                item.price * item.qty,
-            0
-        );
-
-    const itemCount =
-        cart.reduce(
-            (total, item) =>
-                total + item.qty,
-            0
-        );
-
-    const subtotalElement =
-        document.getElementById("subtotal");
-
-    const totalElement =
-        document.getElementById("total");
-
-    const countElement =
-        document.getElementById("cartCount");
-
-    const confirmButton =
-        document.getElementById(
-            "confirmOrderBtn"
-        );
-
-    if (subtotalElement) {
-        subtotalElement.textContent =
-            `₹${formatMoney(subtotal)}`;
-    }
-
-    if (totalElement) {
-        totalElement.textContent =
-            `₹${formatMoney(subtotal)}`;
-    }
-
-    if (countElement) {
-        countElement.textContent =
-            itemCount;
-    }
-
-    if (confirmButton) {
-        confirmButton.disabled =
-            !selectedTable ||
-            cart.length === 0;
-    }
-}
-
-function updateCartTable() {
-    const element =
-        document.querySelector(".cart-table");
-
-    if (!element) return;
-
-    element.textContent =
-        selectedTable
-            ? `Table ${selectedTable}`
-            : "No table";
-}
-
-function updateMobileCart() {
-    const bar =
-        document.querySelector(
-            ".mobile-cart-bar"
-        );
-
-    if (!bar) return;
-
-    const itemCount =
-        cart.reduce(
-            (total, item) =>
-                total + item.qty,
-            0
-        );
-
     const total =
         cart.reduce(
             (sum, item) =>
@@ -685,35 +432,54 @@ function updateMobileCart() {
             0
         );
 
-    const info =
-        bar.querySelector(
-            ".mobile-cart-info"
+    const itemCount =
+        cart.reduce(
+            (sum, item) =>
+                sum + item.qty,
+            0
         );
 
-    if (info) {
-        info.innerHTML = `
-            <span>
-                ${itemCount}
-                item${itemCount === 1 ? "" : "s"}
-            </span>
+    const countElement =
+        document.getElementById("cartCount");
 
-            <strong>
-                ₹${formatMoney(total)}
-            </strong>
-        `;
+    const itemsElement =
+        document.getElementById("summaryItems");
+
+    const totalElement =
+        document.getElementById("summaryTotal");
+
+    const mobileTotalElement =
+        document.getElementById("mobileCartTotal");
+
+    const confirmButton =
+        document.getElementById(
+            "confirmOrderButton"
+        );
+
+    if (countElement) {
+        countElement.textContent =
+            itemCount;
     }
-}
 
-function selectTable(table) {
-    selectedTable =
-        Number(table);
+    if (itemsElement) {
+        itemsElement.textContent =
+            itemCount;
+    }
 
-    renderTables();
-    updateCartSummary();
+    if (totalElement) {
+        totalElement.textContent =
+            `₹${formatMoney(total)}`;
+    }
 
-    showToast(
-        `Table ${selectedTable} selected`
-    );
+    if (mobileTotalElement) {
+        mobileTotalElement.textContent =
+            `₹${formatMoney(total)}`;
+    }
+
+    if (confirmButton) {
+        confirmButton.disabled =
+            cart.length === 0;
+    }
 }
 
 function selectCategory(category) {
@@ -725,13 +491,6 @@ function selectCategory(category) {
 }
 
 async function confirmOrder() {
-    if (!selectedTable) {
-        showToast(
-            "Select a table first."
-        );
-        return;
-    }
-
     if (!cart.length) {
         showToast(
             "Add at least one item."
@@ -740,9 +499,7 @@ async function confirmOrder() {
     }
 
     const noteElement =
-        document.getElementById(
-            "orderNote"
-        );
+        document.getElementById("orderNote");
 
     const note =
         noteElement
@@ -751,11 +508,7 @@ async function confirmOrder() {
 
     const order = {
         id: generateOrderId(),
-        table: selectedTable,
-        waiter:
-            currentWaiter?.name ||
-            currentWaiter?.username ||
-            "Waiter",
+
         items:
             cart.map(item => ({
                 id: item.id,
@@ -763,7 +516,9 @@ async function confirmOrder() {
                 price: item.price,
                 qty: item.qty
             })),
+
         note,
+
         total:
             cart.reduce(
                 (sum, item) =>
@@ -772,14 +527,14 @@ async function confirmOrder() {
                     item.qty,
                 0
             ),
+
         status: "Pending",
+
         createdAt:
             new Date().toISOString()
     };
 
     try {
-        showLoader(true);
-
         if (API_URL) {
             const result =
                 await apiRequest(
@@ -795,14 +550,9 @@ async function confirmOrder() {
                 return;
             }
 
-            if (result.order) {
-                orders.unshift(
-                    result.order
-                );
-            } else {
-                orders.unshift(order);
-            }
-
+            orders.unshift(
+                result.order || order
+            );
         } else {
             orders.unshift(order);
             saveLocalOrders();
@@ -825,31 +575,21 @@ async function confirmOrder() {
         showToast(
             "Unable to place order."
         );
-
-    } finally {
-        showLoader(false);
     }
 }
 
 function renderOrders() {
     const container =
-        document.querySelector(
-            ".orders-list"
+        document.getElementById(
+            "ordersList"
         );
 
     if (!container) return;
 
     if (!orders.length) {
         container.innerHTML = `
-            <div style="
-                padding:30px;
-                text-align:center;
-                color:#999;
-                background:#fff;
-                border:1px solid #eee;
-                border-radius:14px;
-            ">
-                No orders yet
+            <div class="empty-orders">
+                No active orders
             </div>
         `;
 
@@ -859,6 +599,11 @@ function renderOrders() {
 
     container.innerHTML =
         orders
+            .filter(
+                order =>
+                    order.status !==
+                    "Completed"
+            )
             .slice(0, 20)
             .map(order => `
                 <div class="order-card">
@@ -866,12 +611,7 @@ function renderOrders() {
                     <div class="order-card-header">
 
                         <div class="order-number">
-                            ${escapeHTML(
-                                order.id
-                            )}
-                            · T${escapeHTML(
-                                String(order.table)
-                            )}
+                            ${escapeHTML(order.id)}
                         </div>
 
                         <div class="status">
@@ -885,20 +625,26 @@ function renderOrders() {
 
                     <div class="order-items">
                         ${
-                            Array.isArray(
-                                order.items
-                            )
+                            Array.isArray(order.items)
                                 ? order.items
                                     .map(
                                         item =>
-                                            `${escapeHTML(
-                                                item.name
-                                            )} × ${item.qty}`
+                                            `${escapeHTML(item.name)} × ${Number(item.qty) || 1}`
                                     )
                                     .join("<br>")
                                 : ""
                         }
                     </div>
+
+                    ${
+                        order.note
+                            ? `
+                                <div class="order-note-display">
+                                    ${escapeHTML(order.note)}
+                                </div>
+                            `
+                            : ""
+                    }
 
                     <div class="order-total">
 
@@ -907,26 +653,18 @@ function renderOrders() {
                         </span>
 
                         <span>
-                            ₹${formatMoney(
-                                order.total
-                            )}
+                            ₹${formatMoney(order.total)}
                         </span>
 
                     </div>
 
-                    ${
-                        order.status !==
-                        "Completed"
-                            ? `
-                                <button
-                                    class="edit-order-btn"
-                                    data-edit-order="${escapeAttribute(order.id)}"
-                                >
-                                    Edit Order
-                                </button>
-                            `
-                            : ""
-                    }
+                    <button
+                        type="button"
+                        class="edit-order-btn"
+                        data-edit-order="${escapeAttribute(order.id)}"
+                    >
+                        Edit Order
+                    </button>
 
                 </div>
             `)
@@ -937,13 +675,13 @@ function renderOrders() {
 
 function updateOrderCount() {
     const element =
-        document.querySelector(
-            ".order-count"
+        document.getElementById(
+            "activeOrderCount"
         );
 
     if (!element) return;
 
-    const activeOrders =
+    const active =
         orders.filter(
             order =>
                 order.status !==
@@ -951,7 +689,7 @@ function updateOrderCount() {
         ).length;
 
     element.textContent =
-        `${activeOrders} Active`;
+        `${active} Active`;
 }
 
 function editOrder(orderId) {
@@ -964,9 +702,6 @@ function editOrder(orderId) {
 
     if (!order) return;
 
-    selectedTable =
-        Number(order.table);
-
     cart =
         Array.isArray(order.items)
             ? order.items.map(
@@ -974,17 +709,12 @@ function editOrder(orderId) {
                     id: item.id,
                     name: item.name,
                     price:
-                        Number(item.price) ||
-                        0,
+                        Number(item.price) || 0,
                     qty:
-                        Number(item.qty) ||
-                        1
+                        Number(item.qty) || 1
                 })
             )
             : [];
-
-    renderTables();
-    renderCart();
 
     const noteElement =
         document.getElementById(
@@ -996,14 +726,23 @@ function editOrder(orderId) {
             order.note || "";
     }
 
+    renderCart();
+
+    const orderSection =
+        document.querySelector(
+            ".order-section"
+        );
+
+    if (orderSection) {
+        orderSection.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+
     showToast(
         `${order.id} loaded for editing`
     );
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
 }
 
 function handleClick(event) {
@@ -1015,13 +754,6 @@ function handleClick(event) {
     if (target.dataset.category) {
         selectCategory(
             target.dataset.category
-        );
-        return;
-    }
-
-    if (target.dataset.table) {
-        selectTable(
-            target.dataset.table
         );
         return;
     }
@@ -1062,33 +794,20 @@ function handleClick(event) {
         );
         return;
     }
-
-    if (
-        target.id ===
-        "confirmOrderBtn"
-    ) {
-        confirmOrder();
-        return;
-    }
-
-    if (
-        target.id ===
-        "mobileCartBtn"
-    ) {
-        toggleMobileCart();
-        return;
-    }
 }
 
 function toggleMobileCart() {
-    const cartElement =
-        document.querySelector(".cart");
+    const orderSection =
+        document.querySelector(
+            ".order-section"
+        );
 
-    if (!cartElement) return;
+    if (!orderSection) return;
 
-    cartElement.classList.toggle(
-        "mobile-open"
-    );
+    orderSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
 }
 
 async function apiRequest(
@@ -1098,8 +817,7 @@ async function apiRequest(
     if (!API_URL) {
         return {
             success: false,
-            message:
-                "API URL not configured."
+            message: "API URL not configured."
         };
     }
 
@@ -1121,16 +839,6 @@ async function apiRequest(
 
 function loadLocalData() {
     try {
-        const waiter =
-            localStorage.getItem(
-                "pankaj_waiter"
-            );
-
-        if (waiter) {
-            currentWaiter =
-                JSON.parse(waiter);
-        }
-
         const savedOrders =
             localStorage.getItem(
                 "pankaj_orders"
@@ -1141,10 +849,12 @@ function loadLocalData() {
                 JSON.parse(
                     savedOrders
                 );
-        }
 
+            if (!Array.isArray(orders)) {
+                orders = [];
+            }
+        }
     } catch (error) {
-        currentWaiter = null;
         orders = [];
     }
 }
@@ -1197,9 +907,7 @@ function showToast(message) {
     toast.textContent =
         message;
 
-    toast.classList.add(
-        "show"
-    );
+    toast.classList.add("show");
 
     clearTimeout(
         showToast.timeout
@@ -1207,39 +915,8 @@ function showToast(message) {
 
     showToast.timeout =
         setTimeout(() => {
-            toast.classList.remove(
-                "show"
-            );
+            toast.classList.remove("show");
         }, 2200);
-}
-
-function showLoader(show) {
-    const loader =
-        document.getElementById(
-            "loader"
-        );
-
-    if (!loader) return;
-
-    loader.style.display =
-        show
-            ? "flex"
-            : "none";
-}
-
-function showLoginError(message) {
-    const errorBox =
-        document.getElementById(
-            "loginError"
-        );
-
-    if (!errorBox) return;
-
-    errorBox.textContent =
-        message;
-
-    errorBox.style.display =
-        "block";
 }
 
 function escapeHTML(value) {
