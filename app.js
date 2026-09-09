@@ -1,5 +1,8 @@
 const API_URL = "";
 
+const DEFAULT_WAITER_ID = "waiter01";
+const DEFAULT_WAITER_PASSWORD = "1234";
+
 let menu = [];
 let cart = [];
 let orders = [];
@@ -10,9 +13,7 @@ let currentWaiter = null;
 const loginScreen = document.getElementById("loginScreen");
 const app = document.getElementById("app");
 
-document.addEventListener("DOMContentLoaded", () => {
-    initializeApp();
-});
+document.addEventListener("DOMContentLoaded", initializeApp);
 
 async function initializeApp() {
     loadLocalData();
@@ -47,13 +48,17 @@ async function handleLogin(event) {
 
     const usernameInput = document.getElementById("username");
     const passwordInput = document.getElementById("password");
-    const errorBox = document.getElementById("loginError");
 
-    const username = usernameInput ? usernameInput.value.trim() : "";
-    const password = passwordInput ? passwordInput.value : "";
+    const username = usernameInput
+        ? usernameInput.value.trim()
+        : "";
+
+    const password = passwordInput
+        ? passwordInput.value
+        : "";
 
     if (!username || !password) {
-        showLoginError("Enter username and password.");
+        showLoginError("Enter waiter ID and password.");
         return;
     }
 
@@ -67,22 +72,38 @@ async function handleLogin(event) {
             });
 
             if (!result.success) {
-                showLoginError(result.message || "Invalid credentials.");
+                showLoginError(
+                    result.message || "Invalid credentials."
+                );
                 return;
             }
 
             currentWaiter = result.user;
 
         } catch (error) {
-            showLoginError("Unable to connect to server.");
+            showLoginError(
+                "Unable to connect to server."
+            );
             return;
+
         } finally {
             showLoader(false);
         }
+
     } else {
+        if (
+            username !== DEFAULT_WAITER_ID ||
+            password !== DEFAULT_WAITER_PASSWORD
+        ) {
+            showLoginError(
+                "Invalid waiter ID or password."
+            );
+            return;
+        }
+
         currentWaiter = {
-            username,
-            name: username,
+            username: DEFAULT_WAITER_ID,
+            name: "Waiter 01",
             role: "waiter"
         };
     }
@@ -126,8 +147,11 @@ function updateWaiterUI() {
         currentWaiter.username ||
         "Waiter";
 
-    const nameElement = document.getElementById("waiterName");
-    const avatarElement = document.getElementById("waiterAvatar");
+    const nameElement =
+        document.getElementById("waiterName");
+
+    const avatarElement =
+        document.getElementById("waiterAvatar");
 
     if (nameElement) {
         nameElement.textContent = name;
@@ -154,7 +178,8 @@ async function loadData() {
         try {
             showLoader(true);
 
-            const result = await apiRequest("getData");
+            const result =
+                await apiRequest("getData");
 
             if (result.success) {
                 menu = Array.isArray(result.menu)
@@ -165,8 +190,12 @@ async function loadData() {
                     ? result.orders
                     : [];
             }
+
         } catch (error) {
-            showToast("Failed to load restaurant data.");
+            showToast(
+                "Failed to load restaurant data."
+            );
+
         } finally {
             showLoader(false);
         }
@@ -275,16 +304,19 @@ function renderCategories() {
         )
     ];
 
-    container.innerHTML = categories
-        .map(category => `
+    container.innerHTML =
+        categories.map(category => `
             <button
-                class="category-btn ${category === selectedCategory ? "active" : ""}"
-                data-category="${escapeHTML(category)}"
+                class="category-btn ${
+                    category === selectedCategory
+                        ? "active"
+                        : ""
+                }"
+                data-category="${escapeAttribute(category)}"
             >
                 ${escapeHTML(category)}
             </button>
-        `)
-        .join("");
+        `).join("");
 }
 
 function renderMenu() {
@@ -303,43 +335,71 @@ function renderMenu() {
 
     if (!filteredMenu.length) {
         container.innerHTML = `
-            <div style="grid-column:1/-1;padding:40px;text-align:center;color:#999;">
+            <div style="
+                grid-column:1/-1;
+                padding:40px;
+                text-align:center;
+                color:#999;
+            ">
                 No items available
             </div>
         `;
+
         return;
     }
 
-    container.innerHTML = filteredMenu
-        .map(item => {
+    container.innerHTML =
+        filteredMenu.map(item => {
             const unavailable =
                 item.available === false;
 
             return `
-                <div class="menu-item ${unavailable ? "item-unavailable" : ""}">
+                <div class="menu-item ${
+                    unavailable
+                        ? "item-unavailable"
+                        : ""
+                }">
+
                     <div class="item-image">
                         ${
                             item.image
-                                ? `<img src="${escapeAttribute(item.image)}" alt="${escapeAttribute(item.name)}">`
+                                ? `
+                                    <img
+                                        src="${escapeAttribute(item.image)}"
+                                        alt="${escapeAttribute(item.name)}"
+                                    >
+                                `
                                 : "🍽️"
                         }
                     </div>
 
                     <div class="item-info">
+
                         <div class="item-name">
                             ${escapeHTML(item.name)}
                         </div>
 
                         <div class="item-description">
-                            ${escapeHTML(item.description || "")}
+                            ${escapeHTML(
+                                item.description || ""
+                            )}
                         </div>
 
                         <div class="item-bottom">
+
                             <div>
                                 ${
                                     unavailable
-                                        ? `<span class="unavailable-label">Unavailable</span>`
-                                        : `<span class="item-price">₹${formatMoney(item.price)}</span>`
+                                        ? `
+                                            <span class="unavailable-label">
+                                                Unavailable
+                                            </span>
+                                        `
+                                        : `
+                                            <span class="item-price">
+                                                ₹${formatMoney(item.price)}
+                                            </span>
+                                        `
                                 }
                             </div>
 
@@ -347,20 +407,22 @@ function renderMenu() {
                                 unavailable
                                     ? ""
                                     : `
-                                    <button
-                                        class="add-btn"
-                                        data-add-item="${escapeAttribute(item.id)}"
-                                    >
-                                        +
-                                    </button>
+                                        <button
+                                            class="add-btn"
+                                            data-add-item="${escapeAttribute(item.id)}"
+                                        >
+                                            +
+                                        </button>
                                     `
                             }
+
                         </div>
+
                     </div>
+
                 </div>
             `;
-        })
-        .join("");
+        }).join("");
 }
 
 function renderTables() {
@@ -374,16 +436,19 @@ function renderTables() {
         (_, index) => index + 1
     );
 
-    container.innerHTML = tables
-        .map(table => `
+    container.innerHTML =
+        tables.map(table => `
             <button
-                class="table-btn ${selectedTable === table ? "active" : ""}"
+                class="table-btn ${
+                    selectedTable === table
+                        ? "active"
+                        : ""
+                }"
                 data-table="${table}"
             >
                 T${table}
             </button>
-        `)
-        .join("");
+        `).join("");
 
     updateCartTable();
 }
@@ -400,22 +465,30 @@ function renderCart() {
                 Select items from the menu
             </div>
         `;
+
     } else {
-        container.innerHTML = cart
-            .map(item => `
+        container.innerHTML =
+            cart.map(item => `
                 <div class="cart-item">
+
                     <div class="cart-item-top">
+
                         <div class="cart-item-name">
                             ${escapeHTML(item.name)}
                         </div>
 
                         <div class="cart-item-price">
-                            ₹${formatMoney(item.price * item.qty)}
+                            ₹${formatMoney(
+                                item.price * item.qty
+                            )}
                         </div>
+
                     </div>
 
                     <div class="cart-controls">
+
                         <div class="qty-controls">
+
                             <button
                                 class="qty-btn"
                                 data-qty-minus="${escapeAttribute(item.id)}"
@@ -433,6 +506,7 @@ function renderCart() {
                             >
                                 +
                             </button>
+
                         </div>
 
                         <button
@@ -441,10 +515,11 @@ function renderCart() {
                         >
                             Remove
                         </button>
+
                     </div>
+
                 </div>
-            `)
-            .join("");
+            `).join("");
     }
 
     updateCartSummary();
@@ -452,10 +527,12 @@ function renderCart() {
 }
 
 function addToCart(itemId) {
-    const item = menu.find(
-        menuItem =>
-            String(menuItem.id) === String(itemId)
-    );
+    const item =
+        menu.find(
+            menuItem =>
+                String(menuItem.id) ===
+                String(itemId)
+        );
 
     if (!item || item.available === false) {
         return;
@@ -464,7 +541,8 @@ function addToCart(itemId) {
     const existing =
         cart.find(
             cartItem =>
-                String(cartItem.id) === String(itemId)
+                String(cartItem.id) ===
+                String(itemId)
         );
 
     if (existing) {
@@ -479,14 +557,18 @@ function addToCart(itemId) {
     }
 
     renderCart();
-    showToast(`${item.name} added`);
+
+    showToast(
+        `${item.name} added`
+    );
 }
 
 function changeQuantity(itemId, amount) {
     const item =
         cart.find(
             cartItem =>
-                String(cartItem.id) === String(itemId)
+                String(cartItem.id) ===
+                String(itemId)
         );
 
     if (!item) return;
@@ -494,20 +576,24 @@ function changeQuantity(itemId, amount) {
     item.qty += amount;
 
     if (item.qty <= 0) {
-        cart = cart.filter(
-            cartItem =>
-                String(cartItem.id) !== String(itemId)
-        );
+        cart =
+            cart.filter(
+                cartItem =>
+                    String(cartItem.id) !==
+                    String(itemId)
+            );
     }
 
     renderCart();
 }
 
 function removeFromCart(itemId) {
-    cart = cart.filter(
-        item =>
-            String(item.id) !== String(itemId)
-    );
+    cart =
+        cart.filter(
+            item =>
+                String(item.id) !==
+                String(itemId)
+        );
 
     renderCart();
 }
@@ -516,7 +602,8 @@ function updateCartSummary() {
     const subtotal =
         cart.reduce(
             (total, item) =>
-                total + item.price * item.qty,
+                total +
+                item.price * item.qty,
             0
         );
 
@@ -537,7 +624,9 @@ function updateCartSummary() {
         document.getElementById("cartCount");
 
     const confirmButton =
-        document.getElementById("confirmOrderBtn");
+        document.getElementById(
+            "confirmOrderBtn"
+        );
 
     if (subtotalElement) {
         subtotalElement.textContent =
@@ -575,7 +664,9 @@ function updateCartTable() {
 
 function updateMobileCart() {
     const bar =
-        document.querySelector(".mobile-cart-bar");
+        document.querySelector(
+            ".mobile-cart-bar"
+        );
 
     if (!bar) return;
 
@@ -589,32 +680,45 @@ function updateMobileCart() {
     const total =
         cart.reduce(
             (sum, item) =>
-                sum + item.price * item.qty,
+                sum +
+                item.price * item.qty,
             0
         );
 
     const info =
-        bar.querySelector(".mobile-cart-info");
+        bar.querySelector(
+            ".mobile-cart-info"
+        );
 
     if (info) {
         info.innerHTML = `
-            <span>${itemCount} item${itemCount === 1 ? "" : "s"}</span>
-            <strong>₹${formatMoney(total)}</strong>
+            <span>
+                ${itemCount}
+                item${itemCount === 1 ? "" : "s"}
+            </span>
+
+            <strong>
+                ₹${formatMoney(total)}
+            </strong>
         `;
     }
 }
 
 function selectTable(table) {
-    selectedTable = Number(table);
+    selectedTable =
+        Number(table);
 
     renderTables();
     updateCartSummary();
 
-    showToast(`Table ${selectedTable} selected`);
+    showToast(
+        `Table ${selectedTable} selected`
+    );
 }
 
 function selectCategory(category) {
-    selectedCategory = category;
+    selectedCategory =
+        category;
 
     renderCategories();
     renderMenu();
@@ -622,17 +726,23 @@ function selectCategory(category) {
 
 async function confirmOrder() {
     if (!selectedTable) {
-        showToast("Select a table first.");
+        showToast(
+            "Select a table first."
+        );
         return;
     }
 
     if (!cart.length) {
-        showToast("Add at least one item.");
+        showToast(
+            "Add at least one item."
+        );
         return;
     }
 
     const noteElement =
-        document.getElementById("orderNote");
+        document.getElementById(
+            "orderNote"
+        );
 
     const note =
         noteElement
@@ -646,20 +756,25 @@ async function confirmOrder() {
             currentWaiter?.name ||
             currentWaiter?.username ||
             "Waiter",
-        items: cart.map(item => ({
-            id: item.id,
-            name: item.name,
-            price: item.price,
-            qty: item.qty
-        })),
+        items:
+            cart.map(item => ({
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                qty: item.qty
+            })),
         note,
-        total: cart.reduce(
-            (sum, item) =>
-                sum + item.price * item.qty,
-            0
-        ),
+        total:
+            cart.reduce(
+                (sum, item) =>
+                    sum +
+                    item.price *
+                    item.qty,
+                0
+            ),
         status: "Pending",
-        createdAt: new Date().toISOString()
+        createdAt:
+            new Date().toISOString()
     };
 
     try {
@@ -681,10 +796,13 @@ async function confirmOrder() {
             }
 
             if (result.order) {
-                orders.unshift(result.order);
+                orders.unshift(
+                    result.order
+                );
             } else {
                 orders.unshift(order);
             }
+
         } else {
             orders.unshift(order);
             saveLocalOrders();
@@ -704,7 +822,10 @@ async function confirmOrder() {
         );
 
     } catch (error) {
-        showToast("Unable to place order.");
+        showToast(
+            "Unable to place order."
+        );
+
     } finally {
         showLoader(false);
     }
@@ -712,83 +833,121 @@ async function confirmOrder() {
 
 function renderOrders() {
     const container =
-        document.querySelector(".orders-list");
+        document.querySelector(
+            ".orders-list"
+        );
 
     if (!container) return;
 
     if (!orders.length) {
         container.innerHTML = `
-            <div style="padding:30px;text-align:center;color:#999;background:#fff;border:1px solid #eee;border-radius:14px;">
+            <div style="
+                padding:30px;
+                text-align:center;
+                color:#999;
+                background:#fff;
+                border:1px solid #eee;
+                border-radius:14px;
+            ">
                 No orders yet
             </div>
         `;
+
+        updateOrderCount();
         return;
     }
 
-    container.innerHTML = orders
-        .slice(0, 20)
-        .map(order => `
-            <div class="order-card">
-                <div class="order-card-header">
-                    <div class="order-number">
-                        ${escapeHTML(order.id)}
-                        · T${escapeHTML(String(order.table))}
+    container.innerHTML =
+        orders
+            .slice(0, 20)
+            .map(order => `
+                <div class="order-card">
+
+                    <div class="order-card-header">
+
+                        <div class="order-number">
+                            ${escapeHTML(
+                                order.id
+                            )}
+                            · T${escapeHTML(
+                                String(order.table)
+                            )}
+                        </div>
+
+                        <div class="status">
+                            ${escapeHTML(
+                                order.status ||
+                                "Pending"
+                            )}
+                        </div>
+
                     </div>
 
-                    <div class="status">
-                        ${escapeHTML(order.status || "Pending")}
+                    <div class="order-items">
+                        ${
+                            Array.isArray(
+                                order.items
+                            )
+                                ? order.items
+                                    .map(
+                                        item =>
+                                            `${escapeHTML(
+                                                item.name
+                                            )} × ${item.qty}`
+                                    )
+                                    .join("<br>")
+                                : ""
+                        }
                     </div>
-                </div>
 
-                <div class="order-items">
+                    <div class="order-total">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <span>
+                            ₹${formatMoney(
+                                order.total
+                            )}
+                        </span>
+
+                    </div>
+
                     ${
-                        Array.isArray(order.items)
-                            ? order.items
-                                .map(
-                                    item =>
-                                        `${escapeHTML(item.name)} × ${item.qty}`
-                                )
-                                .join("<br>")
+                        order.status !==
+                        "Completed"
+                            ? `
+                                <button
+                                    class="edit-order-btn"
+                                    data-edit-order="${escapeAttribute(order.id)}"
+                                >
+                                    Edit Order
+                                </button>
+                            `
                             : ""
                     }
-                </div>
 
-                <div class="order-total">
-                    <span>Total</span>
-                    <span>
-                        ₹${formatMoney(order.total)}
-                    </span>
                 </div>
-
-                ${
-                    order.status !== "Completed"
-                        ? `
-                        <button
-                            class="edit-order-btn"
-                            data-edit-order="${escapeAttribute(order.id)}"
-                        >
-                            Edit Order
-                        </button>
-                        `
-                        : ""
-                }
-            </div>
-        `)
-        .join("");
+            `)
+            .join("");
 
     updateOrderCount();
 }
 
 function updateOrderCount() {
     const element =
-        document.querySelector(".order-count");
+        document.querySelector(
+            ".order-count"
+        );
 
     if (!element) return;
 
     const activeOrders =
         orders.filter(
             order =>
-                order.status !== "Completed"
+                order.status !==
+                "Completed"
         ).length;
 
     element.textContent =
@@ -810,19 +969,27 @@ function editOrder(orderId) {
 
     cart =
         Array.isArray(order.items)
-            ? order.items.map(item => ({
-                id: item.id,
-                name: item.name,
-                price: Number(item.price) || 0,
-                qty: Number(item.qty) || 1
-            }))
+            ? order.items.map(
+                item => ({
+                    id: item.id,
+                    name: item.name,
+                    price:
+                        Number(item.price) ||
+                        0,
+                    qty:
+                        Number(item.qty) ||
+                        1
+                })
+            )
             : [];
 
     renderTables();
     renderCart();
 
     const noteElement =
-        document.getElementById("orderNote");
+        document.getElementById(
+            "orderNote"
+        );
 
     if (noteElement) {
         noteElement.value =
@@ -924,11 +1091,15 @@ function toggleMobileCart() {
     );
 }
 
-async function apiRequest(action, data = {}) {
+async function apiRequest(
+    action,
+    data = {}
+) {
     if (!API_URL) {
         return {
             success: false,
-            message: "API URL not configured."
+            message:
+                "API URL not configured."
         };
     }
 
@@ -967,8 +1138,11 @@ function loadLocalData() {
 
         if (savedOrders) {
             orders =
-                JSON.parse(savedOrders);
+                JSON.parse(
+                    savedOrders
+                );
         }
+
     } catch (error) {
         currentWaiter = null;
         orders = [];
@@ -1003,20 +1177,29 @@ function generateOrderId() {
 
 function formatMoney(value) {
     return Number(value || 0)
-        .toLocaleString("en-IN", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2
-        });
+        .toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }
+        );
 }
 
 function showToast(message) {
     const toast =
-        document.getElementById("toast");
+        document.getElementById(
+            "toast"
+        );
 
     if (!toast) return;
 
-    toast.textContent = message;
-    toast.classList.add("show");
+    toast.textContent =
+        message;
+
+    toast.classList.add(
+        "show"
+    );
 
     clearTimeout(
         showToast.timeout
@@ -1024,28 +1207,39 @@ function showToast(message) {
 
     showToast.timeout =
         setTimeout(() => {
-            toast.classList.remove("show");
+            toast.classList.remove(
+                "show"
+            );
         }, 2200);
 }
 
 function showLoader(show) {
     const loader =
-        document.getElementById("loader");
+        document.getElementById(
+            "loader"
+        );
 
     if (!loader) return;
 
     loader.style.display =
-        show ? "flex" : "none";
+        show
+            ? "flex"
+            : "none";
 }
 
 function showLoginError(message) {
     const errorBox =
-        document.getElementById("loginError");
+        document.getElementById(
+            "loginError"
+        );
 
     if (!errorBox) return;
 
-    errorBox.textContent = message;
-    errorBox.style.display = "block";
+    errorBox.textContent =
+        message;
+
+    errorBox.style.display =
+        "block";
 }
 
 function escapeHTML(value) {
