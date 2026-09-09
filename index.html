@@ -1,8 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -12,485 +12,3006 @@
 
     <meta
         name="theme-color"
-        content="#b5121b"
+        content="#111111"
     >
 
     <meta
         name="description"
-        content="Hotel Pankaj Restaurant Order System"
+        content="Hotel Pankaj Restaurant POS"
     >
 
-    <title>Hotel Pankaj | Orders</title>
+    <title>Hotel Pankaj — Restaurant POS</title>
+
+
+    <!-- =====================================================
+         FONTS
+    ====================================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         ICONS
+    ====================================================== -->
 
     <link
         rel="stylesheet"
-        href="style.css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
+
+
+    <!-- =====================================================
+         STYLES
+    ====================================================== -->
+
+    <style>
+
+        :root {
+
+            --bg:
+                #f5f5f3;
+
+            --surface:
+                #ffffff;
+
+            --surface-2:
+                #fafaf8;
+
+            --text:
+                #151515;
+
+            --muted:
+                #777;
+
+            --border:
+                #e8e8e4;
+
+            --accent:
+                #b51d27;
+
+            --accent-dark:
+                #8e121a;
+
+            --accent-soft:
+                #fff1f2;
+
+            --success:
+                #16834b;
+
+            --shadow:
+                0 12px 35px rgba(0,0,0,.07);
+
+            --radius:
+                18px;
+
+        }
+
+
+        * {
+
+            box-sizing:
+                border-box;
+
+            margin:
+                0;
+
+            padding:
+                0;
+
+        }
+
+
+        html {
+
+            scroll-behavior:
+                smooth;
+
+        }
+
+
+        body {
+
+            font-family:
+                "DM Sans",
+                sans-serif;
+
+            background:
+                var(--bg);
+
+            color:
+                var(--text);
+
+            min-height:
+                100vh;
+
+        }
+
+
+        button,
+        input,
+        select,
+        textarea {
+
+            font:
+                inherit;
+
+        }
+
+
+        button {
+
+            cursor:
+                pointer;
+
+        }
+
+
+        /* =====================================================
+           APP SHELL
+        ====================================================== */
+
+        .app {
+
+            min-height:
+                100vh;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+        }
+
+
+        /* =====================================================
+           HEADER
+        ====================================================== */
+
+        .topbar {
+
+            height:
+                76px;
+
+            background:
+                rgba(255,255,255,.92);
+
+            backdrop-filter:
+                blur(18px);
+
+            -webkit-backdrop-filter:
+                blur(18px);
+
+            border-bottom:
+                1px solid var(--border);
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            padding:
+                0 28px;
+
+            position:
+                sticky;
+
+            top:
+                0;
+
+            z-index:
+                100;
+
+        }
+
+
+        .brand {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                13px;
+
+        }
+
+
+        .brand-logo {
+
+            width:
+                44px;
+
+            height:
+                44px;
+
+            border-radius:
+                13px;
+
+            background:
+                var(--text);
+
+            color:
+                white;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            font-family:
+                "Playfair Display",
+                serif;
+
+            font-size:
+                21px;
+
+            font-weight:
+                700;
+
+        }
+
+
+        .brand-text h1 {
+
+            font-family:
+                "Playfair Display",
+                serif;
+
+            font-size:
+                21px;
+
+            line-height:
+                1;
+
+        }
+
+
+        .brand-text span {
+
+            display:
+                block;
+
+            color:
+                var(--muted);
+
+            font-size:
+                11px;
+
+            margin-top:
+                4px;
+
+            letter-spacing:
+                .5px;
+
+            text-transform:
+                uppercase;
+
+        }
+
+
+        .top-actions {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                10px;
+
+        }
+
+
+        .status-pill {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                7px;
+
+            background:
+                #f3faf6;
+
+            color:
+                var(--success);
+
+            border:
+                1px solid #d9eee2;
+
+            padding:
+                8px 12px;
+
+            border-radius:
+                999px;
+
+            font-size:
+                12px;
+
+            font-weight:
+                600;
+
+        }
+
+
+        .status-dot {
+
+            width:
+                7px;
+
+            height:
+                7px;
+
+            border-radius:
+                50%;
+
+            background:
+                var(--success);
+
+        }
+
+
+        .icon-btn {
+
+            width:
+                42px;
+
+            height:
+                42px;
+
+            border:
+                1px solid var(--border);
+
+            background:
+                white;
+
+            border-radius:
+                12px;
+
+            color:
+                var(--text);
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            transition:
+                .2s;
+
+        }
+
+
+        .icon-btn:hover {
+
+            background:
+                #f4f4f2;
+
+            transform:
+                translateY(-1px);
+
+        }
+
+
+        /* =====================================================
+           MAIN
+        ====================================================== */
+
+        .main {
+
+            width:
+                100%;
+
+            max-width:
+                1500px;
+
+            margin:
+                0 auto;
+
+            padding:
+                26px 28px 100px;
+
+        }
+
+
+        /* =====================================================
+           HERO
+        ====================================================== */
+
+        .hero {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #171717,
+                    #282828
+                );
+
+            border-radius:
+                24px;
+
+            color:
+                white;
+
+            padding:
+                28px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                25px;
+
+            margin-bottom:
+                24px;
+
+            overflow:
+                hidden;
+
+            position:
+                relative;
+
+        }
+
+
+        .hero::after {
+
+            content:
+                "";
+
+            position:
+                absolute;
+
+            width:
+                260px;
+
+            height:
+                260px;
+
+            border-radius:
+                50%;
+
+            border:
+                1px solid rgba(255,255,255,.08);
+
+            right:
+                -70px;
+
+            top:
+                -100px;
+
+        }
+
+
+        .hero-content {
+
+            position:
+                relative;
+
+            z-index:
+                2;
+
+        }
+
+
+        .hero-eyebrow {
+
+            color:
+                #e5b4b7;
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                1.7px;
+
+            margin-bottom:
+                7px;
+
+        }
+
+
+        .hero h2 {
+
+            font-family:
+                "Playfair Display",
+                serif;
+
+            font-size:
+                clamp(25px,4vw,38px);
+
+            margin-bottom:
+                7px;
+
+        }
+
+
+        .hero p {
+
+            color:
+                #bcbcbc;
+
+            font-size:
+                13px;
+
+        }
+
+
+        .hero-order {
+
+            position:
+                relative;
+
+            z-index:
+                2;
+
+            min-width:
+                190px;
+
+            padding:
+                18px;
+
+            border:
+                1px solid rgba(255,255,255,.12);
+
+            border-radius:
+                17px;
+
+            background:
+                rgba(255,255,255,.05);
+
+            text-align:
+                right;
+
+        }
+
+
+        .hero-order span {
+
+            display:
+                block;
+
+            font-size:
+                11px;
+
+            color:
+                #aaa;
+
+            margin-bottom:
+                5px;
+
+        }
+
+
+        .hero-order strong {
+
+            font-size:
+                27px;
+
+        }
+
+
+        /* =====================================================
+           PAGE NAVIGATION
+        ====================================================== */
+
+        .page-nav {
+
+            display:
+                flex;
+
+            gap:
+                7px;
+
+            margin-bottom:
+                24px;
+
+            overflow-x:
+                auto;
+
+            scrollbar-width:
+                none;
+
+        }
+
+
+        .page-nav::-webkit-scrollbar {
+
+            display:
+                none;
+
+        }
+
+
+        .nav-btn {
+
+            border:
+                1px solid var(--border);
+
+            background:
+                white;
+
+            color:
+                #666;
+
+            border-radius:
+                11px;
+
+            padding:
+                10px 15px;
+
+            white-space:
+                nowrap;
+
+            font-size:
+                13px;
+
+            font-weight:
+                600;
+
+            transition:
+                .2s;
+
+        }
+
+
+        .nav-btn:hover {
+
+            color:
+                var(--text);
+
+        }
+
+
+        .nav-btn.active {
+
+            background:
+                var(--text);
+
+            color:
+                white;
+
+            border-color:
+                var(--text);
+
+        }
+
+
+        /* =====================================================
+           PAGE
+        ====================================================== */
+
+        .page {
+
+            display:
+                none;
+
+        }
+
+
+        .page.active {
+
+            display:
+                block;
+
+            animation:
+                fadeIn .25s ease;
+
+        }
+
+
+        @keyframes fadeIn {
+
+            from {
+
+                opacity:
+                    0;
+
+                transform:
+                    translateY(5px);
+
+            }
+
+            to {
+
+                opacity:
+                    1;
+
+                transform:
+                    translateY(0);
+
+            }
+
+        }
+
+
+        /* =====================================================
+           POS LAYOUT
+        ====================================================== */
+
+        .pos-layout {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                minmax(0,1fr) 390px;
+
+            gap:
+                22px;
+
+            align-items:
+                start;
+
+        }
+
+
+        .menu-section {
+
+            min-width:
+                0;
+
+        }
+
+
+        /* =====================================================
+           SECTION HEADER
+        ====================================================== */
+
+        .section-header {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                15px;
+
+            margin-bottom:
+                15px;
+
+        }
+
+
+        .section-title h2 {
+
+            font-size:
+                19px;
+
+        }
+
+
+        .section-title p {
+
+            font-size:
+                12px;
+
+            color:
+                var(--muted);
+
+            margin-top:
+                3px;
+
+        }
+
+
+        /* =====================================================
+           SEARCH
+        ====================================================== */
+
+        .search-box {
+
+            width:
+                min(300px,100%);
+
+            position:
+                relative;
+
+        }
+
+
+        .search-box i {
+
+            position:
+                absolute;
+
+            left:
+                13px;
+
+            top:
+                50%;
+
+            transform:
+                translateY(-50%);
+
+            color:
+                #999;
+
+            font-size:
+                13px;
+
+        }
+
+
+        .search-box input {
+
+            width:
+                100%;
+
+            height:
+                43px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                12px;
+
+            background:
+                white;
+
+            padding:
+                0 14px 0 38px;
+
+            outline:
+                none;
+
+        }
+
+
+        .search-box input:focus {
+
+            border-color:
+                #bbb;
+
+        }
+
+
+        /* =====================================================
+           CATEGORIES
+        ====================================================== */
+
+        .categories {
+
+            display:
+                flex;
+
+            gap:
+                8px;
+
+            overflow-x:
+                auto;
+
+            scrollbar-width:
+                none;
+
+            margin-bottom:
+                18px;
+
+            padding-bottom:
+                2px;
+
+        }
+
+
+        .categories::-webkit-scrollbar {
+
+            display:
+                none;
+
+        }
+
+
+        .category-btn {
+
+            flex:
+                0 0 auto;
+
+            border:
+                1px solid var(--border);
+
+            background:
+                white;
+
+            padding:
+                9px 15px;
+
+            border-radius:
+                999px;
+
+            font-size:
+                12px;
+
+            font-weight:
+                600;
+
+            color:
+                #666;
+
+        }
+
+
+        .category-btn.active {
+
+            background:
+                var(--accent);
+
+            color:
+                white;
+
+            border-color:
+                var(--accent);
+
+        }
+
+
+        /* =====================================================
+           MENU GRID
+        ====================================================== */
+
+        .menu-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(3,minmax(0,1fr));
+
+            gap:
+                13px;
+
+        }
+
+
+        .menu-card {
+
+            background:
+                white;
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                16px;
+
+            padding:
+                17px;
+
+            min-height:
+                145px;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            justify-content:
+                space-between;
+
+            transition:
+                .2s;
+
+        }
+
+
+        .menu-card:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                var(--shadow);
+
+            border-color:
+                #ddd;
+
+        }
+
+
+        .menu-card-info h3 {
+
+            font-size:
+                14px;
+
+            line-height:
+                1.35;
+
+            margin-bottom:
+                6px;
+
+        }
+
+
+        .menu-card-info span {
+
+            color:
+                var(--muted);
+
+            font-size:
+                10px;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .7px;
+
+        }
+
+
+        .menu-card-bottom {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            margin-top:
+                18px;
+
+        }
+
+
+        .menu-card-bottom strong {
+
+            font-size:
+                15px;
+
+        }
+
+
+        .add-btn {
+
+            width:
+                35px;
+
+            height:
+                35px;
+
+            border:
+                0;
+
+            border-radius:
+                10px;
+
+            background:
+                var(--accent-soft);
+
+            color:
+                var(--accent);
+
+            font-size:
+                21px;
+
+            font-weight:
+                500;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            transition:
+                .2s;
+
+        }
+
+
+        .add-btn:hover {
+
+            background:
+                var(--accent);
+
+            color:
+                white;
+
+        }
+
+
+        /* =====================================================
+           CART
+        ====================================================== */
+
+        .cart-panel {
+
+            background:
+                white;
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                20px;
+
+            position:
+                sticky;
+
+            top:
+                96px;
+
+            overflow:
+                hidden;
+
+        }
+
+
+        .cart-header {
+
+            padding:
+                18px 19px;
+
+            border-bottom:
+                1px solid var(--border);
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+        }
+
+
+        .cart-header h3 {
+
+            font-size:
+                16px;
+
+        }
+
+
+        .cart-header span {
+
+            font-size:
+                11px;
+
+            color:
+                var(--muted);
+
+        }
+
+
+        .cart-items {
+
+            max-height:
+                420px;
+
+            overflow-y:
+                auto;
+
+            padding:
+                5px 18px;
+
+        }
+
+
+        .cart-item {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                10px;
+
+            padding:
+                14px 0;
+
+            border-bottom:
+                1px solid #f0f0ed;
+
+        }
+
+
+        .cart-item:last-child {
+
+            border-bottom:
+                0;
+
+        }
+
+
+        .cart-item-info {
+
+            min-width:
+                0;
+
+        }
+
+
+        .cart-item-info h4 {
+
+            font-size:
+                13px;
+
+            white-space:
+                nowrap;
+
+            overflow:
+                hidden;
+
+            text-overflow:
+                ellipsis;
+
+            max-width:
+                190px;
+
+        }
+
+
+        .cart-item-info small {
+
+            display:
+                block;
+
+            color:
+                var(--muted);
+
+            font-size:
+                10px;
+
+            margin-top:
+                3px;
+
+        }
+
+
+        .quantity-control {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                7px;
+
+            margin-top:
+                9px;
+
+        }
+
+
+        .quantity-control button {
+
+            width:
+                27px;
+
+            height:
+                27px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                8px;
+
+            background:
+                white;
+
+        }
+
+
+        .quantity-control span {
+
+            min-width:
+                18px;
+
+            text-align:
+                center;
+
+            font-size:
+                12px;
+
+            font-weight:
+                700;
+
+        }
+
+
+        .cart-item > strong {
+
+            font-size:
+                13px;
+
+            white-space:
+                nowrap;
+
+        }
+
+
+        .cart-footer {
+
+            border-top:
+                1px solid var(--border);
+
+            padding:
+                18px;
+
+            background:
+                var(--surface-2);
+
+        }
+
+
+        .total-row {
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+        }
+
+
+        .total-row span {
+
+            color:
+                var(--muted);
+
+            font-size:
+                12px;
+
+        }
+
+
+        .total-row strong {
+
+            font-size:
+                23px;
+
+        }
+
+
+        .cart-actions {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr 2fr;
+
+            gap:
+                8px;
+
+            margin-top:
+                15px;
+
+        }
+
+
+        .btn {
+
+            border:
+                0;
+
+            border-radius:
+                11px;
+
+            min-height:
+                43px;
+
+            font-size:
+                12px;
+
+            font-weight:
+                700;
+
+        }
+
+
+        .btn-secondary {
+
+            background:
+                white;
+
+            border:
+                1px solid var(--border);
+
+            color:
+                #555;
+
+        }
+
+
+        .btn-primary {
+
+            background:
+                var(--accent);
+
+            color:
+                white;
+
+        }
+
+
+        .btn-primary:hover {
+
+            background:
+                var(--accent-dark);
+
+        }
+
+
+        /* =====================================================
+           EMPTY
+        ====================================================== */
+
+        .empty-state {
+
+            grid-column:
+                1/-1;
+
+            background:
+                white;
+
+            border:
+                1px dashed #d9d9d4;
+
+            border-radius:
+                18px;
+
+            padding:
+                45px 20px;
+
+            text-align:
+                center;
+
+            color:
+                var(--muted);
+
+        }
+
+
+        .empty-icon {
+
+            font-size:
+                30px;
+
+            margin-bottom:
+                10px;
+
+        }
+
+
+        .empty-state h3 {
+
+            color:
+                var(--text);
+
+            font-size:
+                15px;
+
+            margin-bottom:
+                5px;
+
+        }
+
+
+        .empty-state p {
+
+            font-size:
+                12px;
+
+        }
+
+
+        /* =====================================================
+           HISTORY
+        ====================================================== */
+
+        .history-list,
+        .party-list {
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                10px;
+
+        }
+
+
+        .history-card,
+        .party-card {
+
+            background:
+                white;
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                15px;
+
+            padding:
+                16px 18px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                15px;
+
+        }
+
+
+        .history-card:hover,
+        .party-card:hover {
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,.04);
+
+        }
+
+
+        .history-info h3,
+        .party-card h3 {
+
+            font-size:
+                14px;
+
+            margin-bottom:
+                5px;
+
+        }
+
+
+        .history-info p,
+        .party-card p {
+
+            font-size:
+                11px;
+
+            color:
+                var(--muted);
+
+        }
+
+
+        .history-right,
+        .party-card-money {
+
+            text-align:
+                right;
+
+            flex:
+                0 0 auto;
+
+        }
+
+
+        .history-right strong,
+        .party-card-money strong {
+
+            display:
+                block;
+
+            font-size:
+                16px;
+
+            margin-bottom:
+                7px;
+
+        }
+
+
+        .delete-history-btn {
+
+            border:
+                0;
+
+            background:
+                #fff0f0;
+
+            color:
+                #b51d27;
+
+            border-radius:
+                8px;
+
+            padding:
+                6px 9px;
+
+            font-size:
+                10px;
+
+            font-weight:
+                700;
+
+        }
+
+
+        /* =====================================================
+           PARTY
+        ====================================================== */
+
+        .party-toolbar {
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            margin-bottom:
+                16px;
+
+        }
+
+
+        .primary-action {
+
+            background:
+                var(--accent);
+
+            color:
+                white;
+
+            border:
+                0;
+
+            border-radius:
+                11px;
+
+            padding:
+                11px 15px;
+
+            font-size:
+                12px;
+
+            font-weight:
+                700;
+
+        }
+
+
+        /* =====================================================
+           MOBILE CART BAR
+        ====================================================== */
+
+        .mobile-cart-bar {
+
+            display:
+                none;
+
+            position:
+                fixed;
+
+            left:
+                12px;
+
+            right:
+                12px;
+
+            bottom:
+                12px;
+
+            z-index:
+                200;
+
+            background:
+                #171717;
+
+            color:
+                white;
+
+            border-radius:
+                15px;
+
+            padding:
+                12px 15px;
+
+            box-shadow:
+                0 12px 35px rgba(0,0,0,.2);
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+        }
+
+
+        .mobile-cart-bar small {
+
+            color:
+                #aaa;
+
+            display:
+                block;
+
+            font-size:
+                10px;
+
+        }
+
+
+        .mobile-cart-bar strong {
+
+            font-size:
+                15px;
+
+        }
+
+
+        .mobile-cart-bar button {
+
+            border:
+                0;
+
+            background:
+                var(--accent);
+
+            color:
+                white;
+
+            border-radius:
+                10px;
+
+            padding:
+                10px 15px;
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
+
+        }
+
+
+        /* =====================================================
+           MODAL
+        ====================================================== */
+
+        .modal {
+
+            position:
+                fixed;
+
+            inset:
+                0;
+
+            background:
+                rgba(0,0,0,.55);
+
+            backdrop-filter:
+                blur(5px);
+
+            display:
+                none;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            padding:
+                20px;
+
+            z-index:
+                500;
+
+        }
+
+
+        .modal.active {
+
+            display:
+                flex;
+
+        }
+
+
+        .modal-box {
+
+            background:
+                white;
+
+            width:
+                min(520px,100%);
+
+            max-height:
+                90vh;
+
+            overflow-y:
+                auto;
+
+            border-radius:
+                20px;
+
+            box-shadow:
+                0 30px 80px rgba(0,0,0,.2);
+
+        }
+
+
+        .modal-header {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            padding:
+                18px 20px;
+
+            border-bottom:
+                1px solid var(--border);
+
+        }
+
+
+        .modal-header h2 {
+
+            font-size:
+                17px;
+
+        }
+
+
+        .modal-close {
+
+            width:
+                34px;
+
+            height:
+                34px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                9px;
+
+            background:
+                white;
+
+        }
+
+
+        .modal-content {
+
+            padding:
+                20px;
+
+        }
+
+
+        /* =====================================================
+           BILL
+        ====================================================== */
+
+        .bill-heading {
+
+            text-align:
+                center;
+
+            padding-bottom:
+                17px;
+
+        }
+
+
+        .bill-heading h2 {
+
+            font-family:
+                "Playfair Display",
+                serif;
+
+            font-size:
+                25px;
+
+        }
+
+
+        .bill-heading p {
+
+            font-size:
+                11px;
+
+            color:
+                var(--muted);
+
+            margin-top:
+                4px;
+
+        }
+
+
+        .bill-row {
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            gap:
+                15px;
+
+            padding:
+                9px 0;
+
+            font-size:
+                12px;
+
+        }
+
+
+        .bill-row span {
+
+            color:
+                #666;
+
+        }
+
+
+        .bill-divider {
+
+            border-top:
+                1px dashed #d5d5d0;
+
+            margin:
+                8px 0;
+
+        }
+
+
+        .bill-total {
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            padding-top:
+                13px;
+
+            font-size:
+                14px;
+
+        }
+
+
+        .bill-total strong {
+
+            font-size:
+                22px;
+
+        }
+
+
+        .bill-modal-actions {
+
+            display:
+                flex;
+
+            gap:
+                8px;
+
+            margin-top:
+                20px;
+
+        }
+
+
+        .bill-modal-actions button {
+
+            flex:
+                1;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media (max-width:1100px) {
+
+            .pos-layout {
+
+                grid-template-columns:
+                    minmax(0,1fr) 340px;
+
+            }
+
+            .menu-grid {
+
+                grid-template-columns:
+                    repeat(2,minmax(0,1fr));
+
+            }
+
+        }
+
+
+        @media (max-width:800px) {
+
+            .topbar {
+
+                height:
+                    66px;
+
+                padding:
+                    0 15px;
+
+            }
+
+
+            .brand-logo {
+
+                width:
+                    39px;
+
+                height:
+                    39px;
+
+            }
+
+
+            .brand-text h1 {
+
+                font-size:
+                    18px;
+
+            }
+
+
+            .status-pill {
+
+                display:
+                    none;
+
+            }
+
+
+            .main {
+
+                padding:
+                    15px 13px 95px;
+
+            }
+
+
+            .hero {
+
+                padding:
+                    20px;
+
+                border-radius:
+                    19px;
+
+            }
+
+
+            .hero-order {
+
+                display:
+                    none;
+
+            }
+
+
+            .pos-layout {
+
+                display:
+                    block;
+
+            }
+
+
+            .cart-panel {
+
+                position:
+                    fixed;
+
+                z-index:
+                    400;
+
+                top:
+                    0;
+
+                right:
+                    0;
+
+                bottom:
+                    0;
+
+                width:
+                    min(390px,92vw);
+
+                border-radius:
+                    20px 0 0 20px;
+
+                transform:
+                    translateX(110%);
+
+                transition:
+                    transform .3s ease;
+
+                display:
+                    flex;
+
+                flex-direction:
+                    column;
+
+            }
+
+
+            .cart-panel.mobile-open {
+
+                transform:
+                    translateX(0);
+
+            }
+
+
+            .cart-items {
+
+                flex:
+                    1;
+
+                max-height:
+                    none;
+
+            }
+
+
+            .mobile-cart-bar {
+
+                display:
+                    flex;
+
+            }
+
+
+            .section-header {
+
+                align-items:
+                    flex-start;
+
+                flex-direction:
+                    column;
+
+            }
+
+
+            .search-box {
+
+                width:
+                    100%;
+
+            }
+
+
+            .history-card,
+            .party-card {
+
+                align-items:
+                    flex-start;
+
+            }
+
+        }
+
+
+        @media (max-width:520px) {
+
+            .menu-grid {
+
+                grid-template-columns:
+                    repeat(2,minmax(0,1fr));
+
+                gap:
+                    9px;
+
+            }
+
+
+            .menu-card {
+
+                padding:
+                    13px;
+
+                min-height:
+                    135px;
+
+                border-radius:
+                    14px;
+
+            }
+
+
+            .menu-card-info h3 {
+
+                font-size:
+                    12px;
+
+            }
+
+
+            .menu-card-bottom strong {
+
+                font-size:
+                    13px;
+
+            }
+
+
+            .add-btn {
+
+                width:
+                    32px;
+
+                height:
+                    32px;
+
+            }
+
+
+            .hero h2 {
+
+                font-size:
+                    25px;
+
+            }
+
+
+            .history-card,
+            .party-card {
+
+                padding:
+                    13px;
+
+            }
+
+
+            .history-right strong,
+            .party-card-money strong {
+
+                font-size:
+                    14px;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           PRINT
+        ====================================================== */
+
+        @media print {
+
+            body * {
+
+                visibility:
+                    hidden;
+
+            }
+
+
+            #billModal,
+            #billModal * {
+
+                visibility:
+                    visible;
+
+            }
+
+
+            #billModal {
+
+                position:
+                    absolute;
+
+                inset:
+                    0;
+
+                background:
+                    white;
+
+            }
+
+
+            .modal-box {
+
+                box-shadow:
+                    none;
+
+                width:
+                    100%;
+
+                max-height:
+                    none;
+
+            }
+
+
+            .modal-header,
+            .bill-modal-actions {
+
+                display:
+                    none;
+
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-<header class="topbar">
 
-    <div class="brand">
+<div class="app">
 
-        <div class="brand-logo">
-            HP
+
+    <!-- =====================================================
+         TOP BAR
+    ====================================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-logo">
+                HP
+            </div>
+
+            <div class="brand-text">
+
+                <h1>
+                    Hotel Pankaj
+                </h1>
+
+                <span>
+                    Restaurant POS
+                </span>
+
+            </div>
+
         </div>
 
-        <div>
-            <h1>Hotel Pankaj</h1>
-            <p>Restaurant Order System</p>
-        </div>
 
-    </div>
+        <div class="top-actions">
 
-    <a
-        href="admin.html"
-        class="admin-link"
-    >
-        ⚙ Admin
-    </a>
+            <div
+                class="status-pill"
+                id="connectionStatus"
+            >
 
-</header>
+                <span class="status-dot"></span>
 
-
-<nav class="nav">
-
-    <button
-        class="nav-btn active"
-        onclick="showPage('orderPage', this)"
-    >
-        🛒 New Order
-    </button>
-
-    <button
-        class="nav-btn"
-        onclick="showPage('partyPage', this)"
-    >
-        🎉 Party Orders
-    </button>
-
-    <button
-        class="nav-btn"
-        onclick="showPage('historyPage', this)"
-    >
-        📋 History
-    </button>
-
-</nav>
-
-
-<main>
-
-
-<!-- =========================
-     NEW ORDER
-========================= -->
-
-<section
-    id="orderPage"
-    class="page active"
->
-
-    <div class="page-title">
-
-        <div>
-            <span>HOTEL PANKAJ</span>
-
-            <h2>New Order</h2>
-
-            <p>
-                Select food items and create the order.
-            </p>
-        </div>
-
-        <div class="order-number">
-            ORDER
-            <strong id="orderNumber">001</strong>
-        </div>
-
-    </div>
-
-
-    <div
-        id="categories"
-        class="categories"
-    ></div>
-
-
-    <div class="order-layout">
-
-
-        <!-- MENU -->
-
-        <section class="menu-area">
-
-            <div class="section-title">
-
-                <div>
-                    <h3>Menu</h3>
-                    <p>Tap an item to add it.</p>
-                </div>
-
-                <span id="menuCount">
-                    0 items
+                <span id="connectionText">
+                    Online
                 </span>
 
             </div>
 
 
-            <div
-                id="menuGrid"
-                class="menu-grid"
-            ></div>
+            <button
+                class="icon-btn"
+                onclick="openAdmin()"
+                title="Admin"
+            >
+
+                <i class="fa-solid fa-gear"></i>
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="main">
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="hero-eyebrow">
+                    Today's Service
+                </div>
+
+                <h2>
+                    Welcome to Hotel Pankaj
+                </h2>
+
+                <p>
+                    Fast ordering. Clean billing. One connected system.
+                </p>
+
+            </div>
+
+
+            <div class="hero-order">
+
+                <span>
+                    NEXT ORDER
+                </span>
+
+                <strong>
+                    #<span id="orderNumber">001</span>
+                </strong>
+
+            </div>
 
         </section>
 
 
-        <!-- CART -->
 
-        <aside
-            id="cartPanel"
-            class="cart-panel"
+        <!-- =================================================
+             NAVIGATION
+        ================================================== -->
+
+        <nav class="page-nav">
+
+            <button
+                class="nav-btn active"
+                onclick="showPage('orderPage',this)"
+            >
+
+                <i class="fa-solid fa-utensils"></i>
+                &nbsp;
+                New Order
+
+            </button>
+
+
+            <button
+                class="nav-btn"
+                onclick="showPage('historyPage',this)"
+            >
+
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                &nbsp;
+                Order History
+
+            </button>
+
+
+            <button
+                class="nav-btn"
+                onclick="showPage('partyPage',this)"
+            >
+
+                <i class="fa-solid fa-champagne-glasses"></i>
+                &nbsp;
+                Party Orders
+
+            </button>
+
+        </nav>
+
+
+
+        <!-- =================================================
+             ORDER PAGE
+        ================================================== -->
+
+        <section
+            id="orderPage"
+            class="page active"
         >
 
-            <div class="cart-header">
+            <div class="pos-layout">
 
-                <div>
-                    <h3>Current Order</h3>
 
-                    <span id="cartCount">
-                        0 items
-                    </span>
+                <!-- =========================================
+                     MENU
+                ========================================== -->
+
+                <section class="menu-section">
+
+
+                    <div class="section-header">
+
+                        <div class="section-title">
+
+                            <h2>
+                                Menu
+                            </h2>
+
+                            <p id="menuCount">
+                                Loading menu...
+                            </p>
+
+                        </div>
+
+
+                        <div class="search-box">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                            <input
+                                id="menuSearch"
+                                type="search"
+                                placeholder="Search menu..."
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div
+                        class="categories"
+                        id="categories"
+                    >
+
+                        <!-- Generated by app.js -->
+
+                    </div>
+
+
+
+                    <div
+                        class="menu-grid"
+                        id="menuGrid"
+                    >
+
+                        <div class="empty-state">
+
+                            <div class="empty-icon">
+                                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                            </div>
+
+                            <h3>
+                                Loading menu
+                            </h3>
+
+                            <p>
+                                Getting the latest menu...
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =========================================
+                     CART
+                ========================================== -->
+
+                <aside
+                    class="cart-panel"
+                    id="cartPanel"
+                >
+
+                    <div class="cart-header">
+
+                        <div>
+
+                            <h3>
+                                Current Order
+                            </h3>
+
+                            <span id="cartCount">
+                                0 items
+                            </span>
+
+                        </div>
+
+
+                        <button
+                            class="icon-btn"
+                            onclick="toggleMobileCart()"
+                            title="Close cart"
+                        >
+
+                            <i class="fa-solid fa-xmark"></i>
+
+                        </button>
+
+                    </div>
+
+
+
+                    <div
+                        class="cart-items"
+                        id="cartItems"
+                    >
+
+                        <div class="empty-state">
+
+                            <div class="empty-icon">
+                                <i class="fa-solid fa-basket-shopping"></i>
+                            </div>
+
+                            <h3>
+                                Cart is empty
+                            </h3>
+
+                            <p>
+                                Add items from the menu.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="cart-footer">
+
+                        <div class="total-row">
+
+                            <span>
+                                Total
+                            </span>
+
+                            <strong id="total">
+                                ₹0
+                            </strong>
+
+                        </div>
+
+
+                        <div class="cart-actions">
+
+                            <button
+                                class="btn btn-secondary"
+                                onclick="clearCart()"
+                            >
+                                Clear
+                            </button>
+
+                            <button
+                                class="btn btn-primary"
+                                onclick="confirmOrder()"
+                            >
+                                Confirm Order
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </aside>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             HISTORY PAGE
+        ================================================== -->
+
+        <section
+            id="historyPage"
+            class="page"
+        >
+
+            <div class="section-header">
+
+                <div class="section-title">
+
+                    <h2>
+                        Order History
+                    </h2>
+
+                    <p>
+                        Recent restaurant orders
+                    </p>
+
                 </div>
 
+            </div>
+
+
+            <div
+                class="history-list"
+                id="history"
+            >
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+
+                    <h3>
+                        No orders yet
+                    </h3>
+
+                    <p>
+                        Confirmed orders will appear here.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PARTY PAGE
+        ================================================== -->
+
+        <section
+            id="partyPage"
+            class="page"
+        >
+
+            <div class="party-toolbar">
+
+                <div class="section-title">
+
+                    <h2>
+                        Party & Catering
+                    </h2>
+
+                    <p>
+                        Manage upcoming events and bulk orders
+                    </p>
+
+                </div>
+
+
                 <button
-                    onclick="clearCart()"
-                    class="clear-btn"
+                    class="primary-action"
+                    onclick="openPartyModal()"
                 >
-                    Clear
+
+                    <i class="fa-solid fa-plus"></i>
+                    &nbsp;
+                    New Party Order
+
                 </button>
 
             </div>
 
 
             <div
-                id="cartItems"
-                class="cart-items"
-            ></div>
+                class="party-list"
+                id="partyOrders"
+            >
 
+                <div class="empty-state">
 
-            <div class="cart-total">
+                    <div class="empty-icon">
+                        🎉
+                    </div>
 
-                <div>
-                    <span>Subtotal</span>
+                    <h3>
+                        No party orders
+                    </h3>
 
-                    <strong id="subtotal">
-                        ₹0
-                    </strong>
-                </div>
-
-                <div class="grand-total">
-
-                    <span>TOTAL</span>
-
-                    <strong id="total">
-                        ₹0
-                    </strong>
+                    <p>
+                        Create a new catering or party order.
+                    </p>
 
                 </div>
 
             </div>
 
-
-            <button
-                class="confirm-btn"
-                onclick="confirmOrder()"
-            >
-                Confirm Order
-            </button>
-
-        </aside>
-
-    </div>
-
-</section>
+        </section>
 
 
+    </main>
 
-<!-- =========================
-     PARTY ORDERS
-========================= -->
-
-<section
-    id="partyPage"
-    class="page"
->
-
-    <div class="page-title">
-
-        <div>
-
-            <span>HOTEL PANKAJ</span>
-
-            <h2>Party Orders</h2>
-
-            <p>
-                Manage party and catering orders.
-            </p>
-
-        </div>
-
-        <button
-            class="primary-btn"
-            onclick="openPartyModal()"
-        >
-            + New Party Order
-        </button>
-
-    </div>
-
-
-    <div
-        id="partyOrders"
-        class="party-list"
-    ></div>
-
-</section>
-
-
-
-<!-- =========================
-     HISTORY
-========================= -->
-
-<section
-    id="historyPage"
-    class="page"
->
-
-    <div class="page-title">
-
-        <div>
-
-            <span>HOTEL PANKAJ</span>
-
-            <h2>Order History</h2>
-
-            <p>
-                Previously confirmed orders.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div
-        id="history"
-        class="history-list"
-    ></div>
-
-</section>
-
-</main>
-
-
-
-<!-- MOBILE CART -->
-
-<div
-    id="mobileCart"
-    class="mobile-cart"
-    onclick="toggleMobileCart()"
->
-
-    <span>
-        🛒
-        <b id="mobileCount">0 items</b>
-    </span>
-
-    <strong id="mobileTotal">
-        ₹0
-    </strong>
-
-    <span>→</span>
 
 </div>
 
 
 
-<!-- =========================
-     PARTY MODAL
-========================= -->
+<!-- =========================================================
+     MOBILE CART BAR
+========================================================== -->
 
 <div
-    id="partyModal"
+    class="mobile-cart-bar"
+    onclick="toggleMobileCart()"
+>
+
+    <div>
+
+        <small>
+            CURRENT ORDER
+        </small>
+
+        <strong id="mobileTotal">
+            ₹0
+        </strong>
+
+    </div>
+
+
+    <button>
+
+        <span id="mobileCount">
+            0 items
+        </span>
+
+        &nbsp;
+        <i class="fa-solid fa-arrow-right"></i>
+
+    </button>
+
+</div>
+
+
+
+<!-- =========================================================
+     BILL MODAL
+========================================================== -->
+
+<div
     class="modal"
+    id="billModal"
 >
 
     <div class="modal-box">
 
         <div class="modal-header">
 
-            <div>
-
-                <span>HOTEL PANKAJ</span>
-
-                <h2>New Party Order</h2>
-
-            </div>
+            <h2>
+                Order Bill
+            </h2>
 
             <button
-                onclick="closePartyModal()"
-                class="close-btn"
+                class="modal-close"
+                onclick="closeBill()"
             >
-                ×
-            </button>
 
-        </div>
+                <i class="fa-solid fa-xmark"></i>
 
-
-        <div class="form-grid">
-
-            <div class="form-group">
-
-                <label>
-                    Customer / Party Name
-                </label>
-
-                <input
-                    id="partyName"
-                    type="text"
-                    placeholder="Customer name"
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Phone
-                </label>
-
-                <input
-                    id="partyPhone"
-                    type="tel"
-                    placeholder="Phone number"
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Event Date
-                </label>
-
-                <input
-                    id="partyDate"
-                    type="date"
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Number of People
-                </label>
-
-                <input
-                    id="partyPeople"
-                    type="number"
-                    min="1"
-                    placeholder="50"
-                >
-
-            </div>
-
-        </div>
-
-
-        <div class="party-items-header">
-
-            <h3>Items</h3>
-
-            <button
-                class="small-btn"
-                onclick="addPartyItem()"
-            >
-                + Add Item
             </button>
 
         </div>
 
 
         <div
-            id="partyItems"
-            class="party-items"
-        ></div>
+            class="modal-content"
+            id="billContent"
+        >
 
-
-        <div class="form-group">
-
-            <label>Notes</label>
-
-            <textarea
-                id="partyNotes"
-                placeholder="Special requirements..."
-            ></textarea>
+            <!-- Generated by app.js -->
 
         </div>
 
 
-        <div class="form-group">
+        <div
+            class="modal-content"
+            style="padding-top:0;"
+        >
 
-            <label>
-                Advance Payment
-            </label>
+            <div class="bill-modal-actions">
 
-            <input
-                id="partyAdvance"
-                type="number"
-                min="0"
-                placeholder="₹0"
-                oninput="updatePartyTotal()"
-            >
+                <button
+                    class="btn btn-secondary"
+                    onclick="closeBill()"
+                >
+                    Close
+                </button>
 
-        </div>
+                <button
+                    class="btn btn-primary"
+                    onclick="printBill()"
+                >
+                    <i class="fa-solid fa-print"></i>
+                    &nbsp;
+                    Print Bill
+                </button>
 
-
-        <div class="party-total">
-
-            <span>Total</span>
-
-            <strong id="partyTotal">
-                ₹0
-            </strong>
-
-        </div>
-
-
-        <div class="modal-actions">
-
-            <button
-                class="secondary-btn"
-                onclick="closePartyModal()"
-            >
-                Cancel
-            </button>
-
-            <button
-                class="primary-btn"
-                onclick="savePartyOrder()"
-            >
-                Save Party Order
-            </button>
+            </div>
 
         </div>
 
@@ -500,58 +3021,214 @@
 
 
 
-<!-- =========================
-     BILL MODAL
-========================= -->
+<!-- =========================================================
+     PARTY MODAL
+========================================================== -->
 
 <div
-    id="billModal"
     class="modal"
+    id="partyModal"
 >
 
-    <div class="modal-box bill-box">
+    <div class="modal-box">
 
         <div class="modal-header">
 
-            <div>
-
-                <span>HOTEL PANKAJ</span>
-
-                <h2>Order Bill</h2>
-
-            </div>
+            <h2>
+                New Party Order
+            </h2>
 
             <button
-                onclick="closeBill()"
-                class="close-btn"
+                class="modal-close"
+                onclick="closePartyModal()"
             >
-                ×
+
+                <i class="fa-solid fa-xmark"></i>
+
             </button>
 
         </div>
 
 
         <div
-            id="billContent"
-            class="bill-content"
-        ></div>
+            class="modal-content"
+            id="partyModalContent"
+        >
 
+            <div
+                id="partyItems"
+                style="margin-bottom:15px;"
+            >
+            </div>
 
-        <div class="modal-actions">
 
             <button
-                class="secondary-btn"
-                onclick="closeBill()"
+                class="btn btn-secondary"
+                style="width:100%; margin-bottom:18px;"
+                onclick="addPartyItem()"
             >
-                Close
+
+                <i class="fa-solid fa-plus"></i>
+                &nbsp;
+                Add Menu Item
+
             </button>
 
-            <button
-                class="primary-btn"
-                onclick="printBill()"
+
+            <div
+                class="form-grid"
+                style="display:grid; gap:13px;"
             >
-                🖨 Print
-            </button>
+
+                <div>
+
+                    <label
+                        style="font-size:11px; font-weight:700;"
+                    >
+                        Customer / Party Name
+                    </label>
+
+                    <input
+                        id="partyName"
+                        type="text"
+                        placeholder="Customer name"
+                        style="width:100%;height:43px;border:1px solid var(--border);border-radius:11px;padding:0 12px;margin-top:6px;outline:none;"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label
+                        style="font-size:11px;font-weight:700;"
+                    >
+                        Phone
+                    </label>
+
+                    <input
+                        id="partyPhone"
+                        type="tel"
+                        placeholder="Phone number"
+                        style="width:100%;height:43px;border:1px solid var(--border);border-radius:11px;padding:0 12px;margin-top:6px;outline:none;"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label
+                        style="font-size:11px;font-weight:700;"
+                    >
+                        Event Date
+                    </label>
+
+                    <input
+                        id="partyDate"
+                        type="date"
+                        style="width:100%;height:43px;border:1px solid var(--border);border-radius:11px;padding:0 12px;margin-top:6px;outline:none;"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label
+                        style="font-size:11px;font-weight:700;"
+                    >
+                        Number of People
+                    </label>
+
+                    <input
+                        id="partyPeople"
+                        type="number"
+                        min="1"
+                        placeholder="50"
+                        style="width:100%;height:43px;border:1px solid var(--border);border-radius:11px;padding:0 12px;margin-top:6px;outline:none;"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label
+                        style="font-size:11px;font-weight:700;"
+                    >
+                        Advance
+                    </label>
+
+                    <input
+                        id="partyAdvance"
+                        type="number"
+                        min="0"
+                        placeholder="₹0"
+                        style="width:100%;height:43px;border:1px solid var(--border);border-radius:11px;padding:0 12px;margin-top:6px;outline:none;"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label
+                        style="font-size:11px;font-weight:700;"
+                    >
+                        Notes
+                    </label>
+
+                    <textarea
+                        id="partyNotes"
+                        placeholder="Special requirements..."
+                        style="width:100%;min-height:80px;border:1px solid var(--border);border-radius:11px;padding:11px 12px;margin-top:6px;outline:none;resize:vertical;"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+
+            <div
+                style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding:15px;background:var(--surface-2);border-radius:13px;"
+            >
+
+                <span
+                    style="font-size:12px;color:var(--muted);"
+                >
+                    Estimated Total
+                </span>
+
+                <strong
+                    id="partyTotal"
+                    style="font-size:21px;"
+                >
+                    ₹0
+                </strong>
+
+            </div>
+
+
+            <div
+                style="display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-top:15px;"
+            >
+
+                <button
+                    class="btn btn-secondary"
+                    onclick="closePartyModal()"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    class="btn btn-primary"
+                    onclick="savePartyOrder()"
+                >
+                    Save Party Order
+                </button>
+
+            </div>
 
         </div>
 
@@ -560,8 +3237,148 @@
 </div>
 
 
+
+<!-- =========================================================
+     APP JS
+========================================================== -->
+
 <script src="app.js"></script>
 
+
+<!-- =========================================================
+     SEARCH HANDLER
+========================================================== -->
+
+<script>
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const search =
+                document.getElementById(
+                    "menuSearch"
+                );
+
+            if (!search) return;
+
+
+            search.addEventListener(
+                "input",
+                function () {
+
+                    if (
+                        typeof renderMenu ===
+                        "function"
+                    ) {
+
+                        renderMenu(
+                            this.value
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    /*
+     * Close mobile cart when clicking outside.
+     */
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            const cart =
+                document.getElementById(
+                    "cartPanel"
+                );
+
+            const mobileBar =
+                document.querySelector(
+                    ".mobile-cart-bar"
+                );
+
+            if (!cart) return;
+
+            if (
+                window.innerWidth <= 800 &&
+                cart.classList.contains(
+                    "mobile-open"
+                ) &&
+                !cart.contains(event.target) &&
+                !mobileBar.contains(event.target)
+            ) {
+
+                cart.classList.remove(
+                    "mobile-open"
+                );
+
+            }
+
+        }
+    );
+
+
+    /*
+     * Connection indicator.
+     */
+
+    function updateConnectionStatus() {
+
+        const text =
+            document.getElementById(
+                "connectionText"
+            );
+
+        const status =
+            document.getElementById(
+                "connectionStatus"
+            );
+
+        if (!text || !status) return;
+
+
+        if (navigator.onLine) {
+
+            text.textContent =
+                "Online";
+
+            status.style.color =
+                "#16834b";
+
+        } else {
+
+            text.textContent =
+                "Offline";
+
+            status.style.color =
+                "#b51d27";
+
+        }
+
+    }
+
+
+    window.addEventListener(
+        "online",
+        updateConnectionStatus
+    );
+
+    window.addEventListener(
+        "offline",
+        updateConnectionStatus
+    );
+
+    updateConnectionStatus();
+
+</script>
+
+
 </body>
+
 </html>
-```
