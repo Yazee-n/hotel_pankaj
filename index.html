@@ -1,2611 +1,470 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#111111">
-    <meta name="description" content="PANKAJ Restaurant Waiter Ordering System">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#111111"
+    >
+
+    <meta
+        name="description"
+        content="PANKAJ Restaurant Waiter Ordering System"
+    >
 
     <title>PANKAJ — Waiter</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --bg: #f5f5f5;
-            --card: #ffffff;
-            --text: #111111;
-            --muted: #777777;
-            --border: #e7e7e7;
-            --primary: #111111;
-            --accent: #d69b32;
-            --danger: #d93636;
-            --success: #198754;
-        }
-
-        body {
-            font-family: Inter, Arial, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
-
-        button,
-        input,
-        select,
-        textarea {
-            font: inherit;
-        }
-
-        button {
-            cursor: pointer;
-            border: none;
-        }
-
-        /* =========================
-           LOGIN
-        ========================= */
-
-        #loginScreen {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 24px;
-            background:
-                radial-gradient(circle at top right, #333 0, transparent 35%),
-                #111;
-        }
-
-        .login-card {
-            width: 100%;
-            max-width: 390px;
-            background: #fff;
-            border-radius: 24px;
-            padding: 34px 28px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
-        }
-
-        .brand {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .brand-logo {
-            width: 72px;
-            height: 72px;
-            margin: auto;
-            border-radius: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #111;
-            color: #fff;
-            font-size: 26px;
-            font-weight: 900;
-            letter-spacing: -1px;
-        }
-
-        .brand h1 {
-            margin-top: 14px;
-            font-size: 30px;
-            letter-spacing: 4px;
-        }
-
-        .brand p {
-            color: var(--muted);
-            margin-top: 5px;
-            font-size: 13px;
-        }
-
-        .field {
-            margin-bottom: 16px;
-        }
-
-        .field label {
-            display: block;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 7px;
-        }
-
-        .field input,
-        .field select,
-        .field textarea {
-            width: 100%;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 13px 14px;
-            outline: none;
-            background: #fafafa;
-        }
-
-        .field input:focus,
-        .field select:focus,
-        .field textarea:focus {
-            border-color: #111;
-            background: #fff;
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            background: #111;
-            color: #fff;
-            font-weight: 800;
-            margin-top: 8px;
-        }
-
-        .login-error {
-            display: none;
-            background: #fff0f0;
-            color: var(--danger);
-            padding: 11px;
-            border-radius: 10px;
-            font-size: 13px;
-            margin-bottom: 15px;
-        }
-
-        /* =========================
-           APP
-        ========================= */
-
-        #app {
-            display: none;
-            min-height: 100vh;
-        }
-
-        .topbar {
-            height: 68px;
-            background: #111;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .top-brand {
-            font-weight: 900;
-            letter-spacing: 3px;
-            font-size: 20px;
-        }
-
-        .waiter-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .waiter-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 800;
-        }
-
-        .waiter-name {
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .logout-btn {
-            margin-left: 12px;
-            background: #292929;
-            color: #fff;
-            padding: 8px 11px;
-            border-radius: 9px;
-            font-size: 12px;
-        }
-
-        .main {
-            max-width: 1400px;
-            margin: auto;
-            padding: 20px;
-        }
-
-        /* =========================
-           HEADER
-        ========================= */
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .page-header h2 {
-            font-size: 24px;
-        }
-
-        .page-header p {
-            color: var(--muted);
-            font-size: 13px;
-            margin-top: 4px;
-        }
-
-        .order-count {
-            background: #111;
-            color: #fff;
-            padding: 9px 13px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        /* =========================
-           TABLE
-        ========================= */
-
-        .table-box {
-            background: #fff;
-            padding: 16px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            margin-bottom: 18px;
-        }
-
-        .table-box label {
-            font-size: 12px;
-            font-weight: 800;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .table-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
-            gap: 8px;
-        }
-
-        .table-btn {
-            padding: 12px 8px;
-            border-radius: 10px;
-            background: #f2f2f2;
-            font-weight: 800;
-            font-size: 13px;
-            border: 1px solid transparent;
-        }
-
-        .table-btn.active {
-            background: #111;
-            color: #fff;
-        }
-
-        /* =========================
-           CATEGORIES
-        ========================= */
-
-        .categories {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-            margin-bottom: 18px;
-            scrollbar-width: none;
-        }
-
-        .categories::-webkit-scrollbar {
-            display: none;
-        }
-
-        .category-btn {
-            white-space: nowrap;
-            padding: 10px 15px;
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .category-btn.active {
-            background: #111;
-            color: #fff;
-            border-color: #111;
-        }
-
-        /* =========================
-           CONTENT LAYOUT
-        ========================= */
-
-        .content-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) 380px;
-            gap: 20px;
-            align-items: start;
-        }
-
-        /* =========================
-           MENU
-        ========================= */
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-            gap: 13px;
-        }
-
-        .menu-item {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: .15s;
-        }
-
-        .menu-item:active {
-            transform: scale(.98);
-        }
-
-        .item-image {
-            height: 125px;
-            background: #eee;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #999;
-            font-size: 30px;
-            overflow: hidden;
-        }
-
-        .item-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .item-info {
-            padding: 13px;
-        }
-
-        .item-name {
-            font-size: 15px;
-            font-weight: 800;
-            line-height: 1.25;
-        }
-
-        .item-description {
-            color: var(--muted);
-            font-size: 11px;
-            margin-top: 4px;
-            min-height: 28px;
-        }
-
-        .item-bottom {
-            margin-top: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .item-price {
-            font-size: 15px;
-            font-weight: 900;
-        }
-
-        .add-btn {
-            width: 34px;
-            height: 34px;
-            border-radius: 10px;
-            background: #111;
-            color: #fff;
-            font-size: 20px;
-            font-weight: 400;
-        }
-
-        .item-unavailable {
-            opacity: .45;
-        }
-
-        .unavailable-label {
-            color: var(--danger);
-            font-size: 11px;
-            font-weight: 800;
-        }
-
-        /* =========================
-           CART
-        ========================= */
-
-        .cart {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            position: sticky;
-            top: 88px;
-            overflow: hidden;
-        }
-
-        .cart-header {
-            padding: 17px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .cart-header h3 {
-            font-size: 17px;
-        }
-
-        .cart-table {
-            color: var(--muted);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .cart-items {
-            padding: 8px 15px;
-            max-height: 430px;
-            overflow-y: auto;
-        }
-
-        .empty-cart {
-            text-align: center;
-            padding: 45px 20px;
-            color: #999;
-            font-size: 13px;
-        }
-
-        .cart-item {
-            padding: 13px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .cart-item-top {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .cart-item-name {
-            font-size: 13px;
-            font-weight: 800;
-        }
-
-        .cart-item-price {
-            font-size: 13px;
-            font-weight: 900;
-        }
-
-        .cart-controls {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 8px;
-        }
-
-        .qty-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .qty-btn {
-            width: 27px;
-            height: 27px;
-            border-radius: 7px;
-            background: #eee;
-            font-weight: 900;
-        }
-
-        .qty {
-            min-width: 18px;
-            text-align: center;
-            font-size: 12px;
-            font-weight: 900;
-        }
-
-        .remove-btn {
-            color: var(--danger);
-            background: transparent;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .cart-note {
-            padding: 12px 15px;
-        }
-
-        .cart-note textarea {
-            width: 100%;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px;
-            resize: vertical;
-            min-height: 65px;
-            outline: none;
-            font-size: 12px;
-        }
-
-        .cart-summary {
-            border-top: 1px solid var(--border);
-            padding: 15px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 13px;
-        }
-
-        .summary-row.total {
-            font-size: 18px;
-            font-weight: 900;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px dashed #ddd;
-        }
-
-        .confirm-btn {
-            width: 100%;
-            background: #111;
-            color: #fff;
-            padding: 14px;
-            border-radius: 11px;
-            margin-top: 12px;
-            font-weight: 900;
-        }
-
-        .confirm-btn:disabled {
-            opacity: .4;
-            cursor: not-allowed;
-        }
-
-        /* =========================
-           ACTIVE ORDERS
-        ========================= */
-
-        .orders-section {
-            margin-top: 25px;
-        }
-
-        .orders-section h3 {
-            margin-bottom: 12px;
-        }
-
-        .orders-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 12px;
-        }
-
-        .order-card {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            padding: 15px;
-        }
-
-        .order-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .order-number {
-            font-weight: 900;
-        }
-
-        .status {
-            font-size: 10px;
-            font-weight: 900;
-            padding: 5px 8px;
-            border-radius: 20px;
-            background: #fff2d8;
-            color: #996600;
-        }
-
-        .order-items {
-            font-size: 12px;
-            color: #555;
-            line-height: 1.8;
-        }
-
-        .order-total {
-            display: flex;
-            justify-content: space-between;
-            border-top: 1px solid #eee;
-            margin-top: 10px;
-            padding-top: 10px;
-            font-weight: 900;
-        }
-
-        .edit-order-btn {
-            width: 100%;
-            margin-top: 12px;
-            padding: 10px;
-            background: #eee;
-            border-radius: 9px;
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        /* =========================
-           TOAST
-        ========================= */
-
-        #toast {
-            position: fixed;
-            bottom: 22px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #111;
-            color: #fff;
-            padding: 12px 18px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 700;
-            z-index: 999;
-            opacity: 0;
-            transition: .25s;
-        }
-
-        #toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-
-        /* =========================
-           LOADER
-        ========================= */
-
-        #loader {
-            position: fixed;
-            inset: 0;
-            background: rgba(255, 255, 255, .85);
-            backdrop-filter: blur(5px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .loader-box {
-            background: #111;
-            color: #fff;
-            padding: 18px 25px;
-            border-radius: 13px;
-            font-size: 13px;
-            font-weight: 800;
-        }
-
-        /* =========================
-           MOBILE
-        ========================= */
-
-        @media (max-width: 850px) {
-
-            .main {
-                padding: 14px;
-            }
-
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .cart {
-                position: fixed;
-                left: 10px;
-                right: 10px;
-                bottom: 10px;
-                top: auto;
-                z-index: 200;
-                border-radius: 17px;
-                display: none;
-                max-height: 75vh;
-            }
-
-            .cart.mobile-open {
-                display: block;
-            }
-
-            .cart-items {
-                max-height: 38vh;
-            }
-
-            .mobile-cart-bar {
-                display: flex !important;
-            }
-
-            .menu-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 10px;
-            }
-
-            .item-image {
-                height: 105px;
-            }
-
-            .item-info {
-                padding: 10px;
-            }
-
-            .item-name {
-                font-size: 13px;
-            }
-
-            .item-description {
-                font-size: 10px;
-            }
-
-            .item-price {
-                font-size: 13px;
-            }
-
-            .add-btn {
-                width: 31px;
-                height: 31px;
-            }
-
-            .topbar {
-                padding: 0 12px;
-            }
-
-            .waiter-name {
-                display: none;
-            }
-
-            .page-header h2 {
-                font-size: 20px;
-            }
-        }
-
-        .mobile-cart-bar {
-            display: none;
-            position: fixed;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            height: 55px;
-            background: #111;
-            color: #fff;
-            border-radius: 14px;
-            z-index: 150;
-            padding: 0 15px;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 10px 30px rgba(0,0,0,.25);
-        }
-
-        .mobile-cart-bar button {
-            background: transparent;
-            color: #fff;
-            font-weight: 900;
-        }
-
-        .mobile-cart-total {
-            font-size: 15px;
-        }
-
-        @media (min-width: 851px) {
-            .mobile-cart-bar {
-                display: none !important;
-            }
-        }
-    </style>
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- ==========================================
-     LOGIN SCREEN
-========================================== -->
+    <!-- =========================================
+         LOGIN SCREEN
+    ========================================== -->
 
-<section id="loginScreen">
+    <section id="loginScreen">
 
-    <div class="login-card">
+        <div class="login-card">
 
-        <div class="brand">
+            <div class="brand">
 
-            <div class="brand-logo">
-                PK
-            </div>
-
-            <h1>PANKAJ</h1>
-
-            <p>Restaurant Ordering System</p>
-
-        </div>
-
-        <div id="loginError" class="login-error">
-            Invalid waiter credentials.
-        </div>
-
-        <form id="loginForm">
-
-            <div class="field">
-
-                <label for="waiterId">
-                    Waiter ID
-                </label>
-
-                <input
-                    id="waiterId"
-                    type="text"
-                    placeholder="Enter waiter ID"
-                    autocomplete="username"
-                    required
-                >
-
-            </div>
-
-            <div class="field">
-
-                <label for="waiterPin">
-                    PIN
-                </label>
-
-                <input
-                    id="waiterPin"
-                    type="password"
-                    placeholder="Enter PIN"
-                    inputmode="numeric"
-                    autocomplete="current-password"
-                    required
-                >
-
-            </div>
-
-            <button
-                type="submit"
-                class="login-btn"
-            >
-                Login
-            </button>
-
-        </form>
-
-    </div>
-
-</section>
-
-
-<!-- ==========================================
-     MAIN APP
-========================================== -->
-
-<section id="app">
-
-    <header class="topbar">
-
-        <div class="top-brand">
-            PANKAJ
-        </div>
-
-        <div class="waiter-info">
-
-            <div
-                class="waiter-avatar"
-                id="waiterAvatar"
-            >
-                W
-            </div>
-
-            <span
-                class="waiter-name"
-                id="waiterName"
-            >
-                Waiter
-            </span>
-
-            <button
-                class="logout-btn"
-                onclick="logout()"
-            >
-                Logout
-            </button>
-
-        </div>
-
-    </header>
-
-
-    <main class="main">
-
-        <div class="page-header">
-
-            <div>
-
-                <h2>
-                    New Order
-                </h2>
-
-                <p>
-                    Select table and add items
-                </p>
-
-            </div>
-
-            <div
-                class="order-count"
-                id="activeOrderCount"
-            >
-                0 Active
-            </div>
-
-        </div>
-
-
-        <!-- TABLE SELECTION -->
-
-        <div class="table-box">
-
-            <label>
-                SELECT TABLE
-            </label>
-
-            <div
-                class="table-grid"
-                id="tableGrid"
-            >
-            </div>
-
-        </div>
-
-
-        <!-- CATEGORY -->
-
-        <div
-            class="categories"
-            id="categories"
-        >
-        </div>
-
-
-        <!-- MENU + CART -->
-
-        <div class="content-grid">
-
-            <div>
-
-                <div
-                    class="menu-grid"
-                    id="menuGrid"
-                >
+                <div class="brand-logo">
+                    PK
                 </div>
 
+                <h1>PANKAJ</h1>
+
+                <p>Restaurant Ordering System</p>
+
             </div>
 
 
-            <aside
-                class="cart"
-                id="cart"
+            <div
+                id="loginError"
+                class="login-error"
             >
+                Invalid waiter credentials.
+            </div>
 
-                <div class="cart-header">
 
-                    <h3>
-                        Current Order
-                    </h3>
+            <form id="loginForm">
 
-                    <span
-                        class="cart-table"
-                        id="cartTable"
+                <div class="field">
+
+                    <label for="waiterId">
+                        Waiter ID
+                    </label>
+
+                    <input
+                        id="waiterId"
+                        type="text"
+                        placeholder="Enter waiter ID"
+                        autocomplete="username"
+                        required
                     >
-                        No table
-                    </span>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="waiterPin">
+                        PIN
+                    </label>
+
+                    <input
+                        id="waiterPin"
+                        type="password"
+                        placeholder="Enter PIN"
+                        inputmode="numeric"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="login-btn"
+                >
+                    Login
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================================
+         MAIN WAITER APP
+    ========================================== -->
+
+    <section id="app">
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div class="top-brand">
+                PANKAJ
+            </div>
+
+
+            <div class="waiter-info">
+
+                <div
+                    class="waiter-avatar"
+                    id="waiterAvatar"
+                >
+                    W
+                </div>
+
+
+                <span
+                    class="waiter-name"
+                    id="waiterName"
+                >
+                    Waiter
+                </span>
+
+
+                <button
+                    type="button"
+                    class="logout-btn"
+                    onclick="logout()"
+                >
+                    Logout
+                </button>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- MAIN CONTENT -->
+
+        <main class="main">
+
+            <!-- PAGE HEADER -->
+
+            <div class="page-header">
+
+                <div>
+
+                    <h2>
+                        New Order
+                    </h2>
+
+                    <p>
+                        Select table and add items
+                    </p>
 
                 </div>
 
 
                 <div
-                    class="cart-items"
-                    id="cartItems"
+                    class="order-count"
+                    id="activeOrderCount"
+                >
+                    0 Active
+                </div>
+
+            </div>
+
+
+
+            <!-- =====================================
+                 TABLE SELECTION
+            ====================================== -->
+
+            <section class="table-box">
+
+                <label>
+                    SELECT TABLE
+                </label>
+
+
+                <div
+                    class="table-grid"
+                    id="tableGrid"
+                >
+                    <!-- Tables generated by app.js -->
+                </div>
+
+            </section>
+
+
+
+            <!-- =====================================
+                 MENU CATEGORIES
+            ====================================== -->
+
+            <nav
+                class="categories"
+                id="categories"
+                aria-label="Menu categories"
+            >
+                <!-- Categories generated by app.js -->
+            </nav>
+
+
+
+            <!-- =====================================
+                 MENU + CART
+            ====================================== -->
+
+            <div class="content-grid">
+
+
+                <!-- MENU -->
+
+                <section class="menu-section">
+
+                    <div
+                        class="menu-grid"
+                        id="menuGrid"
+                    >
+                        <!-- Menu generated by app.js -->
+                    </div>
+
+                </section>
+
+
+
+                <!-- CART -->
+
+                <aside
+                    class="cart"
+                    id="cart"
                 >
 
-                    <div class="empty-cart">
-                        No items added
-                    </div>
+                    <div class="cart-header">
 
-                </div>
-
-
-                <div class="cart-note">
-
-                    <textarea
-                        id="orderNote"
-                        placeholder="Order note / special instruction..."
-                    ></textarea>
-
-                </div>
+                        <h3>
+                            Current Order
+                        </h3>
 
 
-                <div class="cart-summary">
-
-                    <div class="summary-row">
-
-                        <span>
-                            Items
-                        </span>
-
-                        <span id="summaryItems">
-                            0
+                        <span
+                            class="cart-table"
+                            id="cartTable"
+                        >
+                            No table
                         </span>
 
                     </div>
 
 
-                    <div class="summary-row total">
 
-                        <span>
-                            Total
-                        </span>
+                    <!-- CART ITEMS -->
 
-                        <span id="summaryTotal">
-                            ₹0
-                        </span>
-
-                    </div>
-
-
-                    <button
-                        class="confirm-btn"
-                        id="confirmBtn"
-                        onclick="confirmOrder()"
-                        disabled
+                    <div
+                        class="cart-items"
+                        id="cartItems"
                     >
-                        Confirm Order
-                    </button>
 
-                </div>
+                        <div class="empty-cart">
+                            No items added
+                        </div>
 
-            </aside>
-
-        </div>
+                    </div>
 
 
-        <!-- ACTIVE ORDERS -->
 
-        <section class="orders-section">
+                    <!-- ORDER NOTE -->
 
-            <h3>
-                Active Orders
-            </h3>
+                    <div class="cart-note">
 
-            <div
-                class="orders-list"
-                id="ordersList"
-            >
+                        <textarea
+                            id="orderNote"
+                            placeholder="Order note / special instruction..."
+                            rows="3"
+                        ></textarea>
 
-                <div class="empty-cart">
-                    No active orders
-                </div>
+                    </div>
+
+
+
+                    <!-- CART SUMMARY -->
+
+                    <div class="cart-summary">
+
+                        <div class="summary-row">
+
+                            <span>
+                                Items
+                            </span>
+
+                            <span id="summaryItems">
+                                0
+                            </span>
+
+                        </div>
+
+
+                        <div class="summary-row total">
+
+                            <span>
+                                Total
+                            </span>
+
+                            <span id="summaryTotal">
+                                ₹0
+                            </span>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="confirm-btn"
+                            id="confirmBtn"
+                            onclick="confirmOrder()"
+                            disabled
+                        >
+                            Confirm Order
+                        </button>
+
+                    </div>
+
+                </aside>
 
             </div>
 
-        </section>
 
-    </main>
 
-</section>
+            <!-- =====================================
+                 ACTIVE ORDERS
+            ====================================== -->
 
+            <section class="orders-section">
 
-<!-- MOBILE CART -->
-
-<div
-    class="mobile-cart-bar"
-    id="mobileCartBar"
-    onclick="toggleMobileCart()"
->
-
-    <span>
-        🛒 <span id="mobileCartCount">0</span> items
-    </span>
-
-    <span
-        class="mobile-cart-total"
-        id="mobileCartTotal"
-    >
-        ₹0
-    </span>
-
-    <button>
-        View →
-    </button>
-
-</div>
-
-
-<!-- TOAST -->
-
-<div id="toast"></div>
-
-
-<!-- LOADER -->
-
-<div id="loader">
-
-    <div class="loader-box">
-        Please wait...
-    </div>
-
-</div>
-
-
-<script>
-
-/* =====================================================
-   PANKAJ WAITER APP
-   Frontend
-===================================================== */
-
-
-/* =====================================================
-   CONFIGURATION
-===================================================== */
-
-const CONFIG = {
-
-    /*
-     * After creating Google Apps Script,
-     * paste your Web App URL here.
-     *
-     * Example:
-     *
-     * API_URL:
-     * "https://script.google.com/macros/s/XXXXX/exec"
-     */
-
-    API_URL: "",
-
-    /*
-     * How often the app checks for updated orders/menu.
-     */
-
-    SYNC_INTERVAL: 3000
-
-};
-
-
-/* =====================================================
-   APPLICATION STATE
-===================================================== */
-
-let currentWaiter = null;
-
-let selectedTable = null;
-
-let selectedCategory = "All";
-
-let menu = [];
-
-let categories = [];
-
-let cart = [];
-
-let activeOrders = [];
-
-let editingOrderId = null;
-
-
-/* =====================================================
-   DEMO DATA
-   Used until Google Apps Script is connected.
-===================================================== */
-
-const DEMO_MENU = [
-
-    {
-        id: "ITEM001",
-        category: "Biriyani",
-        name: "Chicken Biriyani",
-        description: "Traditional Kerala chicken biriyani",
-        price: 180,
-        image: "",
-        available: true
-    },
-
-    {
-        id: "ITEM002",
-        category: "Biriyani",
-        name: "Beef Biriyani",
-        description: "Malabar style beef biriyani",
-        price: 190,
-        image: "",
-        available: true
-    },
-
-    {
-        id: "ITEM003",
-        category: "Rice",
-        name: "Ghee Rice",
-        description: "Fragrant basmati ghee rice",
-        price: 120,
-        image: "",
-        available: true
-    },
-
-    {
-        id: "ITEM004",
-        category: "Rice",
-        name: "Chicken Fried Rice",
-        description: "Indo-Chinese style fried rice",
-        price: 150,
-        image: "",
-        available: true
-    },
-
-    {
-        id: "ITEM005",
-        category: "Bread",
-        name: "Porotta",
-        description: "Flaky Kerala porotta",
-        price: 15,
-        image: "",
-        available: true
-    },
-
-    {
-        id: "ITEM006",
-        category: "Bread",
-        name: "Naan",
-        description: "Soft tandoori naan",
-        price: 35,
-        image: "",
-        available: true
-    },
-
-    {
-        id: "ITEM007",
-        category: "Chicken",
-        name: "Chicken 65",
-        description: "Crispy spicy chicken",
-        price: 160,
-        image: "",
-        available: true
-    },
-
-    {
-        id: "ITEM008",
-        category: "Chicken",
-        name: "Chicken Roast",
-        description: "Kerala style chicken roast",
-        price: 180,
-        image: "",
-        available: true
-    },
-
-    {
-        id: "ITEM009",
-        category: "Drinks",
-        name: "Fresh Lime",
-        description: "Fresh lime juice",
-        price: 40,
-        image: "",
-        available: true
-    },
-
-    {
-        id: "ITEM010",
-        category: "Drinks",
-        name: "Fresh Lime Soda",
-        description: "Refreshing lime soda",
-        price: 50,
-        image: "",
-        available: true
-    }
-
-];
-
-
-/* =====================================================
-   INIT
-===================================================== */
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    menu = [...DEMO_MENU];
-
-    buildCategories();
-
-    renderCategories();
-
-    renderMenu();
-
-    renderTables();
-
-    renderCart();
-
-    renderOrders();
-
-});
-
-
-/* =====================================================
-   LOGIN
-===================================================== */
-
-document
-    .getElementById("loginForm")
-    .addEventListener("submit", async function(event) {
-
-        event.preventDefault();
-
-        const waiterId =
-            document
-                .getElementById("waiterId")
-                .value
-                .trim();
-
-        const pin =
-            document
-                .getElementById("waiterPin")
-                .value
-                .trim();
-
-        if (!waiterId || !pin) {
-            return;
-        }
-
-        showLoader(true);
-
-        try {
-
-            let result;
-
-            if (CONFIG.API_URL) {
-
-                result = await apiRequest(
-                    "login",
-                    {
-                        waiterId,
-                        pin
-                    }
-                );
-
-            } else {
-
-                /*
-                 * Temporary demo login.
-                 *
-                 * This will be replaced by
-                 * Google Sheets authentication.
-                 */
-
-                if (
-                    waiterId === "waiter1" &&
-                    pin === "1234"
-                ) {
-
-                    result = {
-                        success: true,
-                        waiter: {
-                            id: "waiter1",
-                            name: "Waiter 1",
-                            role: "waiter"
-                        }
-                    };
-
-                } else {
-
-                    result = {
-                        success: false
-                    };
-
-                }
-
-            }
-
-            if (!result.success) {
-
-                showLoginError(
-                    "Invalid waiter ID or PIN."
-                );
-
-                return;
-
-            }
-
-            currentWaiter = result.waiter;
-
-            sessionStorage.setItem(
-                "pankaj_waiter",
-                JSON.stringify(currentWaiter)
-            );
-
-            openApp();
-
-        } catch (error) {
-
-            console.error(error);
-
-            showLoginError(
-                "Unable to connect to server."
-            );
-
-        } finally {
-
-            showLoader(false);
-
-        }
-
-    });
-
-
-/* =====================================================
-   OPEN APP
-===================================================== */
-
-function openApp() {
-
-    document
-        .getElementById("loginScreen")
-        .style.display = "none";
-
-    document
-        .getElementById("app")
-        .style.display = "block";
-
-    document
-        .getElementById("loginError")
-        .style.display = "none";
-
-    document
-        .getElementById("waiterName")
-        .textContent =
-        currentWaiter.name;
-
-    document
-        .getElementById("waiterAvatar")
-        .textContent =
-        currentWaiter.name
-            .charAt(0)
-            .toUpperCase();
-
-    startSync();
-
-}
-
-
-/* =====================================================
-   LOGOUT
-===================================================== */
-
-function logout() {
-
-    sessionStorage.removeItem(
-        "pankaj_waiter"
-    );
-
-    currentWaiter = null;
-
-    selectedTable = null;
-
-    cart = [];
-
-    document
-        .getElementById("app")
-        .style.display = "none";
-
-    document
-        .getElementById("loginScreen")
-        .style.display = "flex";
-
-    document
-        .getElementById("waiterId")
-        .value = "";
-
-    document
-        .getElementById("waiterPin")
-        .value = "";
-
-}
-
-
-/* =====================================================
-   LOGIN ERROR
-===================================================== */
-
-function showLoginError(message) {
-
-    const box =
-        document.getElementById("loginError");
-
-    box.textContent = message;
-
-    box.style.display = "block";
-
-}
-
-
-/* =====================================================
-   TABLES
-===================================================== */
-
-function renderTables() {
-
-    const container =
-        document.getElementById("tableGrid");
-
-    container.innerHTML = "";
-
-    /*
-     * Change this later from Admin settings.
-     */
-
-    for (let i = 1; i <= 20; i++) {
-
-        const button =
-            document.createElement("button");
-
-        button.className = "table-btn";
-
-        if (selectedTable === i) {
-            button.classList.add("active");
-        }
-
-        button.textContent =
-            `T${i}`;
-
-        button.onclick = () => {
-
-            selectedTable = i;
-
-            document
-                .getElementById("cartTable")
-                .textContent =
-                `Table ${i}`;
-
-            renderTables();
-
-        };
-
-        container.appendChild(button);
-
-    }
-
-}
-
-
-/* =====================================================
-   CATEGORIES
-===================================================== */
-
-function buildCategories() {
-
-    categories = [
-        "All",
-        ...new Set(
-            menu.map(item => item.category)
-        )
-    ];
-
-}
-
-
-function renderCategories() {
-
-    const container =
-        document.getElementById("categories");
-
-    container.innerHTML = "";
-
-    categories.forEach(category => {
-
-        const button =
-            document.createElement("button");
-
-        button.className =
-            "category-btn";
-
-        if (selectedCategory === category) {
-            button.classList.add("active");
-        }
-
-        button.textContent =
-            category;
-
-        button.onclick = () => {
-
-            selectedCategory =
-                category;
-
-            renderCategories();
-
-            renderMenu();
-
-        };
-
-        container.appendChild(button);
-
-    });
-
-}
-
-
-/* =====================================================
-   MENU
-===================================================== */
-
-function renderMenu() {
-
-    const container =
-        document.getElementById("menuGrid");
-
-    container.innerHTML = "";
-
-    const filteredMenu =
-        selectedCategory === "All"
-            ? menu
-            : menu.filter(
-                item =>
-                    item.category ===
-                    selectedCategory
-            );
-
-    filteredMenu.forEach(item => {
-
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "menu-item";
-
-        if (!item.available) {
-            card.classList.add(
-                "item-unavailable"
-            );
-        }
-
-        let imageHTML = "🍽️";
-
-        if (item.image) {
-
-            imageHTML =
-                `<img
-                    src="${escapeHTML(item.image)}"
-                    alt="${escapeHTML(item.name)}"
-                >`;
-
-        }
-
-        card.innerHTML = `
-
-            <div class="item-image">
-                ${imageHTML}
-            </div>
-
-            <div class="item-info">
-
-                <div class="item-name">
-                    ${escapeHTML(item.name)}
-                </div>
-
-                <div class="item-description">
-                    ${escapeHTML(item.description || "")}
-                </div>
-
-                <div class="item-bottom">
+                <div class="section-heading">
 
                     <div>
 
-                        ${
-                            item.available
-                                ?
-                                `<div class="item-price">
-                                    ₹${formatMoney(item.price)}
-                                </div>`
-                                :
-                                `<div class="unavailable-label">
-                                    Not Available
-                                </div>`
-                        }
+                        <h3>
+                            Active Orders
+                        </h3>
+
+                        <p>
+                            Confirmed orders from this device
+                        </p>
 
                     </div>
-
-                    ${
-                        item.available
-                            ?
-                            `<button
-                                class="add-btn"
-                                onclick="addToCart('${item.id}')"
-                            >
-                                +
-                            </button>`
-                            :
-                            ""
-                    }
 
                 </div>
 
-            </div>
 
-        `;
+                <div
+                    class="orders-list"
+                    id="ordersList"
+                >
 
-        container.appendChild(card);
-
-    });
-
-}
-
-
-/* =====================================================
-   ADD TO CART
-===================================================== */
-
-function addToCart(itemId) {
-
-    const item =
-        menu.find(
-            item =>
-                item.id === itemId
-        );
-
-    if (!item || !item.available) {
-        return;
-    }
-
-    const existing =
-        cart.find(
-            cartItem =>
-                cartItem.itemId === itemId
-        );
-
-    if (existing) {
-
-        existing.qty++;
-
-    } else {
-
-        cart.push({
-
-            itemId: item.id,
-            name: item.name,
-            price: Number(item.price),
-            qty: 1
-
-        });
-
-    }
-
-    renderCart();
-
-    showToast(
-        `${item.name} added`
-    );
-
-}
-
-
-/* =====================================================
-   CART
-===================================================== */
-
-function renderCart() {
-
-    const container =
-        document.getElementById("cartItems");
-
-    container.innerHTML = "";
-
-    if (cart.length === 0) {
-
-        container.innerHTML = `
-            <div class="empty-cart">
-                No items added
-            </div>
-        `;
-
-    } else {
-
-        cart.forEach((item, index) => {
-
-            const row =
-                document.createElement("div");
-
-            row.className =
-                "cart-item";
-
-            const total =
-                item.price * item.qty;
-
-            row.innerHTML = `
-
-                <div class="cart-item-top">
-
-                    <div class="cart-item-name">
-                        ${escapeHTML(item.name)}
-                    </div>
-
-                    <div class="cart-item-price">
-                        ₹${formatMoney(total)}
+                    <div class="empty-cart">
+                        No active orders
                     </div>
 
                 </div>
 
-                <div class="cart-controls">
+            </section>
 
-                    <div class="qty-controls">
+        </main>
 
-                        <button
-                            class="qty-btn"
-                            onclick="changeQty(${index}, -1)"
-                        >
-                            −
-                        </button>
+    </section>
 
-                        <span class="qty">
-                            ${item.qty}
-                        </span>
 
-                        <button
-                            class="qty-btn"
-                            onclick="changeQty(${index}, 1)"
-                        >
-                            +
-                        </button>
 
-                    </div>
+    <!-- =========================================
+         MOBILE CART BAR
+    ========================================== -->
 
-                    <button
-                        class="remove-btn"
-                        onclick="removeFromCart(${index})"
-                    >
-                        Remove
-                    </button>
+    <div
+        class="mobile-cart-bar"
+        id="mobileCartBar"
+    >
 
-                </div>
+        <div class="mobile-cart-info">
 
-            `;
-
-            container.appendChild(row);
-
-        });
-
-    }
-
-    const totalItems =
-        cart.reduce(
-            (sum, item) =>
-                sum + item.qty,
-            0
-        );
-
-    const total =
-        cart.reduce(
-            (sum, item) =>
-                sum +
-                item.price *
-                item.qty,
-            0
-        );
-
-    document
-        .getElementById("summaryItems")
-        .textContent =
-        totalItems;
-
-    document
-        .getElementById("summaryTotal")
-        .textContent =
-        `₹${formatMoney(total)}`;
-
-    document
-        .getElementById("confirmBtn")
-        .disabled =
-        !selectedTable ||
-        cart.length === 0;
-
-    document
-        .getElementById("mobileCartCount")
-        .textContent =
-        totalItems;
-
-    document
-        .getElementById("mobileCartTotal")
-        .textContent =
-        `₹${formatMoney(total)}`;
-
-}
-
-
-/* =====================================================
-   CHANGE QUANTITY
-===================================================== */
-
-function changeQty(index, change) {
-
-    if (!cart[index]) {
-        return;
-    }
-
-    cart[index].qty += change;
-
-    if (cart[index].qty <= 0) {
-
-        cart.splice(index, 1);
-
-    }
-
-    renderCart();
-
-}
-
-
-/* =====================================================
-   REMOVE ITEM
-===================================================== */
-
-function removeFromCart(index) {
-
-    cart.splice(index, 1);
-
-    renderCart();
-
-}
-
-
-/* =====================================================
-   CONFIRM ORDER
-===================================================== */
-
-async function confirmOrder() {
-
-    if (!selectedTable) {
-
-        showToast(
-            "Select a table first."
-        );
-
-        return;
-
-    }
-
-    if (cart.length === 0) {
-
-        showToast(
-            "Add at least one item."
-        );
-
-        return;
-
-    }
-
-    const note =
-        document
-            .getElementById("orderNote")
-            .value
-            .trim();
-
-    const order = {
-
-        id:
-            editingOrderId ||
-            generateOrderId(),
-
-        table:
-            selectedTable,
-
-        waiterId:
-            currentWaiter.id,
-
-        waiterName:
-            currentWaiter.name,
-
-        items:
-            cart.map(item => ({
-                itemId: item.itemId,
-                name: item.name,
-                qty: item.qty,
-                price: item.price
-            })),
-
-        note,
-
-        status:
-            "Confirmed",
-
-        createdAt:
-            new Date().toISOString(),
-
-        updatedAt:
-            new Date().toISOString()
-
-    };
-
-
-    showLoader(true);
-
-    try {
-
-        let result;
-
-        if (CONFIG.API_URL) {
-
-            result =
-                await apiRequest(
-                    editingOrderId
-                        ? "updateOrder"
-                        : "createOrder",
-                    order
-                );
-
-        } else {
-
-            /*
-             * Temporary local demo mode.
-             */
-
-            if (editingOrderId) {
-
-                const index =
-                    activeOrders.findIndex(
-                        existing =>
-                            existing.id ===
-                            editingOrderId
-                    );
-
-                if (index !== -1) {
-
-                    activeOrders[index] =
-                        order;
-
-                }
-
-            } else {
-
-                activeOrders.unshift(
-                    order
-                );
-
-            }
-
-            result = {
-                success: true,
-                order
-            };
-
-        }
-
-        if (!result.success) {
-
-            showToast(
-                result.message ||
-                "Unable to save order."
-            );
-
-            return;
-
-        }
-
-        showToast(
-            editingOrderId
-                ? "Order updated"
-                : "Order confirmed"
-        );
-
-        editingOrderId = null;
-
-        cart = [];
-
-        selectedTable = null;
-
-        document
-            .getElementById("orderNote")
-            .value = "";
-
-        document
-            .getElementById("cartTable")
-            .textContent =
-            "No table";
-
-        renderTables();
-
-        renderCart();
-
-        renderOrders();
-
-    } catch (error) {
-
-        console.error(error);
-
-        showToast(
-            "Server connection failed."
-        );
-
-    } finally {
-
-        showLoader(false);
-
-    }
-
-}
-
-
-/* =====================================================
-   ACTIVE ORDERS
-===================================================== */
-
-function renderOrders() {
-
-    const container =
-        document.getElementById("ordersList");
-
-    container.innerHTML = "";
-
-    document
-        .getElementById("activeOrderCount")
-        .textContent =
-        `${activeOrders.length} Active`;
-
-    if (activeOrders.length === 0) {
-
-        container.innerHTML = `
-            <div class="empty-cart">
-                No active orders
-            </div>
-        `;
-
-        return;
-
-    }
-
-    activeOrders.forEach(order => {
-
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "order-card";
-
-        const itemsHTML =
-            order.items
-                .map(
-                    item =>
-                        `${item.qty} × ${escapeHTML(item.name)}`
-                )
-                .join("<br>");
-
-        const total =
-            order.items.reduce(
-                (sum, item) =>
-                    sum +
-                    item.price *
-                    item.qty,
-                0
-            );
-
-        card.innerHTML = `
-
-            <div class="order-card-header">
-
-                <div class="order-number">
-                    #${escapeHTML(order.id)}
-                </div>
-
-                <div class="status">
-                    ${escapeHTML(order.status)}
-                </div>
-
-            </div>
-
-            <div style="
-                font-size:12px;
-                font-weight:800;
-                margin-bottom:8px;
-            ">
-                Table ${order.table}
-            </div>
-
-            <div class="order-items">
-                ${itemsHTML}
-            </div>
-
-            ${
-                order.note
-                    ?
-                    `<div style="
-                        margin-top:8px;
-                        padding:8px;
-                        background:#f5f5f5;
-                        border-radius:8px;
-                        font-size:11px;
-                    ">
-                        Note: ${escapeHTML(order.note)}
-                    </div>`
-                    :
-                    ""
-            }
-
-            <div class="order-total">
-
-                <span>
-                    Total
+            <span>
+                <span id="mobileCartCount">
+                    0
                 </span>
+                items
+            </span>
 
-                <span>
-                    ₹${formatMoney(total)}
-                </span>
+            <strong id="mobileCartTotal">
+                ₹0
+            </strong>
 
-            </div>
+        </div>
 
-            <button
-                class="edit-order-btn"
-                onclick="editOrder('${order.id}')"
-            >
-                Edit Order
-            </button>
 
-        `;
+        <button
+            type="button"
+            onclick="toggleMobileCart()"
+        >
+            View Cart
+        </button>
 
-        container.appendChild(card);
+    </div>
 
-    });
 
-}
 
+    <!-- =========================================
+         TOAST
+    ========================================== -->
 
-/* =====================================================
-   EDIT ORDER
-===================================================== */
+    <div
+        id="toast"
+        role="status"
+        aria-live="polite"
+    ></div>
 
-function editOrder(orderId) {
 
-    const order =
-        activeOrders.find(
-            item =>
-                item.id === orderId
-        );
 
-    if (!order) {
-        return;
-    }
+    <!-- =========================================
+         LOADER
+    ========================================== -->
 
-    editingOrderId =
-        order.id;
+    <div
+        id="loader"
+        aria-hidden="true"
+    >
 
-    selectedTable =
-        Number(order.table);
+        <div class="loader-box">
+            <div class="loader-spinner"></div>
 
-    cart =
-        order.items.map(
-            item => ({
+            <span>
+                Please wait...
+            </span>
+        </div>
 
-                itemId:
-                    item.itemId,
+    </div>
 
-                name:
-                    item.name,
 
-                price:
-                    Number(item.price),
 
-                qty:
-                    Number(item.qty)
+    <!-- =========================================
+         JAVASCRIPT
+    ========================================== -->
 
-            })
-        );
-
-    document
-        .getElementById("orderNote")
-        .value =
-        order.note || "";
-
-    document
-        .getElementById("cartTable")
-        .textContent =
-        `Table ${selectedTable}`;
-
-    renderTables();
-
-    renderCart();
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-    if (
-        window.innerWidth <= 850
-    ) {
-
-        document
-            .getElementById("cart")
-            .classList.add(
-                "mobile-open"
-            );
-
-    }
-
-    showToast(
-        "Editing order"
-    );
-
-}
-
-
-/* =====================================================
-   MOBILE CART
-===================================================== */
-
-function toggleMobileCart() {
-
-    document
-        .getElementById("cart")
-        .classList.toggle(
-            "mobile-open"
-        );
-
-}
-
-
-/* =====================================================
-   API
-===================================================== */
-
-async function apiRequest(
-    action,
-    data = {}
-) {
-
-    const response =
-        await fetch(
-            CONFIG.API_URL,
-            {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type":
-                        "text/plain;charset=utf-8"
-                },
-
-                body:
-                    JSON.stringify({
-
-                        action,
-
-                        data
-
-                    })
-
-            }
-        );
-
-    return await response.json();
-
-}
-
-
-/* =====================================================
-   REAL-TIME / PERIODIC SYNC
-===================================================== */
-
-let syncTimer = null;
-
-function startSync() {
-
-    if (syncTimer) {
-        clearInterval(syncTimer);
-    }
-
-    /*
-     * Don't run API requests in demo mode.
-     */
-
-    if (!CONFIG.API_URL) {
-        return;
-    }
-
-    syncTimer =
-        setInterval(
-            syncData,
-            CONFIG.SYNC_INTERVAL
-        );
-
-    syncData();
-
-}
-
-
-async function syncData() {
-
-    if (!currentWaiter) {
-        return;
-    }
-
-    try {
-
-        const result =
-            await apiRequest(
-                "sync",
-                {
-                    waiterId:
-                        currentWaiter.id
-                }
-            );
-
-        if (!result.success) {
-            return;
-        }
-
-        if (
-            Array.isArray(
-                result.menu
-            )
-        ) {
-
-            menu =
-                result.menu;
-
-            buildCategories();
-
-            renderCategories();
-
-            renderMenu();
-
-        }
-
-        if (
-            Array.isArray(
-                result.orders
-            )
-        ) {
-
-            activeOrders =
-                result.orders;
-
-            renderOrders();
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "Sync failed:",
-            error
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   UTILITIES
-===================================================== */
-
-function generateOrderId() {
-
-    const now =
-        new Date();
-
-    const date =
-        now
-            .toISOString()
-            .slice(0, 10)
-            .replaceAll("-", "");
-
-    const random =
-        Math.floor(
-            1000 +
-            Math.random() *
-            9000
-        );
-
-    return `PK-${date}-${random}`;
-
-}
-
-
-function formatMoney(value) {
-
-    return Number(value || 0)
-        .toLocaleString(
-            "en-IN",
-            {
-                maximumFractionDigits: 2
-            }
-        );
-
-}
-
-
-function escapeHTML(value) {
-
-    return String(value ?? "")
-        .replace(
-            /[&<>"']/g,
-            char => ({
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                '"': "&quot;",
-                "'": "&#039;"
-            })[char]
-        );
-
-}
-
-
-function showToast(message) {
-
-    const toast =
-        document.getElementById("toast");
-
-    toast.textContent =
-        message;
-
-    toast.classList.add(
-        "show"
-    );
-
-    setTimeout(
-        () => {
-
-            toast.classList.remove(
-                "show"
-            );
-
-        },
-        2200
-    );
-
-}
-
-
-function showLoader(show) {
-
-    document
-        .getElementById("loader")
-        .style.display =
-        show
-            ? "flex"
-            : "none";
-
-}
-
-
-/* =====================================================
-   RESTORE SESSION
-===================================================== */
-
-const savedWaiter =
-    sessionStorage.getItem(
-        "pankaj_waiter"
-    );
-
-if (savedWaiter) {
-
-    try {
-
-        currentWaiter =
-            JSON.parse(
-                savedWaiter
-            );
-
-        openApp();
-
-    } catch {
-
-        sessionStorage.removeItem(
-            "pankaj_waiter"
-        );
-
-    }
-
-}
-
-</script>
+    <script src="app.js"></script>
 
 </body>
+
 </html>
