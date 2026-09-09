@@ -25,6 +25,26 @@ const emptyState =
 
 
 /* =========================================
+   PAGE NAVIGATION
+========================================= */
+
+const menuTab =
+    document.getElementById("menuTab");
+
+const historyTab =
+    document.getElementById("historyTab");
+
+const menuSection =
+    document.getElementById("menuSection");
+
+const historySection =
+    document.getElementById("historySection");
+
+const backMenuButton =
+    document.getElementById("backMenuButton");
+
+
+/* =========================================
    CART ELEMENTS
 ========================================= */
 
@@ -76,12 +96,6 @@ const newOrder =
 /* =========================================
    HISTORY ELEMENTS
 ========================================= */
-
-const historyTab =
-    document.getElementById("historyTab");
-
-const historySection =
-    document.getElementById("historySection");
 
 const historyList =
     document.getElementById("historyList");
@@ -141,13 +155,15 @@ function filterMenu() {
             searchMatches
         ) {
 
-            card.style.display = "flex";
+            card.style.display =
+                "flex";
 
             visibleItems++;
 
         } else {
 
-            card.style.display = "none";
+            card.style.display =
+                "none";
 
         }
 
@@ -164,6 +180,7 @@ function filterMenu() {
         visibleItems === 0
             ? "block"
             : "none";
+
 }
 
 
@@ -257,6 +274,7 @@ addButtons.forEach(button => {
 
             }, 700);
 
+
             cartButton.classList.remove(
                 "pulse"
             );
@@ -307,6 +325,7 @@ function addToCart(
     }
 
     updateCart();
+
 }
 
 
@@ -345,6 +364,7 @@ function renderCart() {
             true;
 
         return;
+
     }
 
     cartItems.style.display =
@@ -389,6 +409,7 @@ function renderCart() {
                         class="quantity-btn"
                         data-action="decrease"
                         data-index="${index}"
+                        aria-label="Decrease quantity"
                     >
                         −
                     </button>
@@ -402,6 +423,7 @@ function renderCart() {
                         class="quantity-btn"
                         data-action="increase"
                         data-index="${index}"
+                        aria-label="Increase quantity"
                     >
                         +
                     </button>
@@ -411,11 +433,13 @@ function renderCart() {
                         class="remove-item"
                         data-action="remove"
                         data-index="${index}"
+                        aria-label="Remove item"
                     >
                         ×
                     </button>
 
                 </div>
+
             `;
 
             cartItems.appendChild(
@@ -457,8 +481,11 @@ cartItems.addEventListener(
             Number.isNaN(index) ||
             !cart[index]
         ) {
+
             return;
+
         }
+
 
         if (
             action === "increase"
@@ -467,6 +494,7 @@ cartItems.addEventListener(
             cart[index].quantity++;
 
         }
+
 
         if (
             action === "decrease"
@@ -487,6 +515,7 @@ cartItems.addEventListener(
 
         }
 
+
         if (
             action === "remove"
         ) {
@@ -497,6 +526,7 @@ cartItems.addEventListener(
             );
 
         }
+
 
         updateCart();
 
@@ -634,10 +664,20 @@ placeOrder.addEventListener(
             return;
         }
 
+        if (editingOrderId) {
+
+            saveEditedOrder();
+
+            return;
+
+        }
+
         const order =
             createNewOrder();
 
-        orders.unshift(order);
+        orders.unshift(
+            order
+        );
 
         saveOrders();
 
@@ -669,11 +709,14 @@ function createNewOrder() {
 
     return {
 
-        id: generateOrderId(),
+        id:
+            generateOrderId(),
 
         items:
             JSON.parse(
-                JSON.stringify(cart)
+                JSON.stringify(
+                    cart
+                )
             ),
 
         total:
@@ -700,15 +743,20 @@ function generateOrderId() {
         orders.length > 0
             ? Math.max(
                 ...orders.map(
-                    order =>
-                        Number(
-                            String(
-                                order.id
-                            ).replace(
-                                "PNK-",
-                                ""
-                            )
-                        ) || 0
+                    order => {
+
+                        return (
+                            Number(
+                                String(
+                                    order.id
+                                ).replace(
+                                    "PNK-",
+                                    ""
+                                )
+                            ) || 0
+                        );
+
+                    }
                 )
             ) + 1
             : 1001;
@@ -726,7 +774,9 @@ function saveOrders() {
 
     localStorage.setItem(
         "pankaj_orders",
-        JSON.stringify(orders)
+        JSON.stringify(
+            orders
+        )
     );
 
 }
@@ -794,11 +844,17 @@ newOrder.addEventListener(
 
         cart = [];
 
-        editingOrderId = null;
+        editingOrderId =
+            null;
+
+        placeOrder.textContent =
+            "Place Order";
 
         updateCart();
 
         closeOrderModal();
+
+        showMenu();
 
     }
 );
@@ -822,57 +878,82 @@ function closeOrderModal() {
 
 
 /* =========================================
-   HISTORY TAB
+   MENU / HISTORY NAVIGATION
 ========================================= */
+
+if (menuTab) {
+
+    menuTab.addEventListener(
+        "click",
+        showMenu
+    );
+
+}
+
 
 if (historyTab) {
 
     historyTab.addEventListener(
         "click",
-        () => {
-
-            showHistory();
-
-        }
+        showHistory
     );
+
+}
+
+
+if (backMenuButton) {
+
+    backMenuButton.addEventListener(
+        "click",
+        showMenu
+    );
+
+}
+
+
+function showMenu() {
+
+    menuSection.classList.add(
+        "active"
+    );
+
+    historySection.classList.remove(
+        "active"
+    );
+
+    menuTab.classList.add(
+        "active"
+    );
+
+    historyTab.classList.remove(
+        "active"
+    );
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 
 }
 
 
 function showHistory() {
 
-    document
-        .querySelectorAll(
-            ".page-section"
-        )
-        .forEach(section => {
+    menuSection.classList.remove(
+        "active"
+    );
 
-            section.classList.remove(
-                "active"
-            );
+    historySection.classList.add(
+        "active"
+    );
 
-        });
+    menuTab.classList.remove(
+        "active"
+    );
 
-    const menuSection =
-        document.getElementById(
-            "menuSection"
-        );
-
-    if (menuSection) {
-
-        menuSection.classList.remove(
-            "active"
-        );
-
-    }
-
-    if (historySection) {
-
-        historySection.classList.add(
-            "active"
-        );
-
-    }
+    historyTab.classList.add(
+        "active"
+    );
 
     renderHistory();
 
@@ -902,170 +983,172 @@ function renderHistory() {
         historyList.style.display =
             "none";
 
-        if (historyEmpty) {
-
-            historyEmpty.style.display =
-                "flex";
-
-        }
+        historyEmpty.style.display =
+            "flex";
 
         return;
+
     }
+
 
     historyList.style.display =
         "block";
 
-    if (historyEmpty) {
-
-        historyEmpty.style.display =
-            "none";
-
-    }
+    historyEmpty.style.display =
+        "none";
 
 
-    orders.forEach(order => {
+    orders.forEach(
+        order => {
 
-        const card =
-            document.createElement(
-                "article"
-            );
+            const card =
+                document.createElement(
+                    "article"
+                );
 
-        card.className =
-            "history-card";
-
-        const date =
-            new Date(
-                order.createdAt
-            );
-
-        const dateText =
-            date.toLocaleDateString(
-                "en-IN",
-                {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric"
-                }
-            );
-
-        const timeText =
-            date.toLocaleTimeString(
-                "en-IN",
-                {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                }
-            );
+            card.className =
+                "history-card";
 
 
-        const itemsHTML =
-            order.items.map(
-                item => `
+            const date =
+                new Date(
+                    order.createdAt
+                );
 
-                    <div class="history-item">
+
+            const dateText =
+                date.toLocaleDateString(
+                    "en-IN",
+                    {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric"
+                    }
+                );
+
+
+            const timeText =
+                date.toLocaleTimeString(
+                    "en-IN",
+                    {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    }
+                );
+
+
+            const itemsHTML =
+                order.items
+                    .map(
+                        item => `
+
+                            <div class="history-item">
+
+                                <span>
+                                    ${escapeHTML(item.name)}
+                                    × ${item.quantity}
+                                </span>
+
+                                <strong>
+                                    ₹${item.price * item.quantity}
+                                </strong>
+
+                            </div>
+
+                        `
+                    )
+                    .join("");
+
+
+            card.innerHTML = `
+
+                <div class="history-card-header">
+
+                    <div>
+
+                        <span class="history-order-label">
+                            ORDER
+                        </span>
+
+                        <h4>
+                            ${escapeHTML(order.id)}
+                        </h4>
+
+                    </div>
+
+                    <span class="history-status">
+                        CONFIRMED
+                    </span>
+
+                </div>
+
+
+                <div class="history-meta">
+
+                    <span>
+                        ${dateText}
+                    </span>
+
+                    <span>
+                        ${timeText}
+                    </span>
+
+                </div>
+
+
+                <div class="history-items">
+
+                    ${itemsHTML}
+
+                </div>
+
+
+                <div class="history-card-footer">
+
+                    <div>
 
                         <span>
-                            ${escapeHTML(item.name)}
-                            × ${item.quantity}
+                            Total
                         </span>
 
                         <strong>
-                            ₹${item.price * item.quantity}
+                            ₹${order.total}
                         </strong>
 
                     </div>
 
-                `
-            ).join("");
 
+                    <div class="history-actions">
 
-        card.innerHTML = `
+                        <button
+                            type="button"
+                            class="history-edit-btn"
+                            data-order-id="${escapeHTML(order.id)}"
+                        >
+                            Edit
+                        </button>
 
-            <div class="history-card-header">
+                        <button
+                            type="button"
+                            class="history-delete-btn"
+                            data-order-id="${escapeHTML(order.id)}"
+                        >
+                            Delete
+                        </button>
 
-                <div>
-
-                    <span class="history-order-label">
-                        ORDER
-                    </span>
-
-                    <h4>
-                        ${escapeHTML(order.id)}
-                    </h4>
-
-                </div>
-
-                <span class="history-status">
-                    CONFIRMED
-                </span>
-
-            </div>
-
-
-            <div class="history-meta">
-
-                <span>
-                    ${dateText}
-                </span>
-
-                <span>
-                    ${timeText}
-                </span>
-
-            </div>
-
-
-            <div class="history-items">
-
-                ${itemsHTML}
-
-            </div>
-
-
-            <div class="history-card-footer">
-
-                <div>
-
-                    <span>
-                        Total
-                    </span>
-
-                    <strong>
-                        ₹${order.total}
-                    </strong>
+                    </div>
 
                 </div>
 
+            `;
 
-                <div class="history-actions">
 
-                    <button
-                        type="button"
-                        class="history-edit-btn"
-                        data-order-id="${escapeHTML(order.id)}"
-                    >
-                        Edit
-                    </button>
+            historyList.appendChild(
+                card
+            );
 
-                    <button
-                        type="button"
-                        class="history-delete-btn"
-                        data-order-id="${escapeHTML(order.id)}"
-                    >
-                        Delete
-                    </button>
-
-                </div>
-
-            </div>
-
-        `;
-
-        historyList.appendChild(
-            card
-        );
-
-    });
+        }
+    );
 
 }
 
@@ -1096,6 +1179,8 @@ if (historyList) {
                 editOrder(
                     editButton.dataset.orderId
                 );
+
+                return;
 
             }
 
@@ -1145,15 +1230,15 @@ function editOrder(
         orderId;
 
 
-    updateCart();
-
-    openCart();
-
     placeOrder.textContent =
         "Save Changes";
 
-    placeOrder.disabled =
-        cart.length === 0;
+
+    updateCart();
+
+    showMenu();
+
+    openCart();
 
 }
 
@@ -1162,79 +1247,76 @@ function editOrder(
    SAVE EDITED ORDER
 ========================================= */
 
-placeOrder.addEventListener(
-    "click",
-    () => {
+function saveEditedOrder() {
 
-        if (!editingOrderId) {
-            return;
-        }
-
-        if (cart.length === 0) {
-            return;
-        }
-
-
-        const orderIndex =
-            orders.findIndex(
-                order =>
-                    order.id ===
-                    editingOrderId
-            );
-
-
-        if (orderIndex === -1) {
-            return;
-        }
-
-
-        orders[orderIndex].items =
-            JSON.parse(
-                JSON.stringify(
-                    cart
-                )
-            );
-
-
-        orders[orderIndex].total =
-            calculateTotal();
-
-
-        orders[orderIndex].updatedAt =
-            new Date().toISOString();
-
-
-        saveOrders();
-
-        renderHistory();
-
-
-        createOrderSummary(
-            orders[orderIndex]
-        );
-
-
-        editingOrderId =
-            null;
-
-
-        placeOrder.textContent =
-            "Place Order";
-
-
-        closeCart();
-
-
-        orderModal.classList.add(
-            "active"
-        );
-
-        document.body.classList.add(
-            "no-scroll"
-        );
-
+    if (!editingOrderId) {
+        return;
     }
-);
+
+    if (cart.length === 0) {
+        return;
+    }
+
+
+    const orderIndex =
+        orders.findIndex(
+            order =>
+                order.id ===
+                editingOrderId
+        );
+
+
+    if (orderIndex === -1) {
+        return;
+    }
+
+
+    orders[orderIndex].items =
+        JSON.parse(
+            JSON.stringify(
+                cart
+            )
+        );
+
+
+    orders[orderIndex].total =
+        calculateTotal();
+
+
+    orders[orderIndex].updatedAt =
+        new Date().toISOString();
+
+
+    saveOrders();
+
+    renderHistory();
+
+
+    createOrderSummary(
+        orders[orderIndex]
+    );
+
+
+    editingOrderId =
+        null;
+
+
+    placeOrder.textContent =
+        "Place Order";
+
+
+    closeCart();
+
+
+    orderModal.classList.add(
+        "active"
+    );
+
+    document.body.classList.add(
+        "no-scroll"
+    );
+
+}
 
 
 /* =========================================
